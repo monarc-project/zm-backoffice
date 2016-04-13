@@ -1,0 +1,37 @@
+{
+    "packages": {
+        "monarc/backoffice": {
+            "dev-master": {
+                "name": "monarc/backoffice",
+                "type": "library",
+                "version": "dev-master",
+                "description": "Backoffice for Monarc project",
+                "authors": [
+                    {"name": "Cyril Rouyer", "email": "cyril@netlor.fr"},
+                    {"name": "Guillaume Lesniak", "email": "guillaume@netlor.fr"},
+                    {"name": "Jerôme De Almeida", "email": "jerome.dealmeida@vesperiagroup.com"},
+                    {"name": "Thomas Metois", "email": "thomas@netlor.fr"}
+                ],
+                "dist": {
+                    "url": "https://rhea.netlor.fr/monarc/zm_backoffice/archive/master.zip",
+                    "type": "zip"
+                },
+                "source": {
+                    "url": "https://rhea.netlor.fr:3000/monarc/zm_backoffice.git",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "require": {
+                    "php": ">=5.5",
+                    "zendframework/zendframework": "2.5.3",
+                    "doctrine/doctrine-orm-module": "^0.10",
+                    "doctrine/migrations": "^1.4"
+                },
+                "autoload": {
+                    "psr-0": {"MonarcBO\\":"/"}
+                }
+            }
+        }
+    }
+}
+

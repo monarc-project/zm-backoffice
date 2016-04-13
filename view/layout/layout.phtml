@@ -1,0 +1,47 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<?php echo $this->headTitle('The SMILE Project')->setSeparator(' - ')->setAutoEscape(false) ?>
+
+	<?php echo $this->headMeta()
+		->appendName('viewport', 'width=device-width, initial-scale=1.0')
+		->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+	?>
+
+	<!-- Le styles -->
+	<?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/png', 'href' => $this->basePath() . '/img/favicon.png'))
+		->prependStylesheet($this->basePath('css/style.css'))
+		->prependStylesheet('https://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic')
+		->prependStylesheet('https://fonts.googleapis.com/icon?family=Material+Icons')
+		->prependStylesheet($this->basePath('css/angular-common-libs.css')) ?>
+
+	<!-- Scripts -->
+	<?php echo $this->headScript()
+		->prependFile($this->basePath('js/BackofficeKbInfoCtrl.js'))
+		->prependFile($this->basePath('js/BackofficeMainCtrl.js'))
+		->prependFile($this->basePath('js/BackofficeLoginCtrl.js'))
+		->prependFile($this->basePath('js/BackofficeAdminServerCtrl.js'))
+		->prependFile($this->basePath('js/BackofficeAdminUsersCtrl.js'))
+		->prependFile($this->basePath('js/TableHelperService.js'))
+		->prependFile($this->basePath('js/KBService.js'))
+		->prependFile($this->basePath('js/UserService.js'))
+		->prependFile($this->basePath('js/AdminServerService.js'))
+		->prependFile($this->basePath('js/AdminUsersService.js'))
+		->prependFile($this->basePath('js/BreadcrumbService.js'))
+		->prependFile($this->basePath('js/BackofficeApp.js'))
+		->prependFile($this->basePath('js/translations.js'))
+		//->prependFile($this->basePath('js/app.min.js'))
+		->prependFile($this->basePath('js/angular-common-libs.js')); ?>
+
+</head>
+<body ng-app="BackofficeApp" layout="column" flex>
+<section layout="row" flex ui-view="main">
+</section>
+
+<?php echo $this->inlineScript() ?>
+
+</body>
+</html>
+

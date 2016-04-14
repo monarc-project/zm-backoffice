@@ -6,124 +6,130 @@ use Doctrine\ORM\Mapping as ORM;
 use MonarcCore\Model\Entity\AbstractEntity;
 
 /**
- * Class User
+ * Users
  *
- * @package MonarcBO\Model\Entity
- * @ORM\Table(name="users")
+ * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="email", columns={"email"})}, indexes={@ORM\Index(name="current_anr_id", columns={"current_anr_id"})})
  * @ORM\Entity
  */
-class User extends AbstractEntity {
+class User extends AbstractEntity
+{
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    protected $id;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="current_anr_id", type="integer")
-     */
-    protected $current_anr_id;
+    private $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="role", type="string", length=255)
+     * @ORM\Column(name="role", type="string", length=255, nullable=true)
      */
-    protected $role;
+    private $role;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_start", type="date", nullable=true)
+     */
+    private $dateStart;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_end", type="date", nullable=true)
+     */
+    private $dateEnd;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="status", type="boolean", nullable=true)
+     */
+    private $status = '1';
 
     /**
      * @var string
      *
-     * @ORM\Column(name="date_start", type="date")
+     * @ORM\Column(name="firstname", type="string", length=255, nullable=true)
      */
-    protected $date_start;
+    private $firstname;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="date_end", type="date")
+     * @ORM\Column(name="lastname", type="string", length=255, nullable=true)
      */
-    protected $date_end;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="status", type="smallint")
-     */
-    protected $status;
+    private $lastname;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="firstname", type="string", length=255)
+     * @ORM\Column(name="email", type="string", length=255, nullable=true)
      */
-    protected $firstname;
+    private $email;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="lastname", type="string", length=255)
+     * @ORM\Column(name="phone", type="string", length=20, nullable=true)
      */
-    protected $lastname;
+    private $phone;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=255)
+     * @ORM\Column(name="salt", type="string", length=255, nullable=true)
      */
-    protected $email;
+    private $salt;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="phone", type="string", length=20)
+     * @ORM\Column(name="password", type="string", length=255, nullable=true)
      */
-    protected $phone;
+    private $password;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="salt", type="string", length=255)
+     * @ORM\Column(name="creator", type="string", length=255, nullable=true)
      */
-    protected $salt;
+    private $creator;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime", nullable=true)
+     */
+    private $createdAt;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="string", length=255)
+     * @ORM\Column(name="updater", type="string", length=255, nullable=true)
      */
-    protected $password;
+    private $updater;
 
     /**
-     * @var string
+     * @var \DateTime
      *
-     * @ORM\Column(name="creator", type="string", length=255)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    protected $creator;
+    private $updatedAt;
 
     /**
-     * @var string
+     * @var \MonarcCore\Model\Entity\Anrs
      *
-     * @ORM\Column(name="created_at", type="datetime")
+     * @ORM\ManyToOne(targetEntity="MonarcCore\Model\Entity\Anrs")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="current_anr_id", referencedColumnName="id")
+     * })
      */
-    protected $created_at;
+    private $currentAnr;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="updater", type="string", length=255)
-     */
-    protected $updater;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="updated_at", type="datetime")
-     */
-    protected $updated_at;
 }
+

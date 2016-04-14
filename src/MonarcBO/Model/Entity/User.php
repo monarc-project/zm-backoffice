@@ -20,115 +20,115 @@ class User extends AbstractEntity
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="role", type="string", length=255, nullable=true)
      */
-    private $role;
+    protected $role;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="date_start", type="date", nullable=true)
      */
-    private $dateStart;
+    protected $dateStart;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="date_end", type="date", nullable=true)
      */
-    private $dateEnd;
+    protected $dateEnd;
 
     /**
      * @var boolean
      *
      * @ORM\Column(name="status", type="boolean", nullable=true)
      */
-    private $status = '1';
+    protected $status = '1';
 
     /**
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=255, nullable=true)
      */
-    private $firstname;
+    protected $firstname;
 
     /**
      * @var string
      *
      * @ORM\Column(name="lastname", type="string", length=255, nullable=true)
      */
-    private $lastname;
+    protected $lastname;
 
     /**
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
      */
-    private $email;
+    protected $email;
 
     /**
      * @var string
      *
      * @ORM\Column(name="phone", type="string", length=20, nullable=true)
      */
-    private $phone;
+    protected $phone;
 
     /**
      * @var string
      *
      * @ORM\Column(name="salt", type="string", length=255, nullable=true)
      */
-    private $salt;
+    protected $salt;
 
     /**
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=255, nullable=true)
      */
-    private $password;
+    protected $password;
 
     /**
      * @var string
      *
      * @ORM\Column(name="creator", type="string", length=255, nullable=true)
      */
-    private $creator;
+    protected $creator;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
-    private $createdAt;
+    protected $createdAt;
 
     /**
      * @var string
      *
      * @ORM\Column(name="updater", type="string", length=255, nullable=true)
      */
-    private $updater;
+    protected $updater;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $updatedAt;
+    protected $updatedAt;
 
     /**
      * @var \MonarcCore\Model\Entity\Anrs
      *
-     * @ORM\ManyToOne(targetEntity="MonarcCore\Model\Entity\Anrs")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="current_anr_id", referencedColumnName="id")
-     * })
+     * //@ORM\ManyToOne(targetEntity="MonarcCore\Model\Entity\Anrs")
+     * //@ORM\JoinColumns({
+     *   //@ORM\JoinColumn(name="current_anr_id", referencedColumnName="id")
+     * //})
      */
-    private $currentAnr;
+    protected $currentAnr;
 
 
 }

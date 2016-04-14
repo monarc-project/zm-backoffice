@@ -33,5 +33,14 @@ class ApiAdminUsersController extends AbstractController {
         $service->create($data);
         return new JsonModel(array('status' => 'ok'));
     }
+
+    public function delete($id)
+    {
+        /** @var UserService $service */
+        $service = $this->getService();
+
+        $service->delete($id);
+        return new JsonModel(array('status' => 'ok'));
+    }
 }
 

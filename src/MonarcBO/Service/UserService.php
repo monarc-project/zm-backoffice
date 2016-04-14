@@ -49,4 +49,12 @@ class UserService extends AbstractService
 
         $userTable->save($entity);
     }
+
+    public function delete($id)
+    {
+        /** @var UserTable $userTable */
+        $userTable = $this->get('userTable');
+
+        $userTable->delete($id);
+    }
 }

@@ -7,7 +7,8 @@ use MonarcCore\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 
 class ApiAdminUsersController extends AbstractController {
-    public function getList() {
+    public function getList()
+    {
         $page = $this->params()->fromQuery('page');
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
@@ -19,8 +20,18 @@ class ApiAdminUsersController extends AbstractController {
             'users' => $service->getList($page, $limit, $order, $filter)));
     }
 
-    public function get($id) {
+    public function get($id)
+    {
         return new JsonModel($this->getService()->getEntity($id));
+    }
+
+    public function create($data)
+    {
+        /** @var UserService $service */
+        $service = $this->getService();
+
+        $service->create($data);
+        return new JsonModel(array('status' => 'ok'));
     }
 }
 

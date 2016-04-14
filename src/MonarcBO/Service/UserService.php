@@ -1,6 +1,7 @@
 <?php
 namespace MonarcBO\Service;
 
+use MonarcBO\Model\Entity\User;
 use MonarcBO\Model\Table\UserTable;
 use MonarcCore\Service\AbstractService;
 
@@ -36,5 +37,16 @@ class UserService extends AbstractService
     public function getEntity($id)
     {
         return $this->get('userTable')->get($id);
+    }
+
+    public function create($data)
+    {
+        /** @var UserTable $userTable */
+        $userTable = $this->get('userTable');
+
+        $entity = new User();
+        $entity->exchangeArray($data);
+
+        $userTable->save($entity);
     }
 }

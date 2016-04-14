@@ -11,7 +11,7 @@ class ApiAdminUsersController extends AbstractController {
     }
 
     public function get($id) {
-        return new JsonModel(array('id' => $id));
+        return new JsonModel($this->getService()->getEntity($id));
     }
 }
 

@@ -8,7 +8,7 @@ use MonarcCore\Model\Entity\AbstractEntity;
 /**
  * Users
  *
- * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="email", columns={"email"})}
+ * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="email", columns={"email"})})
  * @ORM\Entity
  */
 class User extends AbstractEntity

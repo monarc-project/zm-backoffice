@@ -40,6 +40,7 @@ class Module
         return array(
             'invokables' => array(
                 '\MonarcBO\Model\Entity\User' => '\MonarcBO\Model\Entity\User',
+                '\MonarcBO\Model\Entity\Server' => '\MonarcBO\Model\Entity\Server',
             ),
             'factories' => array(
                 '\MonarcBO\Model\Db' => function($serviceManager){
@@ -49,6 +50,10 @@ class Module
                     return new Model\Table\UserTable($sm->get('\MonarcBO\Model\Db'));
                 },
                 '\MonarcBO\Service\UserService' => '\MonarcBO\Service\UserServiceFactory',
+
+                '\MonarcBO\Model\Table\ServerTable' => function($sm){
+                    return new Model\Table\ServerTable($sm->get('\MonarcBO\Model\Db'));
+                },
             ),
         );
     }

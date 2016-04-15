@@ -30,8 +30,13 @@ class UserService extends AbstractService
         /** @var UserTable $userTable */
         $userTable = $this->get('userTable');
 
-        return $userTable->fetchAllFiltered($page, $limit, $this->parseFrontendOrder($order),
-            $this->parseFrontendFilter($filter, array('firstname', 'lastname', 'email')));
+        return $userTable->fetchAllFiltered(
+            array('id', 'firstname', 'lastname', 'email', 'phone', 'status'),
+            $page,
+            $limit,
+            $this->parseFrontendOrder($order),
+            $this->parseFrontendFilter($filter, array('firstname', 'lastname', 'email'))
+        );
     }
 
     public function getEntity($id)

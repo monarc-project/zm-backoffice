@@ -8,7 +8,7 @@ use MonarcCore\Model\Entity\AbstractEntity;
 /**
  * Users
  *
- * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="email", columns={"email"})}, indexes={@ORM\Index(name="current_anr_id", columns={"current_anr_id"})})
+ * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="email", columns={"email"})}
  * @ORM\Entity
  */
 class User extends AbstractEntity
@@ -119,17 +119,6 @@ class User extends AbstractEntity
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     protected $updatedAt;
-
-    /**
-     * @var \MonarcCore\Model\Entity\Anrs
-     *
-     * //@ORM\ManyToOne(targetEntity="MonarcCore\Model\Entity\Anrs")
-     * //@ORM\JoinColumns({
-     *   //@ORM\JoinColumn(name="current_anr_id", referencedColumnName="id")
-     * //})
-     */
-    protected $currentAnr;
-
 
 }
 

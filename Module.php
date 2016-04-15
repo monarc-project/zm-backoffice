@@ -46,14 +46,18 @@ class Module
                 '\MonarcBO\Model\Db' => function($serviceManager){
                     return new \MonarcCore\Model\Db($serviceManager->get('doctrine.entitymanager.orm_default'));
                 },
+
+                // Users table
                 '\MonarcBO\Model\Table\UserTable' => function($sm){
                     return new Model\Table\UserTable($sm->get('\MonarcBO\Model\Db'));
                 },
                 '\MonarcBO\Service\UserService' => '\MonarcBO\Service\UserServiceFactory',
 
+                // Servers table
                 '\MonarcBO\Model\Table\ServerTable' => function($sm){
                     return new Model\Table\ServerTable($sm->get('\MonarcBO\Model\Db'));
                 },
+                '\MonarcBO\Service\ServerService' => '\MonarcBO\Service\ServerServiceFactory',
             ),
         );
     }

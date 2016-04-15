@@ -60,7 +60,7 @@ class UserService extends AbstractService
         $userTable = $this->get('userTable');
 
         /** @var User $entity */
-        $entity = $this->get('userTable')->getEntity($data['id']);
+        $entity = $userTable->getEntity($data['id']);
 
         if ($entity != null) {
             $entity->exchangeArray($data);

@@ -50,6 +50,22 @@ class UserService extends AbstractService
         $userTable->save($entity);
     }
 
+    public function update($data) {
+        /** @var UserTable $userTable */
+        $userTable = $this->get('userTable');
+
+        /** @var User $entity */
+        $entity = $this->get('userTable')->getEntity($data['id']);
+
+        if ($entity != null) {
+            $entity->exchangeArray($data);
+            $userTable->save($entity);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function delete($id)
     {
         /** @var UserTable $userTable */

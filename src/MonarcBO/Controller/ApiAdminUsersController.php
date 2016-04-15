@@ -30,7 +30,22 @@ class ApiAdminUsersController extends AbstractController {
         /** @var UserService $service */
         $service = $this->getService();
 
-        $service->create($data);
+        // Security: Don't allow changing role, password, status and history fields. To clean later.
+        if (isset($data['role'])) unset($data['role']);
+        if (isset($data['salt'])) unset($data['salt']);
+        if (isset($data['updatedAt'])) unset($data['updatedAt']);
+        if (isset($data['updater'])) unset($data['updater']);
+        if (isset($data['createdAt'])) unset($data['createdAt']);
+        if (isset($data['creator'])) unset($data['creator']);
+        if (isset($data['dateStart'])) unset($data['dateStart']);
+        if (isset($data['dateEnd'])) unset($data['dateEnd']);
+
+        if (isset($data['id']) && $data['id'] > 0) {
+            $service->update($data);
+        } else {
+            $service->create($data);
+        }
+
         return new JsonModel(array('status' => 'ok'));
     }
 

@@ -40,6 +40,7 @@ class Module
         return array(
             'invokables' => array(
                 '\MonarcBO\Model\Entity\Server' => '\MonarcBO\Model\Entity\Server',
+                '\MonarcBO\Model\Entity\Client' => '\MonarcBO\Model\Entity\Client',
             ),
             'factories' => array(
                 '\MonarcBO\Model\Db' => function($serviceManager){
@@ -51,6 +52,12 @@ class Module
                     return new Model\Table\ServerTable($sm->get('\MonarcBO\Model\Db'));
                 },
                 '\MonarcBO\Service\ServerService' => '\MonarcBO\Service\ServerServiceFactory',
+
+                // Clients table
+                '\MonarcBO\Model\Table\ClientTable' => function($sm){
+                    return new Model\Table\ClientTable($sm->get('\MonarcBO\Model\Db'));
+                },
+                '\MonarcBO\Service\ClientService' => '\MonarcBO\Service\ClientServiceFactory',
             ),
         );
     }
@@ -63,6 +70,7 @@ class Module
             'factories' => array(
                 '\MonarcBO\Controller\ApiAdminUsers' => '\MonarcBO\Controller\ApiAdminUsersControllerFactory',
                 '\MonarcBO\Controller\ApiAdminServers' => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
+                '\MonarcBO\Controller\ApiClients' => '\MonarcBO\Controller\ApiClientsControllerFactory',
             ),
         );
     }

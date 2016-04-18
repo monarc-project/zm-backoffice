@@ -2,7 +2,7 @@
 
 namespace MonarcBO\Controller;
 
-use MonarcBO\Service\UserService;
+use MonarcCore\Service\UserService;
 use MonarcCore\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 

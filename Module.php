@@ -39,19 +39,12 @@ class Module
     {
         return array(
             'invokables' => array(
-                '\MonarcBO\Model\Entity\User' => '\MonarcBO\Model\Entity\User',
                 '\MonarcBO\Model\Entity\Server' => '\MonarcBO\Model\Entity\Server',
             ),
             'factories' => array(
                 '\MonarcBO\Model\Db' => function($serviceManager){
                     return new \MonarcCore\Model\Db($serviceManager->get('doctrine.entitymanager.orm_default'));
                 },
-
-                // Users table
-                '\MonarcBO\Model\Table\UserTable' => function($sm){
-                    return new Model\Table\UserTable($sm->get('\MonarcBO\Model\Db'));
-                },
-                '\MonarcBO\Service\UserService' => '\MonarcBO\Service\UserServiceFactory',
 
                 // Servers table
                 '\MonarcBO\Model\Table\ServerTable' => function($sm){

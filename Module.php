@@ -62,6 +62,7 @@ class Module
             ),
             'factories' => array(
                 '\MonarcBO\Controller\ApiAdminUsers' => '\MonarcBO\Controller\ApiAdminUsersControllerFactory',
+                '\MonarcBO\Controller\ApiAdminServers' => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
             ),
         );
     }

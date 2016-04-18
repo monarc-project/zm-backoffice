@@ -7,23 +7,36 @@ return array(
             'home' => array(
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
-                    'route'    => '/',
+                    'route' => '/',
                     'defaults' => array(
                         'controller' => 'MonarcBO\Controller\Index',
-                        'action'     => 'index',
+                        'action' => 'index',
                     ),
                 ),
             ),
 
-            'monarc' => array(
-                'type'    => 'segment',
+            'monarc_api_admin_users' => array(
+                'type' => 'segment',
                 'options' => array(
-                    'route'    => '/api/admin/users[/:id]',
+                    'route' => '/api/admin/users[/:id]',
                     'constraints' => array(
-                        'id'     => '[0-9]+',
+                        'id' => '[0-9]+',
                     ),
                     'defaults' => array(
                         'controller' => 'MonarcBO\Controller\ApiAdminUsers',
+                    ),
+                ),
+            ),
+
+            'monarc_api_admin_servers' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/admin/servers[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAdminServers',
                     ),
                 ),
             ),

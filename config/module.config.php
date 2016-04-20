@@ -40,6 +40,19 @@ return array(
                     ),
                 ),
             ),
+
+            'monarc_api_clients' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/clients[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiClients',
+                    ),
+                ),
+            ),
         ),
     ),
 

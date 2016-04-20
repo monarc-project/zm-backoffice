@@ -3,7 +3,8 @@ namespace MonarcBO;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
-use \Zend\Mvc\Controller\ControllerManager;
+use Zend\Permissions\Rbac\Rbac;
+use Zend\Permissions\Rbac\Role;
 use Zend\View\Model\JsonModel;
 
 class Module
@@ -14,6 +15,9 @@ class Module
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
 
+        $this->initRbac($e);
+
+        $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'checkRbac'), 0);
         $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'onDispatchError'), 0);
         $eventManager->attach(MvcEvent::EVENT_RENDER_ERROR, array($this, 'onRenderError'), 0);
     }
@@ -33,7 +37,6 @@ class Module
             ),
         );
     }
-
 
     public function getServiceConfig()
     {
@@ -66,14 +69,17 @@ class Module
             ),
         );
     }
+
     public function onDispatchError($e)
     {
         return $this->getJsonModelError($e);
     }
+
     public function onRenderError($e)
     {
         return $this->getJsonModelError($e);
     }
+
     public function getJsonModelError($e)
     {
         $error = $e->getError();
@@ -103,6 +109,62 @@ class Module
         $model = new JsonModel(array('errors' => array($errorJson)));
         $e->setResult($model);
         return $model;
+    }
+
+    /**
+     * init Rbac
+     *
+     * @param MvcEvent $e
+     */
+    public function initRbac(MvcEvent $e)
+    {
+        $sm = $e->getApplication()->getServiceManager();
+        $config = $sm->get('Config');
+
+        $roles = $config['roles'];
+
+        $rbac = new Rbac();
+        foreach ($roles as $role => $permissions) {
+
+            $role = new Role($role);
+            foreach ($permissions as $permission) {
+                if (! $role->hasPermission($permission)) {
+                    $role->addPermission($permission);
+                }
+            }
+
+            $rbac->addRole($role);
+        }
+
+        //setting to view
+        $e->getViewModel()->rbac = $rbac;
+
+    }
+
+    /**
+     * Check Rbac
+     * 
+     * @param MvcEvent $e
+     * @return \Zend\Stdlib\ResponseInterface
+     */
+    public function checkRbac(MvcEvent $e) {
+        $route = $e->getRouteMatch()->getMatchedRouteName();
+        $userRoles = ['sysadmin', 'accadmin'];
+
+        $isGranted = false;
+        foreach($userRoles as $userRole) {
+            if (!$e->getViewModel()->rbac->isGranted($userRole, $route)) {
+                $isGranted = true;
+            }
+        }
+
+
+        if (! $isGranted) {
+            $response = $e->getResponse();
+            $response->setStatusCode(401);
+
+            return $response;
+        }
     }
 
 }

@@ -131,9 +131,9 @@ class Module
         $sm = $e->getApplication()->getServiceManager();
         $config = $sm->get('Config');
 
-        $globalPermissions = $config['permissions'];
+        $globalPermissions = isset($config['permissions'])?$config['permissions']:array();
 
-        $rolesPermissions = $config['roles'];
+        $rolesPermissions = isset($config['roles'])?$config['roles']:array();
 
         $rbac = new Rbac();
         foreach ($rolesPermissions as $role => $permissions) {

@@ -32,7 +32,7 @@ class ApiAdminUsersController extends AbstractController
         $service = $this->getService();
 
         // Security: Don't allow changing role, password, status and history fields. To clean later.
-        if (isset($data['role'])) unset($data['role']);
+        //if (isset($data['role'])) unset($data['role']);
         if (isset($data['salt'])) unset($data['salt']);
         if (isset($data['updatedAt'])) unset($data['updatedAt']);
         if (isset($data['updater'])) unset($data['updater']);

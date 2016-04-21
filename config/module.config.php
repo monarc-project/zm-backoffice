@@ -53,6 +53,19 @@ return array(
                     ),
                 ),
             ),
+
+            'monarc_api_admin_roles' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/admin/roles[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAdminRoles',
+                    ),
+                ),
+            ),
         ),
     ),
 
@@ -96,4 +109,20 @@ return array(
             ),
         ),
     ),
+    'roles' => array(
+        'superadmin'=> array(
+            'monarc_api_admin_users',
+            'monarc_api_admin_servers',
+        ),
+        'dbadmin'=> array(
+            'monarc_api_admin_users',
+            'monarc_api_admin_servers',
+        ),
+        'sysadmin'=> array(
+            'monarc_api_admin_servers',
+        ),
+        'accadmin'=> array(
+            'monarc_api_admin_users',
+        ),
+    )
 );

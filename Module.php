@@ -15,6 +15,7 @@ class Module
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
 
+
         $this->initRbac($e);
 
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'checkRbac'), 0);
@@ -72,6 +73,7 @@ class Module
             ),
             'factories' => array(
                 '\MonarcBO\Controller\ApiAdminUsers' => '\MonarcBO\Controller\ApiAdminUsersControllerFactory',
+                '\MonarcBO\Controller\ApiAdminRoles' => '\MonarcBO\Controller\ApiAdminRolesControllerFactory',
                 '\MonarcBO\Controller\ApiAdminServers' => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
                 '\MonarcBO\Controller\ApiClients' => '\MonarcBO\Controller\ApiClientsControllerFactory',
             ),
@@ -129,12 +131,23 @@ class Module
         $sm = $e->getApplication()->getServiceManager();
         $config = $sm->get('Config');
 
-        $roles = $config['roles'];
+        $globalPermissions = $config['permissions'];
+
+        $rolesPermissions = $config['roles'];
 
         $rbac = new Rbac();
-        foreach ($roles as $role => $permissions) {
+        foreach ($rolesPermissions as $role => $permissions) {
 
             $role = new Role($role);
+
+            //global permissions
+            foreach($globalPermissions as $globalPermission) {
+                if (! $role->hasPermission($globalPermission)) {
+                    $role->addPermission($globalPermission);
+                }
+            }
+
+            //role permissions
             foreach ($permissions as $permission) {
                 if (! $role->hasPermission($permission)) {
                     $role->addPermission($permission);
@@ -161,11 +174,10 @@ class Module
 
         $isGranted = false;
         foreach($userRoles as $userRole) {
-            if (!$e->getViewModel()->rbac->isGranted($userRole, $route)) {
+            if ($e->getViewModel()->rbac->isGranted($userRole, $route)) {
                 $isGranted = true;
             }
         }
-
 
         if (! $isGranted) {
             $response = $e->getResponse();

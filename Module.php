@@ -170,6 +170,16 @@ class Module
      */
     public function checkRbac(MvcEvent $e) {
         $route = $e->getRouteMatch()->getMatchedRouteName();
+
+        //retrieve connected user
+        $sm = $e->getApplication()->getServiceManager();
+        $connectedUserService = $sm->get('\MonarcCore\Service\ConnectedUserService');
+        $connectedUser = $connectedUserService->getConnectedUser();
+
+        //retrieve user roles
+        $userRoleService = $sm->get('\MonarcCore\Service\UserRoleService');
+        $userRoles = $userRoleService->getList(1, 25, null, $connectedUser['id']);
+
         $userRoles = ['sysadmin', 'accadmin'];
 
         $isGranted = false;

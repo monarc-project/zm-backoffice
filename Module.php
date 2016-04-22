@@ -180,11 +180,14 @@ class Module
         $userRoleService = $sm->get('\MonarcCore\Service\UserRoleService');
         $userRoles = $userRoleService->getList(1, 25, null, $connectedUser['id']);
 
-        $userRoles = ['sysadmin', 'accadmin'];
+        $roles = [];
+        foreach($userRoles as $userRole) {
+            $roles[] = $userRole['role'];
+        }
 
         $isGranted = false;
-        foreach($userRoles as $userRole) {
-            if ($e->getViewModel()->rbac->isGranted($userRole, $route)) {
+        foreach($roles as $role) {
+            if ($e->getViewModel()->rbac->isGranted($role, $route)) {
                 $isGranted = true;
             }
         }

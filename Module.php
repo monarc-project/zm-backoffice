@@ -171,7 +171,7 @@ class Module
     public function checkRbac(MvcEvent $e) {
         $route = $e->getRouteMatch()->getMatchedRouteName();
 
-        if ($route == 'home') {
+        if ($route == 'home' || $route == 'auth') {
             return true;
         }
 

@@ -180,6 +180,10 @@ class Module
     public function checkRbac(MvcEvent $e) {
         $route = $e->getRouteMatch()->getMatchedRouteName();
 
+        if ($route == 'home' || $route == 'auth') {
+            return true;
+        }
+
         //retrieve connected user
         $sm = $e->getApplication()->getServiceManager();
         $connectedUserService = $sm->get('\MonarcCore\Service\ConnectedUserService');

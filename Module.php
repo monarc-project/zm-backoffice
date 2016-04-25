@@ -15,7 +15,6 @@ class Module
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
 
-
         $this->initRbac($e);
 
         $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'checkRbac'), 0);
@@ -75,6 +74,7 @@ class Module
                 '\MonarcBO\Controller\ApiAdminUsers' => '\MonarcBO\Controller\ApiAdminUsersControllerFactory',
                 '\MonarcBO\Controller\ApiAdminRoles' => '\MonarcBO\Controller\ApiAdminRolesControllerFactory',
                 '\MonarcBO\Controller\ApiAdminServers' => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
+                '\MonarcBO\Controller\ApiAdminPasswords' => '\MonarcBO\Controller\ApiAdminPasswordsControllerFactory',
                 '\MonarcBO\Controller\ApiClients' => '\MonarcBO\Controller\ApiClientsControllerFactory',
             ),
         );
@@ -157,6 +157,15 @@ class Module
             $rbac->addRole($role);
         }
 
+        //add role for guest (user not logged)
+        $role = new Role('guest');
+        foreach($globalPermissions as $globalPermission) {
+            if (! $role->hasPermission($globalPermission)) {
+                $role->addPermission($globalPermission);
+            }
+        }
+        $rbac->addRole($role);
+
         //setting to view
         $e->getViewModel()->rbac = $rbac;
 
@@ -185,6 +194,11 @@ class Module
             $roles[] = $userRole['role'];
         }
 
+        $roles = [];
+        if (empty($roles)) {
+            $roles[] = 'guest';
+        }
+
         $isGranted = false;
         foreach($roles as $role) {
             if ($e->getViewModel()->rbac->isGranted($role, $route)) {
@@ -198,6 +212,7 @@ class Module
 
             return $response;
         }
+
     }
 
 }

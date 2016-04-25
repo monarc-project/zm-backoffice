@@ -136,6 +136,7 @@ return array(
         ),
         'accadmin'=> array(
             'monarc_api_admin_users',
+            'monarc_api_clients'
         ),
     )
 );

@@ -198,7 +198,6 @@ class Module
             $roles[] = $userRole['role'];
         }
 
-        $roles = [];
         if (empty($roles)) {
             $roles[] = 'guest';
         }

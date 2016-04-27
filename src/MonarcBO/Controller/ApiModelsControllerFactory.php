@@ -3,7 +3,7 @@ namespace MonarcBO\Controller;
 
 use MonarcCore\Controller\AbstractControllerFactory;
 
-class ApiAdminModelsControllerFactory extends AbstractControllerFactory
+class ApiModelsControllerFactory extends AbstractControllerFactory
 {
     protected $serviceName = '\MonarcCore\Service\ModelService';
 }

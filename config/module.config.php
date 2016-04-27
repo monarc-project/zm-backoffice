@@ -80,15 +80,15 @@ return array(
                 ),
             ),
 
-            'monarc_api_admin_models' => array(
+            'monarc_api_models' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/admin/models[/:id]',
+                    'route' => '/api/models[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAdminModels',
+                        'controller' => 'MonarcBO\Controller\ApiModels',
                     ),
                 ),
             ),
@@ -139,7 +139,7 @@ return array(
         'superadmin'=> array(
         ),
         'dbadmin'=> array(
-            'monarc_api_admin_models',
+            'monarc_api_models',
         ),
         'sysadmin'=> array(
             'monarc_api_admin_servers',

@@ -3,20 +3,17 @@
 namespace MonarcBO\Controller;
 
 use MonarcCore\Controller\AbstractController;
+use Zend\Crypt\Password\Bcrypt;
 use Zend\View\Model\JsonModel;
 
-class ApiAdminModelsController extends AbstractController
+class ApiModelsController extends AbstractController
 {
     public function create($data)
     {
         $service = $this->getService();
-        $result = $service->create($data);
+        $service->create($data);
 
-        if ($result) {
-            return new JsonModel(array('status' => 'ok'));
-        } else {
-            return $this->getResponse()->setStatusCode(422);
-        }
+        return new JsonModel(array('status' => 'ok'));
     }
 
     public function delete($id)
@@ -29,9 +26,7 @@ class ApiAdminModelsController extends AbstractController
 
     public function update($id, $data)
     {
-        var_dump($id);
-        var_dump($data);
-        die;
+        //TODO
     }
 
 }

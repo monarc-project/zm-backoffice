@@ -7,7 +7,7 @@
 
 	<?php echo $this->headMeta()
 		->appendName('viewport', 'width=device-width, initial-scale=1.0')
-		->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+		->appendHttpEquiv('X-UA-Compatible', 'IE=edge');
 	?>
 
 	<!-- Le styles -->
@@ -31,6 +31,7 @@
 		->prependFile($this->basePath('js/AssetService.js'))
 		->prependFile($this->basePath('js/ThreatService.js'))
 		->prependFile($this->basePath('js/VulnService.js'))
+		->prependFile($this->basePath('js/AmvService.js'))
 		->prependFile($this->basePath('js/ModelService.js'))
 		->prependFile($this->basePath('js/UserService.js'))
 		->prependFile($this->basePath('js/AdminServerService.js'))

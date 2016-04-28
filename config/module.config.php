@@ -136,14 +136,18 @@ return array(
         ),
     ),
     'roles' => array(
+        // Super Admin : Gestion des droits des utilisateurs uniquement (Carnet d’adresses)
         'superadmin'=> array(
         ),
+        // Admin DB : Gestion des bases de connaissances (paramètres généraux)
         'dbadmin'=> array(
             'monarc_api_models',
         ),
+        // Admin système : Gestion des logs et tout ce qui est non applicatif (Administration)
         'sysadmin'=> array(
             'monarc_api_admin_servers',
         ),
+        // Admin comptes : Création des comptes et authentification client
         'accadmin'=> array(
             'monarc_api_admin_users',
             'monarc_api_clients'

@@ -92,6 +92,19 @@ return array(
                     ),
                 ),
             ),
+
+            'monarc_api_assets' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/assets[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAssets',
+                    ),
+                ),
+            ),
         ),
     ),
 
@@ -140,6 +153,7 @@ return array(
         ),
         'dbadmin'=> array(
             'monarc_api_models',
+            'monarc_api_assets',
         ),
         'sysadmin'=> array(
             'monarc_api_admin_servers',

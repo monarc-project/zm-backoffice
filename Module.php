@@ -76,6 +76,7 @@ class Module
                 '\MonarcBO\Controller\ApiAdminServers' => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
                 '\MonarcBO\Controller\ApiAdminPasswords' => '\MonarcBO\Controller\ApiAdminPasswordsControllerFactory',
                 '\MonarcBO\Controller\ApiModels' => '\MonarcBO\Controller\ApiModelsControllerFactory',
+                '\MonarcBO\Controller\ApiAssets' => '\MonarcBO\Controller\ApiAssetsControllerFactory',
                 '\MonarcBO\Controller\ApiClients' => '\MonarcBO\Controller\ApiClientsControllerFactory',
             ),
         );

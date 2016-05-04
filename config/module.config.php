@@ -105,6 +105,19 @@ return array(
                     ),
                 ),
             ),
+
+            'monarc_api_vulnerabilities' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/vulnerabilities[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiVulnerabilities',
+                    ),
+                ),
+            ),
         ),
     ),
 
@@ -154,6 +167,7 @@ return array(
         'dbadmin'=> array(
             'monarc_api_models',
             'monarc_api_assets',
+            'monarc_api_vulnerabilities',
         ),
         'sysadmin'=> array(
             'monarc_api_admin_servers',

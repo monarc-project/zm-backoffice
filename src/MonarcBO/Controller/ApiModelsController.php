@@ -27,10 +27,15 @@ class ApiModelsController extends AbstractController
         $filter = $this->params()->fromQuery('filter');
 
         $service = $this->getService();
+        $models =  $service->getList($page, $limit, $order, $filter);
+        foreach($models as $key => $model) {
+            $models[$key] = $model->toArray();
+        }
+
         return new JsonModel(array(
-            'count' => $service->getFilteredCount($page, $limit, $order, $filter),
-            'models' => $service->getList($page, $limit, $order, $filter))
-        );
+            'count' => $service->getFilteredCount($filter),
+            'models' => $models
+        ));
     }
 
     /**
@@ -41,7 +46,7 @@ class ApiModelsController extends AbstractController
      */
     public function get($id)
     {
-        return new JsonModel($this->getService()->getEntity($id));
+        return new JsonModel($this->getService()->getEntity($id)->toArray());
     }
 
     /**

@@ -58,12 +58,12 @@ class ClientService extends AbstractService
         $clientTable->save($entity);
     }
 
-    public function update($data) {
+    public function update($id, $data) {
         /** @var ClientTable $clientTable */
         $clientTable = $this->get('clientTable');
 
         /** @var Client $entity */
-        $entity = $clientTable->getEntity($data['id']);
+        $entity = $clientTable->getEntity($id);
 
         if ($entity != null) {
             $entity->exchangeArray($data);

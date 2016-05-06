@@ -69,20 +69,6 @@ class ApiThemesController extends AbstractController
     }
 
     /**
-     * Delete
-     *
-     * @param mixed $id
-     * @return JsonModel
-     */
-    public function delete($id)
-    {
-        $service = $this->getService();
-        $service->delete($id);
-
-        return new JsonModel(array('status' => 'ok'));
-    }
-
-    /**
      * Update
      *
      * @param mixed $id

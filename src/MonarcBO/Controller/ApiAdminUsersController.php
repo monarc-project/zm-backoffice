@@ -17,8 +17,10 @@ class ApiAdminUsersController extends AbstractController
 
         /** @var UserService $service */
         $service = $this->getService();
-        return new JsonModel(array('count' => $service->getFilteredCount($page, $limit, $order, $filter),
-            'users' => $service->getList($page, $limit, $order, $filter)));
+        return new JsonModel(array(
+            'count' => $service->getFilteredCount($page, $limit, $order, $filter),
+            'users' => $service->getList($page, $limit, $order, $filter)
+        ));
     }
 
     public function get($id)

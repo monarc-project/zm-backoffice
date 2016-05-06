@@ -3,7 +3,6 @@
 namespace MonarcBO\Controller;
 
 use MonarcCore\Controller\AbstractController;
-use Zend\Crypt\Password\Bcrypt;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -58,9 +57,14 @@ class ApiModelsController extends AbstractController
     public function create($data)
     {
         $service = $this->getService();
-        $service->create($data);
+        $id = $service->create($data);
 
-        return new JsonModel(array('status' => 'ok'));
+        return new JsonModel(
+            array(
+                'status' => 'ok',
+                'id' => $id,
+            )
+        );
     }
 
     /**

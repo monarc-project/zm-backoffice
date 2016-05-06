@@ -33,7 +33,7 @@ class ApiAssetsController extends AbstractController
 
         return new JsonModel(array(
             'count' => $service->getFilteredCount($filter),
-            'models' => $models
+            'assets' => $models
         ));
     }
 

@@ -6,12 +6,12 @@ use MonarcCore\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Models Controller
+ * Api Threats Controller
  *
- * Class ApiModelsController
+ * Class ApiThreatsController
  * @package MonarcBO\Controller
  */
-class ApiModelsController extends AbstractController
+class ApiThreatsController extends AbstractController
 {
     /**
      * Get list
@@ -26,14 +26,14 @@ class ApiModelsController extends AbstractController
         $filter = $this->params()->fromQuery('filter');
 
         $service = $this->getService();
-        $models =  $service->getList($page, $limit, $order, $filter);
-        foreach($models as $key => $model) {
-            $models[$key] = $model->toArray();
+        $threats =  $service->getList($page, $limit, $order, $filter);
+        foreach($threats as $key => $threat) {
+            $threats[$key] = $threat->toArray();
         }
 
         return new JsonModel(array(
             'count' => $service->getFilteredCount($filter),
-            'models' => $models
+            'threats' => $threats
         ));
     }
 

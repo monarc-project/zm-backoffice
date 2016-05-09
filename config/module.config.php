@@ -92,6 +92,76 @@ return array(
                     ),
                 ),
             ),
+
+            'monarc_api_assets' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/assets[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAssets',
+                    ),
+                ),
+            ),
+
+            'monarc_api_vulnerabilities' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/vulnerabilities[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiVulnerabilities',
+                    ),
+                ),
+            ),
+
+            'monarc_api_themes' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/themes[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiThemes',
+                    ),
+                ),
+            ),
+
+            'monarc_api_threats' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/threats[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiThreats',
+                    ),
+                ),
+            ),
+        ),
+    ),
+
+    'controllers' => array(
+        'invokables' => array(
+            '\MonarcBO\Controller\Index' => '\MonarcBO\Controller\IndexController',
+        ),
+        'factories' => array(
+            '\MonarcBO\Controller\ApiAdminPasswords'    => '\MonarcBO\Controller\ApiAdminPasswordsControllerFactory',
+            '\MonarcBO\Controller\ApiAdminRoles'        => '\MonarcBO\Controller\ApiAdminRolesControllerFactory',
+            '\MonarcBO\Controller\ApiAdminServers'      => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
+            '\MonarcBO\Controller\ApiAdminUsers'        => '\MonarcBO\Controller\ApiAdminUsersControllerFactory',
+            '\MonarcBO\Controller\ApiAssets'            => '\MonarcBO\Controller\ApiAssetsControllerFactory',
+            '\MonarcBO\Controller\ApiClients'           => '\MonarcBO\Controller\ApiClientsControllerFactory',
+            '\MonarcBO\Controller\ApiModels'            => '\MonarcBO\Controller\ApiModelsControllerFactory',
+            '\MonarcBO\Controller\ApiThemes'            => '\MonarcBO\Controller\ApiThemesControllerFactory',
+            '\MonarcBO\Controller\ApiThreats'           => '\MonarcBO\Controller\ApiThreatsControllerFactory',
+            '\MonarcBO\Controller\ApiVulnerabilities'   => '\MonarcBO\Controller\ApiVulnerabilitiesControllerFactory',
         ),
     ),
 
@@ -142,6 +212,9 @@ return array(
         // Admin DB : Gestion des bases de connaissances (paramètres généraux)
         'dbadmin'=> array(
             'monarc_api_models',
+            'monarc_api_assets',
+            'monarc_api_threats',
+            'monarc_api_vulnerabilities',
         ),
         // Admin système : Gestion des logs et tout ce qui est non applicatif (Administration)
         'sysadmin'=> array(

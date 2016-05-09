@@ -6,12 +6,12 @@ use MonarcCore\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Models Controller
+ * Api Vulnerabilities Controller
  *
- * Class ApiModelsController
+ * Class ApiAssetsController
  * @package MonarcBO\Controller
  */
-class ApiModelsController extends AbstractController
+class ApiVulnerabilitiesController extends AbstractController
 {
     /**
      * Get list

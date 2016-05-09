@@ -6,12 +6,12 @@ use MonarcCore\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Models Controller
+ * Api Themes Controller
  *
- * Class ApiModelsController
+ * Class ApiThemesController
  * @package MonarcBO\Controller
  */
-class ApiModelsController extends AbstractController
+class ApiThemesController extends AbstractController
 {
     /**
      * Get list
@@ -26,14 +26,15 @@ class ApiModelsController extends AbstractController
         $filter = $this->params()->fromQuery('filter');
 
         $service = $this->getService();
-        $models =  $service->getList($page, $limit, $order, $filter);
-        foreach($models as $key => $model) {
-            $models[$key] = $model->toArray();
+        $themes =  $service->getList($page, $limit, $order, $filter);
+
+        foreach($themes as $key => $theme) {
+            $themes[$key] = $theme->toArray();
         }
 
         return new JsonModel(array(
             'count' => $service->getFilteredCount($filter),
-            'models' => $models
+            'themes' => $themes
         ));
     }
 
@@ -65,20 +66,6 @@ class ApiModelsController extends AbstractController
                 'id' => $id,
             )
         );
-    }
-
-    /**
-     * Delete
-     *
-     * @param mixed $id
-     * @return JsonModel
-     */
-    public function delete($id)
-    {
-        $service = $this->getService();
-        $service->delete($id);
-
-        return new JsonModel(array('status' => 'ok'));
     }
 
     /**

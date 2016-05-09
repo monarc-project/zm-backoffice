@@ -64,22 +64,6 @@ class Module
             ),
         );
     }
-    public function getControllerConfig()
-    {
-        return array(
-            'invokables' => array(
-                '\MonarcBO\Controller\Index' => '\MonarcBO\Controller\IndexController',
-            ),
-            'factories' => array(
-                '\MonarcBO\Controller\ApiAdminUsers' => '\MonarcBO\Controller\ApiAdminUsersControllerFactory',
-                '\MonarcBO\Controller\ApiAdminRoles' => '\MonarcBO\Controller\ApiAdminRolesControllerFactory',
-                '\MonarcBO\Controller\ApiAdminServers' => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
-                '\MonarcBO\Controller\ApiAdminPasswords' => '\MonarcBO\Controller\ApiAdminPasswordsControllerFactory',
-                '\MonarcBO\Controller\ApiModels' => '\MonarcBO\Controller\ApiModelsControllerFactory',
-                '\MonarcBO\Controller\ApiClients' => '\MonarcBO\Controller\ApiClientsControllerFactory',
-            ),
-        );
-    }
 
     public function onDispatchError($e)
     {

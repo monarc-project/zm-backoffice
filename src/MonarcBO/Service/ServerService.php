@@ -55,12 +55,12 @@ class ServerService extends AbstractService
         $serverTable->save($entity);
     }
 
-    public function update($data) {
+    public function update($id, $data) {
         /** @var ServerTable $serverTable */
         $serverTable = $this->get('serverTable');
 
         /** @var Server $entity */
-        $entity = $serverTable->getEntity($data['id']);
+        $entity = $serverTable->getEntity($id);
 
         if ($entity != null) {
             $entity->exchangeArray($data);

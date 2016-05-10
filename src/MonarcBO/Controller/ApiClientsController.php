@@ -54,7 +54,7 @@ class ApiClientsController extends AbstractController
         if (isset($data['createdAt'])) unset($data['createdAt']);
         if (isset($data['creator'])) unset($data['creator']);
 
-        $service->update($data['id'], $data);
+        $service->update($id, $data);
 
         return new JsonModel(array('status' => 'ok'));
     }

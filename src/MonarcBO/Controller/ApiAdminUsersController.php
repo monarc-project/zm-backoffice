@@ -34,7 +34,23 @@ class ApiAdminUsersController extends AbstractController
         $service = $this->getService();
 
         // Security: Don't allow changing role, password, status and history fields. To clean later.
-        //if (isset($data['role'])) unset($data['role']);
+        if (isset($data['salt'])) unset($data['salt']);
+        if (isset($data['dateStart'])) unset($data['dateStart']);
+        if (isset($data['dateEnd'])) unset($data['dateEnd']);
+
+        $service->create($data);
+
+        return new JsonModel(array('status' => 'ok'));
+    }
+
+    public function update($id, $data)
+    {
+        /** @var UserService $service */
+        $service = $this->getService();
+
+        // Security: Don't allow changing role, password, status and history fields. To clean later.
+        if (isset($data['status'])) unset($data['status']);
+        if (isset($data['id'])) unset($data['id']);
         if (isset($data['salt'])) unset($data['salt']);
         if (isset($data['updatedAt'])) unset($data['updatedAt']);
         if (isset($data['updater'])) unset($data['updater']);
@@ -43,11 +59,7 @@ class ApiAdminUsersController extends AbstractController
         if (isset($data['dateStart'])) unset($data['dateStart']);
         if (isset($data['dateEnd'])) unset($data['dateEnd']);
 
-        if (isset($data['id']) && $data['id'] > 0) {
-            $service->update($data);
-        } else {
-            $service->create($data);
-        }
+        $service->update($id, $data);
 
         return new JsonModel(array('status' => 'ok'));
     }

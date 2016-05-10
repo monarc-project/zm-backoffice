@@ -26,14 +26,10 @@ class ApiModelsController extends AbstractController
         $filter = $this->params()->fromQuery('filter');
 
         $service = $this->getService();
-        $models =  $service->getList($page, $limit, $order, $filter);
-        foreach($models as $key => $model) {
-            $models[$key] = $model->toArray();
-        }
 
         return new JsonModel(array(
             'count' => $service->getFilteredCount($page, $limit, $order, $filter),
-            'models' => $models
+            'models' => $service->getList($page, $limit, $order, $filter)
         ));
     }
 

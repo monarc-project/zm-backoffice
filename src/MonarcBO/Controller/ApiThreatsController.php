@@ -27,12 +27,17 @@ class ApiThreatsController extends AbstractController
 
         $service = $this->getService();
         $threats =  $service->getList($page, $limit, $order, $filter);
-        foreach($threats as $key => $threat) {
-            $threats[$key] = $threat->toArray();
+        foreach($threats as $k => $v) {
+            $v['models']->initialize();
+            $mods = $v['models']->getSnapshot();
+            $threats[$k]['models'] = array();
+            foreach($mods as $m){
+                $threats[$k]['models'][] = $m->getJsonArray();
+            }
         }
 
         return new JsonModel(array(
-            'count' => $service->getFilteredCount($filter),
+            'count' => $service->getFilteredCount($page, $limit, $order, $filter),
             'threats' => $threats
         ));
     }

@@ -32,7 +32,7 @@ class ApiThreatsController extends AbstractController
         }
 
         return new JsonModel(array(
-            'count' => $service->getFilteredCount($filter),
+            'count' => $service->getFilteredCount($page, $limit, $order, $filter),
             'threats' => $threats
         ));
     }

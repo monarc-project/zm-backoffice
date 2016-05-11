@@ -51,7 +51,15 @@ class ApiThreatsController extends AbstractController
      */
     public function get($id)
     {
-        return new JsonModel($this->getService()->getEntity($id)->toArray());
+        $threat = $this->getService()->getEntity($id);
+        $threat['models']->initialize();
+        $models = $threat['models']->getSnapshot();
+        $threat['models'] = array();
+        foreach($models as $model){
+            $threat['models'][] = $model->getJsonArray();
+        }
+
+        return new JsonModel($threat);
     }
 
     /**
@@ -62,8 +70,7 @@ class ApiThreatsController extends AbstractController
      */
     public function create($data)
     {
-        $service = $this->getService();
-        $id = $service->create($data);
+        $id = $this->getService()->create($data);
 
         return new JsonModel(
             array(
@@ -71,20 +78,6 @@ class ApiThreatsController extends AbstractController
                 'id' => $id,
             )
         );
-    }
-
-    /**
-     * Delete
-     *
-     * @param mixed $id
-     * @return JsonModel
-     */
-    public function delete($id)
-    {
-        $service = $this->getService();
-        $service->delete($id);
-
-        return new JsonModel(array('status' => 'ok'));
     }
 
     /**
@@ -96,8 +89,20 @@ class ApiThreatsController extends AbstractController
      */
     public function update($id, $data)
     {
-        $service = $this->getService();
-        $service->update($id, $data);
+        $this->getService()->update($id, $data);
+
+        return new JsonModel(array('status' => 'ok'));
+    }
+
+    /**
+     * Delete
+     *
+     * @param mixed $id
+     * @return JsonModel
+     */
+    public function delete($id)
+    {
+        $this->getService()->delete($id);
 
         return new JsonModel(array('status' => 'ok'));
     }

@@ -36,7 +36,7 @@ class ApiAssetsController extends AbstractController
                 $assets[$key]['models'][] = $model->getJsonArray();
             }
         }
-        
+
         return new JsonModel(array(
             'count' => $service->getFilteredCount($page, $limit, $order, $filter),
             'assets' => $assets
@@ -51,7 +51,15 @@ class ApiAssetsController extends AbstractController
      */
     public function get($id)
     {
-        return new JsonModel($this->getService()->getEntity($id));
+        $asset = $this->getService()->getEntity($id);
+        $asset['models']->initialize();
+        $models = $asset['models']->getSnapshot();
+        $asset['models'] = array();
+        foreach($models as $model){
+            $asset['models'][] = $model->getJsonArray();
+        }
+
+        return new JsonModel($asset);
     }
 
     /**

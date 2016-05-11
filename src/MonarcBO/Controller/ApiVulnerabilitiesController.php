@@ -26,14 +26,20 @@ class ApiVulnerabilitiesController extends AbstractController
         $filter = $this->params()->fromQuery('filter');
 
         $service = $this->getService();
-        $models =  $service->getList($page, $limit, $order, $filter);
-        foreach($models as $key => $model) {
-            $models[$key] = $model->toArray();
+
+        $vulnerabilities = $service->getList($page, $limit, $order, $filter);
+        foreach($vulnerabilities as $key => $vulnerability){
+            $vulnerability['models']->initialize();
+            $models = $vulnerability['models']->getSnapshot();
+            $vulnerabilities[$key]['models'] = array();
+            foreach($models as $model){
+                $vulnerabilities[$key]['models'][] = $model->getJsonArray();
+            }
         }
 
         return new JsonModel(array(
             'count' => $service->getFilteredCount($page, $limit, $order, $filter),
-            'models' => $models
+            'vulnerabilities' => $vulnerabilities
         ));
     }
 
@@ -45,7 +51,15 @@ class ApiVulnerabilitiesController extends AbstractController
      */
     public function get($id)
     {
-        return new JsonModel($this->getService()->getEntity($id)->toArray());
+        $vulnerability = $this->getService()->getEntity($id);
+        $vulnerability['models']->initialize();
+        $models = $vulnerability['models']->getSnapshot();
+        $vulnerability['models'] = array();
+        foreach($models as $model){
+            $vulnerability['models'][] = $model->getJsonArray();
+        }
+
+        return new JsonModel($vulnerability);
     }
 
     /**
@@ -56,8 +70,7 @@ class ApiVulnerabilitiesController extends AbstractController
      */
     public function create($data)
     {
-        $service = $this->getService();
-        $id = $service->create($data);
+        $id = $this->getService()->create($data);
 
         return new JsonModel(
             array(
@@ -65,20 +78,6 @@ class ApiVulnerabilitiesController extends AbstractController
                 'id' => $id,
             )
         );
-    }
-
-    /**
-     * Delete
-     *
-     * @param mixed $id
-     * @return JsonModel
-     */
-    public function delete($id)
-    {
-        $service = $this->getService();
-        $service->delete($id);
-
-        return new JsonModel(array('status' => 'ok'));
     }
 
     /**
@@ -90,8 +89,20 @@ class ApiVulnerabilitiesController extends AbstractController
      */
     public function update($id, $data)
     {
-        $service = $this->getService();
-        $service->update($id, $data);
+        $this->getService()->update($id, $data);
+
+        return new JsonModel(array('status' => 'ok'));
+    }
+
+    /**
+     * Delete
+     *
+     * @param mixed $id
+     * @return JsonModel
+     */
+    public function delete($id)
+    {
+        $this->getService()->delete($id);
 
         return new JsonModel(array('status' => 'ok'));
     }

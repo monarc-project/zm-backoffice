@@ -41,7 +41,7 @@ class ApiModelsController extends AbstractController
      */
     public function get($id)
     {
-        return new JsonModel($this->getService()->getEntity($id)->toArray());
+        return new JsonModel($this->getService()->getEntity($id));
     }
 
     /**

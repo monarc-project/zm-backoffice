@@ -36,7 +36,7 @@ class ApiThreatsController extends AbstractController
                 $threats[$key]['models'][] = $model->getJsonArray();
             }
         }
-        
+
         return new JsonModel(array(
             'count' => $service->getFilteredCount($page, $limit, $order, $filter),
             'threats' => $threats

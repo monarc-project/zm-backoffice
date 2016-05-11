@@ -36,7 +36,7 @@ class ApiAssetsController extends AbstractController
                 $assets[$key]['models'][] = $model->getJsonArray();
             }
         }
-
+        
         return new JsonModel(array(
             'count' => $service->getFilteredCount($page, $limit, $order, $filter),
             'assets' => $assets
@@ -62,8 +62,7 @@ class ApiAssetsController extends AbstractController
      */
     public function create($data)
     {
-        $service = $this->getService();
-        $id = $service->create($data);
+        $id = $this->getService()->create($data);
 
         return new JsonModel(
             array(
@@ -71,20 +70,6 @@ class ApiAssetsController extends AbstractController
                 'id' => $id,
             )
         );
-    }
-
-    /**
-     * Delete
-     *
-     * @param mixed $id
-     * @return JsonModel
-     */
-    public function delete($id)
-    {
-        $service = $this->getService();
-        $service->delete($id);
-
-        return new JsonModel(array('status' => 'ok'));
     }
 
     /**
@@ -96,8 +81,20 @@ class ApiAssetsController extends AbstractController
      */
     public function update($id, $data)
     {
-        $service = $this->getService();
-        $service->update($id, $data);
+        $this->getService()->update($id, $data);
+
+        return new JsonModel(array('status' => 'ok'));
+    }
+
+    /**
+     * Delete
+     *
+     * @param mixed $id
+     * @return JsonModel
+     */
+    public function delete($id)
+    {
+        $this->getService()->delete($id);
 
         return new JsonModel(array('status' => 'ok'));
     }

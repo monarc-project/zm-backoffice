@@ -50,8 +50,7 @@ class ApiThemesController extends AbstractController
      */
     public function create($data)
     {
-        $service = $this->getService();
-        $id = $service->create($data);
+        $id = $this->getService()->create($data);
 
         return new JsonModel(
             array(
@@ -70,8 +69,7 @@ class ApiThemesController extends AbstractController
      */
     public function update($id, $data)
     {
-        $service = $this->getService();
-        $service->update($id, $data);
+        $this->getService()->update($id, $data);
 
         return new JsonModel(array('status' => 'ok'));
     }

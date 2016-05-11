@@ -60,12 +60,6 @@ class ApiThreatsController extends AbstractController
             $threat['models'][] = $model->getJsonArray();
         }
 
-        /*
-        $threat['theme']->initialize();
-        $theme = $threat['theme']->getSnapshot();
-        $threat['theme'] = $theme->getJsonArray();
-        */
-
         return new JsonModel($threat);
     }
 

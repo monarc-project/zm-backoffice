@@ -52,12 +52,19 @@ class ApiThreatsController extends AbstractController
     public function get($id)
     {
         $threat = $this->getService()->getEntity($id);
+
         $threat['models']->initialize();
         $models = $threat['models']->getSnapshot();
         $threat['models'] = array();
         foreach($models as $model){
             $threat['models'][] = $model->getJsonArray();
         }
+
+        /*
+        $threat['theme']->initialize();
+        $theme = $threat['theme']->getSnapshot();
+        $threat['theme'] = $theme->getJsonArray();
+        */
 
         return new JsonModel($threat);
     }

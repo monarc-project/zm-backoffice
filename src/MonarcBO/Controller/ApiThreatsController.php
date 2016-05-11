@@ -35,6 +35,13 @@ class ApiThreatsController extends AbstractController
             foreach($models as $model){
                 $threats[$key]['models'][] = $model->getJsonArray();
             }
+
+            if (!empty($threat['theme'])) {
+                $threats[$key]['theme'] = $threat['theme']->getJsonArray();
+                unset($threats[$key]['theme']['__initializer__']);
+                unset($threats[$key]['theme']['__cloner__']);
+                unset($threats[$key]['theme']['__isInitialized__']);
+            }
         }
 
         return new JsonModel(array(
@@ -59,6 +66,11 @@ class ApiThreatsController extends AbstractController
         foreach($models as $model){
             $threat['models'][] = $model->getJsonArray();
         }
+
+        $threat['theme'] = $threat['theme']->getJsonArray();
+        unset($threat['theme']['__initializer__']);
+        unset($threat['theme']['__cloner__']);
+        unset($threat['theme']['__isInitialized__']);
 
         return new JsonModel($threat);
     }

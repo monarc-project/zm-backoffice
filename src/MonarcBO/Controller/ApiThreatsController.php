@@ -26,16 +26,17 @@ class ApiThreatsController extends AbstractController
         $filter = $this->params()->fromQuery('filter');
 
         $service = $this->getService();
-        $threats =  $service->getList($page, $limit, $order, $filter);
-        foreach($threats as $k => $v) {
-            $v['models']->initialize();
-            $mods = $v['models']->getSnapshot();
-            $threats[$k]['models'] = array();
-            foreach($mods as $m){
-                $threats[$k]['models'][] = $m->getJsonArray();
+
+        $threats = $service->getList($page, $limit, $order, $filter);
+        foreach($threats as $key => $threat){
+            $threat['models']->initialize();
+            $models = $threat['models']->getSnapshot();
+            $threats[$key]['models'] = array();
+            foreach($models as $model){
+                $threats[$key]['models'][] = $model->getJsonArray();
             }
         }
-
+        
         return new JsonModel(array(
             'count' => $service->getFilteredCount($page, $limit, $order, $filter),
             'threats' => $threats

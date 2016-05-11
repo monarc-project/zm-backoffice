@@ -25,16 +25,9 @@ class ApiThemesController extends AbstractController
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
 
-        $service = $this->getService();
-        $themes =  $service->getList($page, $limit, $order, $filter);
-
-        foreach($themes as $key => $theme) {
-            $themes[$key] = $theme->toArray();
-        }
-
         return new JsonModel(array(
-            'count' => $service->getFilteredCount($page, $limit, $order, $filter),
-            'themes' => $themes
+            'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter),
+            'themes' => $this->getService()->getList($page, $limit, $order, $filter)
         ));
     }
 
@@ -46,7 +39,7 @@ class ApiThemesController extends AbstractController
      */
     public function get($id)
     {
-        return new JsonModel($this->getService()->getEntity($id)->toArray());
+        return new JsonModel($this->getService()->getEntity($id));
     }
 
     /**

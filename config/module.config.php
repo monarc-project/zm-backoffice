@@ -144,6 +144,16 @@ return array(
                     ),
                 ),
             ),
+
+            'monarc_api_config' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route' => '/api/config',
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiConfig',
+                    ),
+                ),
+            ),
         ),
     ),
 
@@ -158,6 +168,7 @@ return array(
             '\MonarcBO\Controller\ApiAdminUsers'        => '\MonarcBO\Controller\ApiAdminUsersControllerFactory',
             '\MonarcBO\Controller\ApiAssets'            => '\MonarcBO\Controller\ApiAssetsControllerFactory',
             '\MonarcBO\Controller\ApiClients'           => '\MonarcBO\Controller\ApiClientsControllerFactory',
+            '\MonarcBO\Controller\ApiConfig'            => '\MonarcBO\Controller\ApiConfigControllerFactory',
             '\MonarcBO\Controller\ApiModels'            => '\MonarcBO\Controller\ApiModelsControllerFactory',
             '\MonarcBO\Controller\ApiThemes'            => '\MonarcBO\Controller\ApiThemesControllerFactory',
             '\MonarcBO\Controller\ApiThreats'           => '\MonarcBO\Controller\ApiThreatsControllerFactory',

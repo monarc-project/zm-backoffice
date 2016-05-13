@@ -119,6 +119,19 @@ return array(
                 ),
             ),
 
+            'monarc_api_amvs' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/amvs[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAmvs',
+                    ),
+                ),
+            ),
+
             'monarc_api_vulnerabilities' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -179,6 +192,7 @@ return array(
             '\MonarcBO\Controller\ApiAdminRoles'        => '\MonarcBO\Controller\ApiAdminRolesControllerFactory',
             '\MonarcBO\Controller\ApiAdminServers'      => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
             '\MonarcBO\Controller\ApiAdminUsers'        => '\MonarcBO\Controller\ApiAdminUsersControllerFactory',
+            '\MonarcBO\Controller\ApiAmvs'              => '\MonarcBO\Controller\ApiAmvsControllerFactory',
             '\MonarcBO\Controller\ApiAssets'            => '\MonarcBO\Controller\ApiAssetsControllerFactory',
             '\MonarcBO\Controller\ApiClients'           => '\MonarcBO\Controller\ApiClientsControllerFactory',
             '\MonarcBO\Controller\ApiConfig'            => '\MonarcBO\Controller\ApiConfigControllerFactory',
@@ -236,6 +250,7 @@ return array(
         ),
         // Admin DB : Gestion des bases de connaissances (paramètres généraux)
         'dbadmin'=> array(
+            'monarc_api_amvs',
             'monarc_api_assets',
             'monarc_api_measures',
             'monarc_api_models',

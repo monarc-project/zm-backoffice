@@ -6,14 +6,15 @@ use MonarcCore\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Threats Controller
+ * Api Amvs Controller
  *
- * Class ApiThreatsController
+ * Class ApiAmvsController
  * @package MonarcBO\Controller
  */
-class ApiThreatsController extends AbstractController
+class ApiAmvsController extends AbstractController
 {
-    protected $dependencies = ['theme'];
+
+    protected $dependencies = ['asset', 'threat', 'vulnerability', 'measure1', 'measure2', 'measure3'];
 
     /**
      * Get list
@@ -29,21 +30,14 @@ class ApiThreatsController extends AbstractController
 
         $service = $this->getService();
 
-        $threats = $service->getList($page, $limit, $order, $filter);
-        foreach($threats as $key => $threat){
-            $threat['models']->initialize();
-            $models = $threat['models']->getSnapshot();
-            $threats[$key]['models'] = array();
-            foreach($models as $model){
-                $threats[$key]['models'][] = $model->getJsonArray();
-            }
-
-            $this->formatDependencies($threats[$key], $this->dependencies);
+        $amvs = $service->getList($page, $limit, $order, $filter);
+        foreach($amvs as $key => $amv){
+            $this->formatDependencies($amvs[$key], $this->dependencies);
         }
 
         return new JsonModel(array(
             'count' => $service->getFilteredCount($page, $limit, $order, $filter),
-            'threats' => $threats
+            'amvs' => $amvs
         ));
     }
 
@@ -55,18 +49,11 @@ class ApiThreatsController extends AbstractController
      */
     public function get($id)
     {
-        $threat = $this->getService()->getEntity($id);
+        $amv = $this->getService()->getEntity($id);
 
-        $threat['models']->initialize();
-        $models = $threat['models']->getSnapshot();
-        $threat['models'] = array();
-        foreach($models as $model){
-            $threat['models'][] = $model->getJsonArray();
-        }
+        $this->formatDependencies($amv, $this->dependencies);
 
-        $this->formatDependencies($threat, $this->dependencies);
-
-        return new JsonModel($threat);
+        return new JsonModel($amv);
     }
 
     /**

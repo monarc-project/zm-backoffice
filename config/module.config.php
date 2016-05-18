@@ -145,6 +145,32 @@ return array(
                 ),
             ),
 
+            'monarc_api_rolf_categories' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/rolf-categories[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiRolfCategories',
+                    ),
+                ),
+            ),
+
+            'monarc_api_rolf_tags' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/rolf-tags[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiRolfTags',
+                    ),
+                ),
+            ),
+
             'monarc_api_themes' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -198,6 +224,8 @@ return array(
             '\MonarcBO\Controller\ApiConfig'            => '\MonarcBO\Controller\ApiConfigControllerFactory',
             '\MonarcBO\Controller\ApiMeasures'          => '\MonarcBO\Controller\ApiMeasuresControllerFactory',
             '\MonarcBO\Controller\ApiModels'            => '\MonarcBO\Controller\ApiModelsControllerFactory',
+            '\MonarcBO\Controller\ApiRolfCategories'    => '\MonarcBO\Controller\ApiRolfCategoriesControllerFactory',
+            '\MonarcBO\Controller\ApiRolfTags'          => '\MonarcBO\Controller\ApiRolfTagsControllerFactory',
             '\MonarcBO\Controller\ApiThemes'            => '\MonarcBO\Controller\ApiThemesControllerFactory',
             '\MonarcBO\Controller\ApiThreats'           => '\MonarcBO\Controller\ApiThreatsControllerFactory',
             '\MonarcBO\Controller\ApiVulnerabilities'   => '\MonarcBO\Controller\ApiVulnerabilitiesControllerFactory',
@@ -254,6 +282,8 @@ return array(
             'monarc_api_assets',
             'monarc_api_measures',
             'monarc_api_models',
+            'monarc_api_rolf_categories',
+            'monarc_api_rolf_tags',
             'monarc_api_threats',
             'monarc_api_vulnerabilities',
         ),

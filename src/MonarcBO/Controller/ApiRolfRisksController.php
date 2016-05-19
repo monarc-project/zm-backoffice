@@ -43,8 +43,6 @@ class ApiRolfRisksController extends AbstractController
             foreach($rolfTags as $rolfTag){
                 $rolfRisks[$key]['rolfTags'][] = $rolfTag->getJsonArray();
             }
-
-            $this->formatDependencies($rolfRisks[$key], $this->dependencies);
         }
 
         return new JsonModel(array(
@@ -76,8 +74,6 @@ class ApiRolfRisksController extends AbstractController
         foreach($rolfTags as $rolfTag){
             $rolfRisk['rolfTags'][] = $rolfTag->getJsonArray();
         }
-
-        $this->formatDependencies($rolfRisk, $this->dependencies);
 
         return new JsonModel($rolfRisk);
     }

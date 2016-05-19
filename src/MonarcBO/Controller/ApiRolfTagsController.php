@@ -27,7 +27,7 @@ class ApiRolfTagsController extends AbstractController
 
         return new JsonModel(array(
             'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter),
-            'themes' => $this->getService()->getList($page, $limit, $order, $filter)
+            'tags' => $this->getService()->getList($page, $limit, $order, $filter)
         ));
     }
 

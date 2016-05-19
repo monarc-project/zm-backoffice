@@ -27,7 +27,7 @@ class ApiRolfCategoriesController extends AbstractController
 
         return new JsonModel(array(
             'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter),
-            'themes' => $this->getService()->getList($page, $limit, $order, $filter)
+            'categories' => $this->getService()->getList($page, $limit, $order, $filter)
         ));
     }
 

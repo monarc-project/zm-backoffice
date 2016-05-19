@@ -49,7 +49,7 @@ class ApiRolfRisksController extends AbstractController
 
         return new JsonModel(array(
             'count' => $service->getFilteredCount($page, $limit, $order, $filter),
-            'rolf-risks' => $rolfRisks
+            'risks' => $rolfRisks
         ));
     }
 

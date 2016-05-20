@@ -92,9 +92,10 @@ class Module
                 'message' => $exception->getMessage(),
                 'stacktrace' => $exception->getTraceAsString()
             );
+            $e->getResponse()->setStatusCode($exception->getCode());
         }
         $errorJson = array(
-            'message'   => 'An error occurred during execution; please try again later.',
+            'message'   => $exception ? $exception->getMessage() : 'An error occurred during execution; please try again later.',
             'error'     => $error,
             'exception' => $exceptionJson,
         );

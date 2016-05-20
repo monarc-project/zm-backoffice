@@ -92,12 +92,8 @@ class Module
                 'message' => $exception->getMessage(),
                 'stacktrace' => $exception->getTraceAsString()
             );
-<<<<<<< HEAD
-            if ($exception->getCode()) {
-=======
 
             if ($exception->getCode() >= 400 && $exception->getCode() < 600) {
->>>>>>> d6cc32e3668525284e8b6ad3a91a21e8d040c993
                 $e->getResponse()->setStatusCode($exception->getCode());
             }
         }

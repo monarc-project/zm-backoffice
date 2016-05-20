@@ -30,18 +30,18 @@ class ApiRolfRisksController extends AbstractController
         $rolfRisks = $service->getList($page, $limit, $order, $filter);
         foreach($rolfRisks as $key => $rolfRisk){
 
-            $rolfRisk['rolfCategories']->initialize();
-            $rolfCategories = $rolfRisk['rolfCategories']->getSnapshot();
-            $rolfRisks[$key]['rolfCategories'] = array();
+            $rolfRisk['categories']->initialize();
+            $rolfCategories = $rolfRisk['categories']->getSnapshot();
+            $rolfRisks[$key]['categories'] = array();
             foreach($rolfCategories as $rolfCategory){
-                $rolfRisks[$key]['rolfCategories'][] = $rolfCategory->getJsonArray();
+                $rolfRisks[$key]['categories'][] = $rolfCategory->getJsonArray();
             }
 
-            $rolfRisk['rolfTags']->initialize();
-            $rolfTags = $rolfRisk['rolfTags']->getSnapshot();
-            $rolfRisks[$key]['rolfTags'] = array();
+            $rolfRisk['tags']->initialize();
+            $rolfTags = $rolfRisk['tags']->getSnapshot();
+            $rolfRisks[$key]['tags'] = array();
             foreach($rolfTags as $rolfTag){
-                $rolfRisks[$key]['rolfTags'][] = $rolfTag->getJsonArray();
+                $rolfRisks[$key]['tags'][] = $rolfTag->getJsonArray();
             }
         }
 
@@ -61,18 +61,18 @@ class ApiRolfRisksController extends AbstractController
     {
         $rolfRisk = $this->getService()->getEntity($id);
 
-        $rolfRisk['rolfCategories']->initialize();
-        $rolfCategories = $rolfRisk['rolfCategories']->getSnapshot();
-        $rolfRisk['rolfCategories'] = array();
+        $rolfRisk['categories']->initialize();
+        $rolfCategories = $rolfRisk['categories']->getSnapshot();
+        $rolfRisk['categories'] = array();
         foreach($rolfCategories as $rolfCategory){
-            $rolfRisk['rolfCategories'][] = $rolfCategory->getJsonArray();
+            $rolfRisk['categories'][] = $rolfCategory->getJsonArray();
         }
 
-        $rolfRisk['rolfTags']->initialize();
-        $rolfTags = $rolfRisk['rolfTags']->getSnapshot();
-        $rolfRisk['rolfTags'] = array();
+        $rolfRisk['tags']->initialize();
+        $rolfTags = $rolfRisk['tags']->getSnapshot();
+        $rolfRisk['tags'] = array();
         foreach($rolfTags as $rolfTag){
-            $rolfRisk['rolfTags'][] = $rolfTag->getJsonArray();
+            $rolfRisk['tags'][] = $rolfTag->getJsonArray();
         }
 
         return new JsonModel($rolfRisk);

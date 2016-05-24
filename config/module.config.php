@@ -200,7 +200,7 @@ return array(
             'monarc_api_admin_historicals' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/historical[/:id]',
+                    'route' => '/api/admin/historical[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),

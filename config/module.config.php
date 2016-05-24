@@ -197,6 +197,19 @@ return array(
                 ),
             ),
 
+            'monarc_api_admin_historicals' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/historical[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAdminHistoricals',
+                    ),
+                ),
+            ),
+
             'monarc_api_threats' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -227,6 +240,7 @@ return array(
             '\MonarcBO\Controller\Index' => '\MonarcBO\Controller\IndexController',
         ),
         'factories' => array(
+            '\MonarcBO\Controller\ApiAdminHistoricals'  => '\MonarcBO\Controller\ApiAdminHistoricalsControllerFactory',
             '\MonarcBO\Controller\ApiAdminPasswords'    => '\MonarcBO\Controller\ApiAdminPasswordsControllerFactory',
             '\MonarcBO\Controller\ApiAdminRoles'        => '\MonarcBO\Controller\ApiAdminRolesControllerFactory',
             '\MonarcBO\Controller\ApiAdminServers'      => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
@@ -304,6 +318,7 @@ return array(
         ),
         // Admin système : Gestion des logs et tout ce qui est non applicatif (Administration)
         'sysadmin'=> array(
+            'monarc_api_admin_historicals',
             'monarc_api_admin_servers',
         ),
         // Admin comptes : Création des comptes et authentification client

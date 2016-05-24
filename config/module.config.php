@@ -210,6 +210,19 @@ return array(
                 ),
             ),
 
+            'monarc_api_admin_users_roles' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/users-roles[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAdminUsersRoles',
+                    ),
+                ),
+            ),
+
             'monarc_api_threats' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -245,6 +258,7 @@ return array(
             '\MonarcBO\Controller\ApiAdminRoles'        => '\MonarcBO\Controller\ApiAdminRolesControllerFactory',
             '\MonarcBO\Controller\ApiAdminServers'      => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
             '\MonarcBO\Controller\ApiAdminUsers'        => '\MonarcBO\Controller\ApiAdminUsersControllerFactory',
+            '\MonarcBO\Controller\ApiAdminUsersRoles'   => '\MonarcBO\Controller\ApiAdminUsersRolesControllerFactory',
             '\MonarcBO\Controller\ApiAmvs'              => '\MonarcBO\Controller\ApiAmvsControllerFactory',
             '\MonarcBO\Controller\ApiAssets'            => '\MonarcBO\Controller\ApiAssetsControllerFactory',
             '\MonarcBO\Controller\ApiClients'           => '\MonarcBO\Controller\ApiClientsControllerFactory',
@@ -324,6 +338,7 @@ return array(
         // Admin comptes : Création des comptes et authentification client
         'accadmin'=> array(
             'monarc_api_admin_users',
+            'monarc_api_admin_users_roles',
             'monarc_api_clients'
         ),
     )

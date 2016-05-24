@@ -30,5 +30,17 @@ class ApiAdminHistoricalsController extends AbstractController
             'historical' => $this->getService()->getList($page, $limit, $order, $filter)
         ));
     }
+
+
+    /**
+     * Get
+     *
+     * @param mixed $id
+     * @return JsonModel
+     */
+    public function get($id)
+    {
+        return new JsonModel($this->getService()->getEntity($id));
+    }
 }
 

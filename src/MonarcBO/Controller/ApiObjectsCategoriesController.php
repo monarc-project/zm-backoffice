@@ -87,6 +87,20 @@ class ApiObjectsCategoriesController extends AbstractController
     }
 
     /**
+     * Delete
+     *
+     * @param mixed $id
+     * @return JsonModel
+     */
+    public function delete($id)
+    {
+        $service = $this->getService();
+        $service->delete($id);
+
+        return new JsonModel(array('status' => 'ok'));
+    }
+
+    /**
      * Recursive array
      *
      * @param $array

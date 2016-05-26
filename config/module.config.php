@@ -332,7 +332,6 @@ return array(
         // Super Admin : Gestion des droits des utilisateurs uniquement (Carnet d’adresses)
         'superadmin'=> array(
             'monarc_api_admin_users_roles',
-            'monarc_api_admin_users_roles',
         ),
         // Admin DB : Gestion des bases de connaissances (paramètres généraux)
         'dbadmin'=> array(

@@ -13,6 +13,8 @@ use Zend\View\Model\JsonModel;
  */
 class ApiObjectsCategoriesController extends AbstractController
 {
+    protected $dependencies = ['parent', 'root'];
+
     /**
      * Get list
      *
@@ -25,11 +27,17 @@ class ApiObjectsCategoriesController extends AbstractController
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
 
+        $objectCategories = $this->getService()->getList($page, $limit, $order, $filter);
+
+        $recursiveArray = $this->recursiveArray($objectCategories, null, 0);
+
         return new JsonModel(array(
             'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter),
-            'categories' => $this->getService()->getList($page, $limit, $order, $filter)
+            'categories' => $recursiveArray
         ));
     }
+
+
 
     /**
      * Get
@@ -39,7 +47,11 @@ class ApiObjectsCategoriesController extends AbstractController
      */
     public function get($id)
     {
-        return new JsonModel($this->getService()->getEntity($id));
+        $objectCategory = $this->getService()->getEntity($id);
+
+        $this->formatDependencies($objectCategory, $this->dependencies);
+
+        return new JsonModel($objectCategory);
     }
 
     /**
@@ -74,5 +86,35 @@ class ApiObjectsCategoriesController extends AbstractController
         return new JsonModel(array('status' => 'ok'));
     }
 
+    /**
+     * Recursive array
+     *
+     * @param $array
+     * @param $parent
+     * @param $level
+     * @return array
+     */
+    public function recursiveArray($array, $parent, $level)
+    {
+        $fields = ['id', 'label1', 'label2', 'label3', 'label4', 'position'];
+        $recursiveArray = [];
+        foreach ($array AS $node) {
+
+            $parentId = null;
+            if (! is_null($node['parent'])) {
+                $parentId = $node['parent']->id;
+            }
+
+            if ($parent == $parentId) {
+                foreach($fields as $field) {
+                    $recursiveArray[$node['id']][$field] = $node[$field];
+                }
+                $recursiveArray[$node['id']]['child'] = $this->recursiveArray($array, $node['id'], ($level + 1));
+
+            }
+        }
+
+        return $recursiveArray;
+    }
 }
 

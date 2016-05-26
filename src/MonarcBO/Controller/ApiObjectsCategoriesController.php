@@ -105,12 +105,17 @@ class ApiObjectsCategoriesController extends AbstractController
                 $parentId = $node['parent']->id;
             }
 
+            $nodeArray = [];
+
             if ($parent == $parentId) {
                 foreach($fields as $field) {
-                    $recursiveArray[$node['id']][$field] = $node[$field];
+                    $nodeArray[$field] = $node[$field];
                 }
-                $recursiveArray[$node['id']]['child'] = $this->recursiveArray($array, $node['id'], ($level + 1));
+                $nodeArray['child'] = $this->recursiveArray($array, $node['id'], ($level + 1));
 
+            }
+            if (!empty($nodeArray)) {
+                $recursiveArray[] = $nodeArray;
             }
         }
 

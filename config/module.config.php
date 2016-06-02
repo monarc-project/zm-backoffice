@@ -184,14 +184,17 @@ return array(
 
     'doctrine' => array(
         'driver' => array(
-            'Monarc_bo_driver' => array(
+            'Monarc_cli_driver' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
-                'paths' => array(__DIR__ . '/../src/MonarcBO/Model/Entity'),
+                'paths' => array(
+                    __DIR__ . '/../src/MonarcBO/Model/Entity',
+                ),
             ),
-            'orm_default' => array(
+            'orm_cli' => array(
+                'class' => 'Doctrine\ORM\Mapping\Driver\DriverChain',
                 'drivers' => array(
-                    'MonarcBO\Model\Entity' => 'Monarc_bo_driver',
+                    'MonarcBO\Model\Entity' => 'Monarc_cli_driver',
                 ),
             ),
         ),

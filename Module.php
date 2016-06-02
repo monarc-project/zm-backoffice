@@ -46,19 +46,20 @@ class Module
                 '\MonarcBO\Model\Entity\Client' => '\MonarcBO\Model\Entity\Client',
             ),
             'factories' => array(
-                '\MonarcBO\Model\Db' => function($serviceManager){
-                    return new \MonarcCore\Model\Db($serviceManager->get('doctrine.entitymanager.orm_default'));
+               '\MonarcCli\Model\Db' => function($sm){
+                    // TODO: ajouter un test > si orm_cli non valide se rabattre sur orm_default
+                    return new \MonarcCore\Model\Db($sm->get('doctrine.entitymanager.orm_cli'));
                 },
 
                 // Servers table
                 '\MonarcBO\Model\Table\ServerTable' => function($sm){
-                    return new Model\Table\ServerTable($sm->get('\MonarcBO\Model\Db'));
+                    return new Model\Table\ServerTable($sm->get('\MonarcCli\Model\Db'));
                 },
                 '\MonarcBO\Service\ServerService' => '\MonarcBO\Service\ServerServiceFactory',
 
                 // Clients table
                 '\MonarcBO\Model\Table\ClientTable' => function($sm){
-                    return new Model\Table\ClientTable($sm->get('\MonarcBO\Model\Db'));
+                    return new Model\Table\ClientTable($sm->get('\MonarcCli\Model\Db'));
                 },
                 '\MonarcBO\Service\ClientService' => '\MonarcBO\Service\ClientServiceFactory',
             ),

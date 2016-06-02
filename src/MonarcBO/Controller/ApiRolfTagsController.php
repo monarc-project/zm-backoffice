@@ -6,12 +6,12 @@ use MonarcCore\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Assets Controller
+ * Api Rolf Tags Controller
  *
- * Class ApiAssetsController
+ * Class ApiRolfTagsController
  * @package MonarcBO\Controller
  */
-class ApiAssetsController extends AbstractController
+class ApiRolfTagsController extends AbstractController
 {
     /**
      * Get list
@@ -25,21 +25,9 @@ class ApiAssetsController extends AbstractController
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
 
-        $service = $this->getService();
-
-        $assets = $service->getList($page, $limit, $order, $filter);
-        foreach($assets as $key => $asset){
-            $asset['models']->initialize();
-            $models = $asset['models']->getSnapshot();
-            $assets[$key]['models'] = array();
-            foreach($models as $model){
-                $assets[$key]['models'][] = $model->getJsonArray();
-            }
-        }
-
         return new JsonModel(array(
-            'count' => $service->getFilteredCount($page, $limit, $order, $filter),
-            'assets' => $assets
+            'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter),
+            'tags' => $this->getService()->getList($page, $limit, $order, $filter)
         ));
     }
 
@@ -51,15 +39,7 @@ class ApiAssetsController extends AbstractController
      */
     public function get($id)
     {
-        $asset = $this->getService()->getEntity($id);
-        $asset['models']->initialize();
-        $models = $asset['models']->getSnapshot();
-        $asset['models'] = array();
-        foreach($models as $model){
-            $asset['models'][] = $model->getJsonArray();
-        }
-
-        return new JsonModel($asset);
+        return new JsonModel($this->getService()->getEntity($id));
     }
 
     /**
@@ -102,10 +82,10 @@ class ApiAssetsController extends AbstractController
      */
     public function delete($id)
     {
-        $this->getService()->delete($id);
+        $service = $this->getService();
+        $service->delete($id);
 
         return new JsonModel(array('status' => 'ok'));
     }
-
 }
 

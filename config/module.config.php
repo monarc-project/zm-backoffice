@@ -93,6 +93,19 @@ return array(
                 ),
             ),
 
+            'monarc_api_measures' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/measures[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiMeasures',
+                    ),
+                ),
+            ),
+
             'monarc_api_assets' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -102,6 +115,19 @@ return array(
                     ),
                     'defaults' => array(
                         'controller' => 'MonarcBO\Controller\ApiAssets',
+                    ),
+                ),
+            ),
+
+            'monarc_api_amvs' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/amvs[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAmvs',
                     ),
                 ),
             ),
@@ -119,6 +145,45 @@ return array(
                 ),
             ),
 
+            'monarc_api_rolf_categories' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/rolf-categories[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiRolfCategories',
+                    ),
+                ),
+            ),
+
+            'monarc_api_rolf_risks' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/rolf-risks[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiRolfRisks',
+                    ),
+                ),
+            ),
+
+            'monarc_api_rolf_tags' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/rolf-tags[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiRolfTags',
+                    ),
+                ),
+            ),
+
             'monarc_api_themes' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -128,6 +193,58 @@ return array(
                     ),
                     'defaults' => array(
                         'controller' => 'MonarcBO\Controller\ApiThemes',
+                    ),
+                ),
+            ),
+
+            'monarc_api_admin_historicals' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/admin/historical[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAdminHistoricals',
+                    ),
+                ),
+            ),
+
+            'monarc_api_admin_users_roles' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/users-roles[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAdminUsersRoles',
+                    ),
+                ),
+            ),
+
+            'monarc_api_objects' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/objects[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiObjects',
+                    ),
+                ),
+            ),
+
+            'monarc_api_objects_categories' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/objects-categories[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiObjectsCategories',
                     ),
                 ),
             ),
@@ -144,6 +261,16 @@ return array(
                     ),
                 ),
             ),
+
+            'monarc_api_config' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route' => '/api/config',
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiConfig',
+                    ),
+                ),
+            ),
         ),
     ),
 
@@ -152,13 +279,23 @@ return array(
             '\MonarcBO\Controller\Index' => '\MonarcBO\Controller\IndexController',
         ),
         'factories' => array(
+            '\MonarcBO\Controller\ApiAdminHistoricals'  => '\MonarcBO\Controller\ApiAdminHistoricalsControllerFactory',
             '\MonarcBO\Controller\ApiAdminPasswords'    => '\MonarcBO\Controller\ApiAdminPasswordsControllerFactory',
             '\MonarcBO\Controller\ApiAdminRoles'        => '\MonarcBO\Controller\ApiAdminRolesControllerFactory',
             '\MonarcBO\Controller\ApiAdminServers'      => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
             '\MonarcBO\Controller\ApiAdminUsers'        => '\MonarcBO\Controller\ApiAdminUsersControllerFactory',
+            '\MonarcBO\Controller\ApiAdminUsersRoles'   => '\MonarcBO\Controller\ApiAdminUsersRolesControllerFactory',
+            '\MonarcBO\Controller\ApiAmvs'              => '\MonarcBO\Controller\ApiAmvsControllerFactory',
             '\MonarcBO\Controller\ApiAssets'            => '\MonarcBO\Controller\ApiAssetsControllerFactory',
             '\MonarcBO\Controller\ApiClients'           => '\MonarcBO\Controller\ApiClientsControllerFactory',
+            '\MonarcBO\Controller\ApiConfig'            => '\MonarcBO\Controller\ApiConfigControllerFactory',
+            '\MonarcBO\Controller\ApiMeasures'          => '\MonarcBO\Controller\ApiMeasuresControllerFactory',
             '\MonarcBO\Controller\ApiModels'            => '\MonarcBO\Controller\ApiModelsControllerFactory',
+            '\MonarcBO\Controller\ApiObjects'           => '\MonarcBO\Controller\ApiObjectsControllerFactory',
+            '\MonarcBO\Controller\ApiObjectsCategories' => '\MonarcBO\Controller\ApiObjectsCategoriesControllerFactory',
+            '\MonarcBO\Controller\ApiRolfCategories'    => '\MonarcBO\Controller\ApiRolfCategoriesControllerFactory',
+            '\MonarcBO\Controller\ApiRolfRisks'         => '\MonarcBO\Controller\ApiRolfRisksControllerFactory',
+            '\MonarcBO\Controller\ApiRolfTags'          => '\MonarcBO\Controller\ApiRolfTagsControllerFactory',
             '\MonarcBO\Controller\ApiThemes'            => '\MonarcBO\Controller\ApiThemesControllerFactory',
             '\MonarcBO\Controller\ApiThreats'           => '\MonarcBO\Controller\ApiThreatsControllerFactory',
             '\MonarcBO\Controller\ApiVulnerabilities'   => '\MonarcBO\Controller\ApiVulnerabilitiesControllerFactory',
@@ -211,22 +348,34 @@ return array(
     'roles' => array(
         // Super Admin : Gestion des droits des utilisateurs uniquement (Carnet d’adresses)
         'superadmin'=> array(
+            'monarc_api_admin_users_roles',
         ),
         // Admin DB : Gestion des bases de connaissances (paramètres généraux)
         'dbadmin'=> array(
-            'monarc_api_models',
+            'monarc_api_amvs',
             'monarc_api_assets',
+            'monarc_api_measures',
+            'monarc_api_models',
+            'monarc_api_objects',
+            'monarc_api_objects_categories',
+            'monarc_api_rolf_categories',
+            'monarc_api_rolf_risks',
+            'monarc_api_rolf_tags',
             'monarc_api_threats',
             'monarc_api_vulnerabilities',
+            'monarc_api_admin_users_roles',
         ),
         // Admin système : Gestion des logs et tout ce qui est non applicatif (Administration)
         'sysadmin'=> array(
+            'monarc_api_admin_historicals',
             'monarc_api_admin_servers',
+            'monarc_api_admin_users_roles',
         ),
         // Admin comptes : Création des comptes et authentification client
         'accadmin'=> array(
             'monarc_api_admin_users',
-            'monarc_api_clients'
+            'monarc_api_clients',
+            'monarc_api_admin_users_roles',
         ),
     )
 );

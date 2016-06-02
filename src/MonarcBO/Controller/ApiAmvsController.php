@@ -6,13 +6,16 @@ use MonarcCore\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Assets Controller
+ * Api Amvs Controller
  *
- * Class ApiAssetsController
+ * Class ApiAmvsController
  * @package MonarcBO\Controller
  */
-class ApiAssetsController extends AbstractController
+class ApiAmvsController extends AbstractController
 {
+
+    protected $dependencies = ['asset', 'threat', 'vulnerability', 'measure1', 'measure2', 'measure3'];
+
     /**
      * Get list
      *
@@ -27,19 +30,14 @@ class ApiAssetsController extends AbstractController
 
         $service = $this->getService();
 
-        $assets = $service->getList($page, $limit, $order, $filter);
-        foreach($assets as $key => $asset){
-            $asset['models']->initialize();
-            $models = $asset['models']->getSnapshot();
-            $assets[$key]['models'] = array();
-            foreach($models as $model){
-                $assets[$key]['models'][] = $model->getJsonArray();
-            }
+        $amvs = $service->getList($page, $limit, $order, $filter);
+        foreach($amvs as $key => $amv){
+            $this->formatDependencies($amvs[$key], $this->dependencies);
         }
 
         return new JsonModel(array(
             'count' => $service->getFilteredCount($page, $limit, $order, $filter),
-            'assets' => $assets
+            'amvs' => $amvs
         ));
     }
 
@@ -51,15 +49,11 @@ class ApiAssetsController extends AbstractController
      */
     public function get($id)
     {
-        $asset = $this->getService()->getEntity($id);
-        $asset['models']->initialize();
-        $models = $asset['models']->getSnapshot();
-        $asset['models'] = array();
-        foreach($models as $model){
-            $asset['models'][] = $model->getJsonArray();
-        }
+        $amv = $this->getService()->getEntity($id);
 
-        return new JsonModel($asset);
+        $this->formatDependencies($amv, $this->dependencies);
+
+        return new JsonModel($amv);
     }
 
     /**

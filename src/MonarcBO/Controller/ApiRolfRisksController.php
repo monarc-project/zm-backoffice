@@ -6,12 +6,12 @@ use MonarcCore\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Assets Controller
+ * Api Rolf Risks Controller
  *
- * Class ApiAssetsController
+ * Class ApiRolfRisksController
  * @package MonarcBO\Controller
  */
-class ApiAssetsController extends AbstractController
+class ApiRolfRisksController extends AbstractController
 {
     /**
      * Get list
@@ -27,19 +27,27 @@ class ApiAssetsController extends AbstractController
 
         $service = $this->getService();
 
-        $assets = $service->getList($page, $limit, $order, $filter);
-        foreach($assets as $key => $asset){
-            $asset['models']->initialize();
-            $models = $asset['models']->getSnapshot();
-            $assets[$key]['models'] = array();
-            foreach($models as $model){
-                $assets[$key]['models'][] = $model->getJsonArray();
+        $rolfRisks = $service->getList($page, $limit, $order, $filter);
+        foreach($rolfRisks as $key => $rolfRisk){
+
+            $rolfRisk['categories']->initialize();
+            $rolfCategories = $rolfRisk['categories']->getSnapshot();
+            $rolfRisks[$key]['categories'] = array();
+            foreach($rolfCategories as $rolfCategory){
+                $rolfRisks[$key]['categories'][] = $rolfCategory->getJsonArray();
+            }
+
+            $rolfRisk['tags']->initialize();
+            $rolfTags = $rolfRisk['tags']->getSnapshot();
+            $rolfRisks[$key]['tags'] = array();
+            foreach($rolfTags as $rolfTag){
+                $rolfRisks[$key]['tags'][] = $rolfTag->getJsonArray();
             }
         }
 
         return new JsonModel(array(
             'count' => $service->getFilteredCount($page, $limit, $order, $filter),
-            'assets' => $assets
+            'risks' => $rolfRisks
         ));
     }
 
@@ -51,15 +59,23 @@ class ApiAssetsController extends AbstractController
      */
     public function get($id)
     {
-        $asset = $this->getService()->getEntity($id);
-        $asset['models']->initialize();
-        $models = $asset['models']->getSnapshot();
-        $asset['models'] = array();
-        foreach($models as $model){
-            $asset['models'][] = $model->getJsonArray();
+        $rolfRisk = $this->getService()->getEntity($id);
+
+        $rolfRisk['categories']->initialize();
+        $rolfCategories = $rolfRisk['categories']->getSnapshot();
+        $rolfRisk['categories'] = array();
+        foreach($rolfCategories as $rolfCategory){
+            $rolfRisk['categories'][] = $rolfCategory->getJsonArray();
         }
 
-        return new JsonModel($asset);
+        $rolfRisk['tags']->initialize();
+        $rolfTags = $rolfRisk['tags']->getSnapshot();
+        $rolfRisk['tags'] = array();
+        foreach($rolfTags as $rolfTag){
+            $rolfRisk['tags'][] = $rolfTag->getJsonArray();
+        }
+
+        return new JsonModel($rolfRisk);
     }
 
     /**
@@ -102,10 +118,10 @@ class ApiAssetsController extends AbstractController
      */
     public function delete($id)
     {
-        $this->getService()->delete($id);
+        $service = $this->getService();
+        $service->delete($id);
 
         return new JsonModel(array('status' => 'ok'));
     }
-
 }
 

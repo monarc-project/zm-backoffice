@@ -6,12 +6,12 @@ use MonarcCore\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Themes Controller
+ * Api Admin Historicals Controller
  *
- * Class ApiThemesController
+ * Class ApiAdminHistoricalsController
  * @package MonarcBO\Controller
  */
-class ApiThemesController extends AbstractController
+class ApiAdminHistoricalsController extends AbstractController
 {
     /**
      * Get list
@@ -27,9 +27,10 @@ class ApiThemesController extends AbstractController
 
         return new JsonModel(array(
             'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter),
-            'themes' => $this->getService()->getList($page, $limit, $order, $filter)
+            'historical' => $this->getService()->getList($page, $limit, $order, $filter)
         ));
     }
+
 
     /**
      * Get
@@ -41,38 +42,5 @@ class ApiThemesController extends AbstractController
     {
         return new JsonModel($this->getService()->getEntity($id));
     }
-
-    /**
-     * Create
-     *
-     * @param mixed $data
-     * @return JsonModel
-     */
-    public function create($data)
-    {
-        $id = $this->getService()->create($data);
-
-        return new JsonModel(
-            array(
-                'status' => 'ok',
-                'id' => $id,
-            )
-        );
-    }
-
-    /**
-     * Update
-     *
-     * @param mixed $id
-     * @param mixed $data
-     * @return JsonModel
-     */
-    public function update($id, $data)
-    {
-        $this->getService()->update($id, $data);
-
-        return new JsonModel(array('status' => 'ok'));
-    }
-
 }
 

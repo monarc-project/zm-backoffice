@@ -47,8 +47,12 @@ class Module
             ),
             'factories' => array(
                '\MonarcCli\Model\Db' => function($sm){
-                    // TODO: ajouter un test > si orm_cli non valide se rabattre sur orm_default
-                    return new \MonarcCore\Model\Db($sm->get('doctrine.entitymanager.orm_cli'));
+                    try{
+                        $sm->get('doctrine.entitymanager.orm_cli')->getConnection()->connect();
+                        return new \MonarcCore\Model\Db($sm->get('doctrine.entitymanager.orm_cli'));
+                    }catch(\Exception $e){
+                        return new \MonarcCore\Model\Db($sm->get('doctrine.entitymanager.orm_default'));
+                    }
                 },
 
                 // Servers table

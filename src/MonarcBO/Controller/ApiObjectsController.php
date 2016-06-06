@@ -13,6 +13,8 @@ use Zend\View\Model\JsonModel;
  */
 class ApiObjectsController extends AbstractController
 {
+    protected $dependencies = ['category', 'asset', 'rolfTag'];
+
     /**
      * Get list
      *
@@ -49,6 +51,21 @@ class ApiObjectsController extends AbstractController
                 'id' => $id,
             )
         );
+    }
+
+    /**
+     * Get
+     *
+     * @param mixed $id
+     * @return JsonModel
+     */
+    public function get($id)
+    {
+        $objectCategory = $this->getService()->getEntity($id);
+
+        $this->formatDependencies($objectCategory, $this->dependencies);
+
+        return new JsonModel($objectCategory);
     }
 }
 

@@ -48,15 +48,17 @@
         ->appendFile($this->basePath('js/kb/rolf/CategoryService.js'))
         ->appendFile($this->basePath('js/kb/rolf/RiskService.js'))
         ->appendFile($this->basePath('js/kb/rolf/TagService.js'))
+        // KB Models
+        ->appendFile($this->basePath('js/kb/models/BackofficeKbModelsCtrl.js'))
+        ->appendFile($this->basePath('js/kb/models/BackofficeKbModelsDetailsCtrl.js'))
+        ->appendFile($this->basePath('js/kb/models/ModelService.js'))
         // Other KB sections
         ->appendFile($this->basePath('js/kb/BackofficeAnalysisGuidesCtrl.js'))
         ->appendFile($this->basePath('js/kb/BackofficeAnalysisGuidesItemsCtrl.js'))
         ->appendFile($this->basePath('js/kb/BackofficeDocModelsCtrl.js'))
-        ->appendFile($this->basePath('js/kb/BackofficeKbModelsCtrl.js'))
         ->appendFile($this->basePath('js/kb/CreateObjlibDialogCtrl.js'))
         ->appendFile($this->basePath('js/kb/DocModelService.js'))
         ->appendFile($this->basePath('js/kb/GuideService.js'))
-        ->appendFile($this->basePath('js/kb/ModelService.js'))
         // General sections
         ->appendFile($this->basePath('js/BackofficeAccountCtrl.js'))
         ->appendFile($this->basePath('js/BackofficeLoginCtrl.js'))

@@ -2,62 +2,70 @@
 
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<?php echo $this->headTitle('The SMILE Project')->setSeparator(' - ')->setAutoEscape(false) ?>
+    <meta charset="utf-8">
+    <?php echo $this->headTitle('The SMILE Project')->setSeparator(' - ')->setAutoEscape(false) ?>
 
-	<?php echo $this->headMeta()
-		->appendName('viewport', 'width=device-width, initial-scale=1.0')
-		->appendHttpEquiv('X-UA-Compatible', 'IE=edge');
-	?>
+    <?php echo $this->headMeta()
+        ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+        ->appendHttpEquiv('X-UA-Compatible', 'IE=edge');
+    ?>
 
-	<!-- Le styles -->
-	<?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/png', 'href' => $this->basePath() . '/img/favicon.png'))
-		->prependStylesheet($this->basePath('css/style.css'))
-		->prependStylesheet('https://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic')
-		->prependStylesheet('https://fonts.googleapis.com/icon?family=Material+Icons')
-		->prependStylesheet($this->basePath('css/angular-common-libs.css')) ?>
+    <!-- Le styles -->
+    <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/png', 'href' => $this->basePath() . '/img/favicon.png'))
+        ->prependStylesheet($this->basePath('css/style.css'))
+        ->prependStylesheet('https://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic')
+        ->prependStylesheet('https://fonts.googleapis.com/icon?family=Material+Icons')
+        ->prependStylesheet($this->basePath('css/angular-common-libs.css')) ?>
 
-	<!-- Scripts -->
-	<?php echo $this->headScript()
-		->prependFile($this->basePath('js/BackofficeClientMgmtCtrl.js'))
-		->prependFile($this->basePath('js/BackofficeKbInfoCtrl.js'))
-		->prependFile($this->basePath('js/BackofficeKbInfoObjectCtrl.js'))
-		->prependFile($this->basePath('js/BackofficeKbOpRiskCtrl.js'))
-		->prependFile($this->basePath('js/BackofficeKbModelsCtrl.js'))
-		->prependFile($this->basePath('js/BackofficeMainCtrl.js'))
-		->prependFile($this->basePath('js/BackofficeLoginCtrl.js'))
-		->prependFile($this->basePath('js/BackofficeAccountCtrl.js'))
-		->prependFile($this->basePath('js/BackofficeDocModelsCtrl.js'))
-		->prependFile($this->basePath('js/BackofficeAnalysisGuidesCtrl.js'))
-		->prependFile($this->basePath('js/BackofficeAnalysisGuidesItemsCtrl.js'))
-		->prependFile($this->basePath('js/BackofficeAdminServerCtrl.js'))
-		->prependFile($this->basePath('js/BackofficeAdminUsersCtrl.js'))
-		->prependFile($this->basePath('js/BackofficeAdminLogsCtrl.js'))
-		->prependFile($this->basePath('js/CreateObjlibDialogCtrl.js'))
-		->prependFile($this->basePath('js/TableHelperService.js'))
-		->prependFile($this->basePath('js/ClientService.js'))
-		->prependFile($this->basePath('js/GuideService.js'))
-		->prependFile($this->basePath('js/DocModelService.js'))
-		->prependFile($this->basePath('js/AssetService.js'))
-		->prependFile($this->basePath('js/ThreatService.js'))
-		->prependFile($this->basePath('js/VulnService.js'))
-		->prependFile($this->basePath('js/CategoryService.js'))
-		->prependFile($this->basePath('js/TagService.js'))
-		->prependFile($this->basePath('js/RiskService.js'))
-		->prependFile($this->basePath('js/AmvService.js'))
-		->prependFile($this->basePath('js/ObjlibService.js'))
-		->prependFile($this->basePath('js/MeasureService.js'))
-		->prependFile($this->basePath('js/ModelService.js'))
-		->prependFile($this->basePath('js/UserService.js'))
-		->prependFile($this->basePath('js/AdminServerService.js'))
-		->prependFile($this->basePath('js/AdminUsersService.js'))
-		->prependFile($this->basePath('js/AdminLogsService.js'))
-		->prependFile($this->basePath('js/ErrorService.js'))
-		->prependFile($this->basePath('js/ConfigService.js'))
-		->prependFile($this->basePath('js/BackofficeApp.js'))
-		->prependFile($this->basePath('js/translations.js'))
-		//->prependFile($this->basePath('js/app.min.js'))
-		->prependFile($this->basePath('js/angular-common-libs.js')); ?>
+    <!-- Scripts -->
+    <?php echo $this->headScript()
+        // TODO: In Production mode, use app.min.js which is a minified version of everything below. It must be
+        // generated using grunt concat/uglify task.
+        // Global files
+        ->appendFile($this->basePath('js/angular-common-libs.js'))
+        ->appendFile($this->basePath('js/translations.js'))
+        ->appendFile($this->basePath('js/BackofficeApp.js'))
+        ->appendFile($this->basePath('js/ErrorService.js'))
+        ->appendFile($this->basePath('js/ConfigService.js'))
+        // Admin section
+        ->appendFile($this->basePath('js/admin/AdminLogsService.js'))
+        ->appendFile($this->basePath('js/admin/AdminServerService.js'))
+        ->appendFile($this->basePath('js/admin/AdminUsersService.js'))
+        ->appendFile($this->basePath('js/admin/BackofficeAdminLogsCtrl.js'))
+        ->appendFile($this->basePath('js/admin/BackofficeAdminServerCtrl.js'))
+        ->appendFile($this->basePath('js/admin/BackofficeAdminUsersCtrl.js'))
+        // KB Info
+        ->appendFile($this->basePath('js/kb/info/AmvService.js'))
+        ->appendFile($this->basePath('js/kb/info/AssetService.js'))
+        ->appendFile($this->basePath('js/kb/info/BackofficeKbInfoCtrl.js'))
+        ->appendFile($this->basePath('js/kb/info/BackofficeKbInfoObjectCtrl.js'))
+        ->appendFile($this->basePath('js/kb/info/MeasureService.js'))
+        ->appendFile($this->basePath('js/kb/info/ObjlibService.js'))
+        ->appendFile($this->basePath('js/kb/info/ThreatService.js'))
+        ->appendFile($this->basePath('js/kb/info/VulnService.js'))
+        // KB ROLF
+        ->appendFile($this->basePath('js/kb/rolf/BackofficeKbOpRiskCtrl.js'))
+        ->appendFile($this->basePath('js/kb/rolf/CategoryService.js'))
+        ->appendFile($this->basePath('js/kb/rolf/RiskService.js'))
+        ->appendFile($this->basePath('js/kb/rolf/TagService.js'))
+        // Other KB sections
+        ->appendFile($this->basePath('js/kb/BackofficeAnalysisGuidesCtrl.js'))
+        ->appendFile($this->basePath('js/kb/BackofficeAnalysisGuidesItemsCtrl.js'))
+        ->appendFile($this->basePath('js/kb/BackofficeDocModelsCtrl.js'))
+        ->appendFile($this->basePath('js/kb/BackofficeKbModelsCtrl.js'))
+        ->appendFile($this->basePath('js/kb/CreateObjlibDialogCtrl.js'))
+        ->appendFile($this->basePath('js/kb/DocModelService.js'))
+        ->appendFile($this->basePath('js/kb/GuideService.js'))
+        ->appendFile($this->basePath('js/kb/ModelService.js'))
+        // General sections
+        ->appendFile($this->basePath('js/BackofficeAccountCtrl.js'))
+        ->appendFile($this->basePath('js/BackofficeLoginCtrl.js'))
+        ->appendFile($this->basePath('js/BackofficeMainCtrl.js'))
+        ->appendFile($this->basePath('js/BackofficeClientMgmtCtrl.js'))
+        ->appendFile($this->basePath('js/ClientService.js'))
+        ->appendFile($this->basePath('js/UserService.js'))
+        // Helpers
+        ->appendFile($this->basePath('js/TableHelperService.js')); ?>
 
 </head>
 <body ng-app="BackofficeApp" layout="column" flex>

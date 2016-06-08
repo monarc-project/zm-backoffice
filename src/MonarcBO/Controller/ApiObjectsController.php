@@ -36,6 +36,21 @@ class ApiObjectsController extends AbstractController
     }
 
     /**
+     * Get
+     *
+     * @param mixed $id
+     * @return JsonModel
+     */
+    public function get($id)
+    {
+        $objectCategory = $this->getService()->getEntity($id);
+
+        $this->formatDependencies($objectCategory, $this->dependencies);
+
+        return new JsonModel($objectCategory);
+    }
+
+    /**
      * Create
      *
      * @param mixed $data
@@ -54,18 +69,31 @@ class ApiObjectsController extends AbstractController
     }
 
     /**
-     * Get
+     * Update
+     *
+     * @param mixed $id
+     * @param mixed $data
+     * @return JsonModel
+     */
+    public function update($id, $data)
+    {
+        $this->getService()->update($id, $data);
+
+        return new JsonModel(array('status' => 'ok'));
+    }
+
+    /**
+     * Delete
      *
      * @param mixed $id
      * @return JsonModel
      */
-    public function get($id)
+    public function delete($id)
     {
-        $objectCategory = $this->getService()->getEntity($id);
+        $service = $this->getService();
+        $service->delete($id);
 
-        $this->formatDependencies($objectCategory, $this->dependencies);
-
-        return new JsonModel($objectCategory);
+        return new JsonModel(array('status' => 'ok'));
     }
 }
 

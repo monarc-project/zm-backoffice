@@ -25,13 +25,11 @@ class ApiObjectsController extends AbstractController
         $page = $this->params()->fromQuery('page');
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
-        $filter = $this->params()->fromQuery('filter');
-
-        $objects = $this->getService()->getList($page, $limit, $order, $filter);
+        $filter = (int) $this->params()->fromQuery('filter');
 
         return new JsonModel(array(
             'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter),
-            'objects' => $objects
+            'objects' => $this->getService()->getList($page, $limit, $order, $filter)
         ));
     }
 

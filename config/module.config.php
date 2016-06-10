@@ -249,6 +249,19 @@ return array(
                 ),
             ),
 
+            'monarc_api_objects_risks' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/objects-risks[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiObjectsRisks',
+                    ),
+                ),
+            ),
+
             'monarc_api_threats' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -293,6 +306,7 @@ return array(
             '\MonarcBO\Controller\ApiModels'            => '\MonarcBO\Controller\ApiModelsControllerFactory',
             '\MonarcBO\Controller\ApiObjects'           => '\MonarcBO\Controller\ApiObjectsControllerFactory',
             '\MonarcBO\Controller\ApiObjectsCategories' => '\MonarcBO\Controller\ApiObjectsCategoriesControllerFactory',
+            '\MonarcBO\Controller\ApiObjectsRisks'      => '\MonarcBO\Controller\ApiObjectsRisksControllerFactory',
             '\MonarcBO\Controller\ApiRolfCategories'    => '\MonarcBO\Controller\ApiRolfCategoriesControllerFactory',
             '\MonarcBO\Controller\ApiRolfRisks'         => '\MonarcBO\Controller\ApiRolfRisksControllerFactory',
             '\MonarcBO\Controller\ApiRolfTags'          => '\MonarcBO\Controller\ApiRolfTagsControllerFactory',
@@ -358,6 +372,7 @@ return array(
             'monarc_api_models',
             'monarc_api_objects',
             'monarc_api_objects_categories',
+            'monarc_api_objects_risks',
             'monarc_api_rolf_categories',
             'monarc_api_rolf_risks',
             'monarc_api_rolf_tags',

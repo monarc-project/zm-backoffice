@@ -93,6 +93,45 @@ return array(
                 ),
             ),
 
+            'monarc_api_guides' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/guides[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiGuides',
+                    ),
+                ),
+            ),
+
+            'monarc_api_guides_items' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/guides-items[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiGuidesItems',
+                    ),
+                ),
+            ),
+
+            'monarc_api_guides_types' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/guides-types[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiGuidesTypes',
+                    ),
+                ),
+            ),
+
             'monarc_api_measures' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -312,6 +351,9 @@ return array(
             '\MonarcBO\Controller\ApiAssets'            => '\MonarcBO\Controller\ApiAssetsControllerFactory',
             '\MonarcBO\Controller\ApiClients'           => '\MonarcBO\Controller\ApiClientsControllerFactory',
             '\MonarcBO\Controller\ApiConfig'            => '\MonarcBO\Controller\ApiConfigControllerFactory',
+            '\MonarcBO\Controller\ApiGuides'            => '\MonarcBO\Controller\ApiGuidesControllerFactory',
+            '\MonarcBO\Controller\ApiGuidesItems'       => '\MonarcBO\Controller\ApiGuidesItemsControllerFactory',
+            '\MonarcBO\Controller\ApiGuidesTypes'       => '\MonarcBO\Controller\ApiGuidesTypesControllerFactory',
             '\MonarcBO\Controller\ApiMeasures'          => '\MonarcBO\Controller\ApiMeasuresControllerFactory',
             '\MonarcBO\Controller\ApiModels'            => '\MonarcBO\Controller\ApiModelsControllerFactory',
             '\MonarcBO\Controller\ApiObjects'           => '\MonarcBO\Controller\ApiObjectsControllerFactory',

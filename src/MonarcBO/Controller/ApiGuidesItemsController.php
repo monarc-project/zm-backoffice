@@ -5,18 +5,12 @@ namespace MonarcBO\Controller;
 use MonarcCore\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 
-/**
- * Api Objects Controller
- *
- * Class ApiObjectsController
- * @package MonarcBO\Controller
- */
-class ApiObjectsController extends AbstractController
+class ApiGuidesItemsController extends AbstractController
 {
-    protected $dependencies = ['category', 'asset', 'rolfTag'];
+    protected $dependencies = ['guide'];
 
     /**
-     * Get list
+     * Get List
      *
      * @return JsonModel
      */
@@ -26,22 +20,15 @@ class ApiObjectsController extends AbstractController
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
-        $asset = (int) $this->params()->fromQuery('asset');
-        $category = (int) $this->params()->fromQuery('category');
-        $lock = $this->params()->fromQuery('lock');
 
-        $objects =  $this->getService()->getListSpecific($page, $limit, $order, $filter, $asset, $category, $lock);
-        $count = ($lock == 'true') ? count($objects) : $this->getService()->getFilteredCount($page, $limit, $order, $filter, $asset, $category);
-
-        if ($lock == 'true') {
-            foreach($objects as $key => $object){
-                $this->formatDependencies($objects[$key], $this->dependencies);
-            }
+        $items = $this->getService()->getList($page, $limit, $order, $filter);
+        foreach($items as $key => $item){
+            $this->formatDependencies($items[$key], $this->dependencies);
         }
 
         return new JsonModel(array(
-            'count' => $count,
-            'objects' => $objects
+            'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter),
+            'items' => $items
         ));
     }
 
@@ -53,11 +40,11 @@ class ApiObjectsController extends AbstractController
      */
     public function get($id)
     {
-        $objectCategory = $this->getService()->getEntity($id);
+        $item = $this->getService()->getEntity($id);
 
-        $this->formatDependencies($objectCategory, $this->dependencies);
+        $this->formatDependencies($item, $this->dependencies);
 
-        return new JsonModel($objectCategory);
+        return new JsonModel($item);
     }
 
     /**
@@ -100,8 +87,7 @@ class ApiObjectsController extends AbstractController
      */
     public function delete($id)
     {
-        $service = $this->getService();
-        $service->delete($id);
+        $this->getService()->delete($id);
 
         return new JsonModel(array('status' => 'ok'));
     }

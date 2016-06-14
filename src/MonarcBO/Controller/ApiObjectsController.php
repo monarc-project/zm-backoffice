@@ -25,14 +25,13 @@ class ApiObjectsController extends AbstractController
         $page = $this->params()->fromQuery('page');
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
-        $filter = (int) $this->params()->fromQuery('filter');
-
+        $filter = $this->params()->fromQuery('filter');
+        $asset = (int) $this->params()->fromQuery('asset');
+        $category = (int) $this->params()->fromQuery('category');
         $lock = $this->params()->fromQuery('lock');
 
-        $objects =  $this->getService()->getList($page, $limit, $order, $filter, ['lock' => $lock]);
-
-
-        $count = ($lock == 'true') ? count($objects) : $this->getService()->getFilteredCount($page, $limit, $order, $filter);
+        $objects =  $this->getService()->getListSpecific($page, $limit, $order, $filter, $asset, $category, $lock);
+        $count = ($lock == 'true') ? count($objects) : $this->getService()->getFilteredCount($page, $limit, $order, $filter, $asset, $category);
 
         if ($lock == 'true') {
             foreach($objects as $key => $object){

@@ -30,6 +30,8 @@ class ApiObjectsController extends AbstractController
         $lock = $this->params()->fromQuery('lock');
 
         $objects =  $this->getService()->getList($page, $limit, $order, $filter, ['lock' => $lock]);
+
+
         $count = ($lock == 'true') ? count($objects) : $this->getService()->getFilteredCount($page, $limit, $order, $filter);
 
         if ($lock == 'true') {

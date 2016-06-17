@@ -13,6 +13,8 @@ use Zend\View\Model\JsonModel;
  */
 class ApiModelsController extends AbstractController
 {
+    protected $dependencies = ['anr'];
+
     /**
      * Get list
      *
@@ -25,11 +27,14 @@ class ApiModelsController extends AbstractController
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
 
-        $service = $this->getService();
+        $models = $this->getService()->getList($page, $limit, $order, $filter);
+        foreach($models as $key => $model){
+            $this->formatDependencies($models[$key], $this->dependencies);
+        }
 
         return new JsonModel(array(
-            'count' => $service->getFilteredCount($page, $limit, $order, $filter),
-            'models' => $service->getList($page, $limit, $order, $filter)
+            'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter),
+            'models' => $models
         ));
     }
 
@@ -41,7 +46,11 @@ class ApiModelsController extends AbstractController
      */
     public function get($id)
     {
-        return new JsonModel($this->getService()->getEntity($id));
+        $model = $this->getService()->getEntity($id);
+
+        $this->formatDependencies($model, $this->dependencies);
+
+        return new JsonModel($model);
     }
 
     /**

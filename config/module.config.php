@@ -132,6 +132,45 @@ return array(
                 ),
             ),
 
+            'monarc_api_scales' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/scales[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiScales',
+                    ),
+                ),
+            ),
+
+            'monarc_api_scales_types' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/scales-types[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiScalesTypes',
+                    ),
+                ),
+            ),
+
+            'monarc_api_scales_comments' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/scales-comments[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiScalesComments',
+                    ),
+                ),
+            ),
+
             'monarc_api_measures' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -349,6 +388,9 @@ return array(
             '\MonarcBO\Controller\ApiObjects'           => '\MonarcBO\Controller\ApiObjectsControllerFactory',
             '\MonarcBO\Controller\ApiObjectsCategories' => '\MonarcBO\Controller\ApiObjectsCategoriesControllerFactory',
             '\MonarcBO\Controller\ApiObjectsRisks'      => '\MonarcBO\Controller\ApiObjectsRisksControllerFactory',
+            '\MonarcBO\Controller\ApiScales'            => '\MonarcBO\Controller\ApiScalesControllerFactory',
+            '\MonarcBO\Controller\ApiScalesTypes'       => '\MonarcBO\Controller\ApiScalesTypesControllerFactory',
+            '\MonarcBO\Controller\ApiScalesComments'    => '\MonarcBO\Controller\ApiScalesCommentsControllerFactory',
             '\MonarcBO\Controller\ApiRolfCategories'    => '\MonarcBO\Controller\ApiRolfCategoriesControllerFactory',
             '\MonarcBO\Controller\ApiRolfRisks'         => '\MonarcBO\Controller\ApiRolfRisksControllerFactory',
             '\MonarcBO\Controller\ApiRolfTags'          => '\MonarcBO\Controller\ApiRolfTagsControllerFactory',
@@ -418,6 +460,9 @@ return array(
             'monarc_api_rolf_categories',
             'monarc_api_rolf_risks',
             'monarc_api_rolf_tags',
+            'monarc_api_scales',
+            'monarc_api_scales_comments',
+            'monarc_api_scales_types',
             'monarc_api_threats',
             'monarc_api_vulnerabilities',
             'monarc_api_admin_users_roles',

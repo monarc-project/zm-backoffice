@@ -32,5 +32,21 @@ class ApiScalesController extends AbstractController
             'scales' => $scales
         ));
     }
+
+    /**
+     * Update
+     *
+     * @param mixed $type
+     * @param mixed $data
+     * @return JsonModel
+     */
+    public function update($type, $data)
+    {
+        $anrId = (int) $this->params()->fromRoute('anrId');
+
+        $this->getService()->updateByAnrAndType($anrId, $type, $data);
+
+        return new JsonModel(array('status' => 'ok'));
+    }
 }
 

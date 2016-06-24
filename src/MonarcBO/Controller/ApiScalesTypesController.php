@@ -9,6 +9,7 @@ class ApiScalesTypesController extends AbstractController
 {
     protected $dependencies = ['scale'];
 
+
     /**
      * Get List
      *

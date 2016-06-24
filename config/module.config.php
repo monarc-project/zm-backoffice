@@ -137,7 +137,7 @@ return array(
                 'options' => array(
                     'route' => '/api/anr/:anrId/scales[/:id]',
                     'constraints' => array(
-                        'id' => '[0-9]+',
+                        'id' => '[a-z]+',
                     ),
                     'defaults' => array(
                         'controller' => 'MonarcBO\Controller\ApiScales',
@@ -148,7 +148,7 @@ return array(
             'monarc_api_scales_types' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/scales-types[/:id]',
+                    'route' => '/api/anr/:anrId/scales-types[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),

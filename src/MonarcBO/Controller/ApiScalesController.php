@@ -20,14 +20,15 @@ class ApiScalesController extends AbstractController
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
+        $anrId = (int) $this->params()->fromRoute('anrId');
 
-        $scales = $this->getService()->getList($page, $limit, $order, $filter);
+        $scales = $this->getService()->getList($page, $limit, $order, $filter, ['anr' => $anrId]);
         foreach($scales as $key => $scale){
             $this->formatDependencies($scales[$key], $this->dependencies);
         }
 
         return new JsonModel(array(
-            'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter),
+            'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter, ['anr' => $anrId]),
             'scales' => $scales
         ));
     }

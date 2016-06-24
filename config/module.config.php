@@ -135,7 +135,7 @@ return array(
             'monarc_api_scales' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/scales[/:id]',
+                    'route' => '/api/anr/:anrId/scales[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),

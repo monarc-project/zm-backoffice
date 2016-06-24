@@ -137,7 +137,7 @@ return array(
                 'options' => array(
                     'route' => '/api/anr/:anrId/scales[/:id]',
                     'constraints' => array(
-                        'id' => '[a-z]+',
+                        'id' => '[0-9]+',
                     ),
                     'defaults' => array(
                         'controller' => 'MonarcBO\Controller\ApiScales',
@@ -161,8 +161,10 @@ return array(
             'monarc_api_scales_comments' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/scales-comments[/:id]',
+                    'route' => '/api/anr/:anrId/scales/:type/comments[/:id]',
                     'constraints' => array(
+                        'anrId' => '[0-9]+',
+                        'type' => '[a-z]+',
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(

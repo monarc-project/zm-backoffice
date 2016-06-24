@@ -21,13 +21,16 @@ class ApiScalesCommentsController extends AbstractController
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
 
-        $comments = $this->getService()->getList($page, $limit, $order, $filter);
+        $anrId = (int) $this->params()->fromRoute('anrId');
+        $type = $this->params()->fromRoute('type');
+
+        $comments = $this->getService()->getList($page, $limit, $order, $filter, ['anr' => $anrId, 'type' => $type]);
         foreach($comments as $key => $type){
             $this->formatDependencies($comments[$key], $this->dependencies);
         }
 
         return new JsonModel(array(
-            'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter),
+            'count' => count($comments),
             'comments' => $comments
         ));
     }

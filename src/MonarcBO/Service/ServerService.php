@@ -17,7 +17,8 @@ class ServerService extends AbstractService
         return $serverTable->count();
     }
 
-    public function getFilteredCount($page = 1, $limit = 25, $order = null, $filter = null, $filterAnd = null) {
+    public function getFilteredCount($page = 1, $limit = 25, $order = null, $filter = null, $filterAnd = null)
+    {
         /** @var ServerTable $serverTable */
         $serverTable = $this->get('serverTable');
 
@@ -25,7 +26,8 @@ class ServerService extends AbstractService
             $this->parseFrontendFilter($filter, array('label', 'ip_address', 'fqdn')));
     }
 
-    public function getList($page = 1, $limit = 25, $order = null, $filter = null, $filterAnd = null) {
+    public function getList($page = 1, $limit = 25, $order = null, $filter = null, $filterAnd = null)
+    {
         /** @var ServerTable $serverTable */
         $serverTable = $this->get('serverTable');
 

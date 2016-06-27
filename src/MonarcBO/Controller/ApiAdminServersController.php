@@ -37,12 +37,17 @@ class ApiAdminServersController extends AbstractController
         if (isset($data['createdAt'])) unset($data['createdAt']);
         if (isset($data['creator'])) unset($data['creator']);
 
-        if (isset($data['id']) && $data['id'] > 0) {
-            $service->update($data);
-        } else {
-            $service->create($data);
-        }
+        $service->create($data);
 
+        return new JsonModel(array('status' => 'ok'));
+    }
+
+    public function update($id, $data)
+    {
+        /** @var ServerService $service */
+        $service = $this->getService();
+
+        $service->update($id, $data);
         return new JsonModel(array('status' => 'ok'));
     }
 

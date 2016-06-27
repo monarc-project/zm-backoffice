@@ -17,7 +17,8 @@ class ClientService extends AbstractService
         return $clientTable->count();
     }
 
-    public function getFilteredCount($page = 1, $limit = 25, $order = null, $filter = null, $filterAnd = null) {
+    public function getFilteredCount($page = 1, $limit = 25, $order = null, $filter = null, $filterAnd = null)
+    {
         /** @var ClientTable $clientTable */
         $clientTable = $this->get('clientTable');
 

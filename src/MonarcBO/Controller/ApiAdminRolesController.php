@@ -12,6 +12,8 @@ use Zend\View\Model\JsonModel;
  */
 class ApiAdminRolesController extends AbstractController
 {
+    protected $name = 'roles';
+
     /**
      * Get List
      *
@@ -19,10 +21,31 @@ class ApiAdminRolesController extends AbstractController
      */
     public function getList()
     {
-        /** @var UserService $service */
         $service = $this->getService();
-        return new JsonModel(array('count' => $service->getFilteredCount(),
-            'roles' => $service->getList()));
+        return new JsonModel(array(
+            'count' => $service->getFilteredCount(),
+            $this->name => $service->getList()
+        ));
+    }
+
+    public function get($id)
+    {
+        return $this->methodNotAllowed();
+    }
+
+    public function create($data)
+    {
+        return $this->methodNotAllowed();
+    }
+
+    public function update($id, $data)
+    {
+        return $this->methodNotAllowed();
+    }
+
+    public function delete($id)
+    {
+        return $this->methodNotAllowed();
     }
 }
 

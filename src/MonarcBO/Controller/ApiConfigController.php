@@ -23,5 +23,24 @@ class ApiConfigController extends AbstractController
         return new JsonModel($this->getService()->getLanguage());
     }
 
+    public function get($id)
+    {
+        return $this->methodNotAllowed();
+    }
+
+    public function create($data)
+    {
+        return $this->methodNotAllowed();
+    }
+
+    public function update($id, $data)
+    {
+        return $this->methodNotAllowed();
+    }
+
+    public function delete($id)
+    {
+        return $this->methodNotAllowed();
+    }
 }
 

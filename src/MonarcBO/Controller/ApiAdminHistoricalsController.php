@@ -13,34 +13,21 @@ use Zend\View\Model\JsonModel;
  */
 class ApiAdminHistoricalsController extends AbstractController
 {
-    /**
-     * Get list
-     *
-     * @return JsonModel
-     */
-    public function getList()
-    {
-        $page = $this->params()->fromQuery('page');
-        $limit = $this->params()->fromQuery('limit');
-        $order = $this->params()->fromQuery('order');
-        $filter = $this->params()->fromQuery('filter');
+    protected $name = 'historical';
 
-        return new JsonModel(array(
-            'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter),
-            'historical' => $this->getService()->getList($page, $limit, $order, $filter)
-        ));
+    public function create($data)
+    {
+        return $this->methodNotAllowed();
     }
 
-
-    /**
-     * Get
-     *
-     * @param mixed $id
-     * @return JsonModel
-     */
-    public function get($id)
+    public function update($id, $data)
     {
-        return new JsonModel($this->getService()->getEntity($id));
+        return $this->methodNotAllowed();
+    }
+
+    public function delete($id)
+    {
+        return $this->methodNotAllowed();
     }
 }
 

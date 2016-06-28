@@ -13,6 +13,8 @@ use Zend\View\Model\JsonModel;
  */
 class ApiRolfRisksController extends AbstractController
 {
+    protected $name = 'risks';
+
     /**
      * Get list
      *
@@ -47,7 +49,7 @@ class ApiRolfRisksController extends AbstractController
 
         return new JsonModel(array(
             'count' => $service->getFilteredCount($page, $limit, $order, $filter),
-            'risks' => $rolfRisks
+            $this->name => $rolfRisks
         ));
     }
 
@@ -76,52 +78,6 @@ class ApiRolfRisksController extends AbstractController
         }
 
         return new JsonModel($rolfRisk);
-    }
-
-    /**
-     * Create
-     *
-     * @param mixed $data
-     * @return JsonModel
-     */
-    public function create($data)
-    {
-        $id = $this->getService()->create($data);
-
-        return new JsonModel(
-            array(
-                'status' => 'ok',
-                'id' => $id,
-            )
-        );
-    }
-
-    /**
-     * Update
-     *
-     * @param mixed $id
-     * @param mixed $data
-     * @return JsonModel
-     */
-    public function update($id, $data)
-    {
-        $this->getService()->update($id, $data);
-
-        return new JsonModel(array('status' => 'ok'));
-    }
-
-    /**
-     * Delete
-     *
-     * @param mixed $id
-     * @return JsonModel
-     */
-    public function delete($id)
-    {
-        $service = $this->getService();
-        $service->delete($id);
-
-        return new JsonModel(array('status' => 'ok'));
     }
 }
 

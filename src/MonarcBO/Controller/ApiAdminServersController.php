@@ -8,23 +8,7 @@ use Zend\View\Model\JsonModel;
 
 class ApiAdminServersController extends AbstractController
 {
-    public function getList()
-    {
-        $page = $this->params()->fromQuery('page');
-        $limit = $this->params()->fromQuery('limit');
-        $order = $this->params()->fromQuery('order');
-        $filter = $this->params()->fromQuery('filter');
-
-        /** @var ServerService $service */
-        $service = $this->getService();
-        return new JsonModel(array('count' => $service->getFilteredCount($page, $limit, $order, $filter),
-            'servers' => $service->getList($page, $limit, $order, $filter)));
-    }
-
-    public function get($id)
-    {
-        return new JsonModel($this->getService()->getEntity($id));
-    }
+    protected $name = 'servers';
 
     public function create($data)
     {
@@ -39,24 +23,6 @@ class ApiAdminServersController extends AbstractController
 
         $service->create($data);
 
-        return new JsonModel(array('status' => 'ok'));
-    }
-
-    public function update($id, $data)
-    {
-        /** @var ServerService $service */
-        $service = $this->getService();
-
-        $service->update($id, $data);
-        return new JsonModel(array('status' => 'ok'));
-    }
-
-    public function delete($id)
-    {
-        /** @var ServerService $service */
-        $service = $this->getService();
-
-        $service->delete($id);
         return new JsonModel(array('status' => 'ok'));
     }
 }

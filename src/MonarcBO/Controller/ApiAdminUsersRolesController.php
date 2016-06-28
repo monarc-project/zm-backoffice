@@ -7,6 +7,8 @@ use Zend\View\Model\JsonModel;
 
 class ApiAdminUsersRolesController extends AbstractController
 {
+    protected $name = 'roles';
+
     public function getList() {
 
         $request = $this->getRequest();
@@ -16,7 +18,7 @@ class ApiAdminUsersRolesController extends AbstractController
 
         return new JsonModel(array(
             'count' => count($currentUserRoles),
-            'roles' => $currentUserRoles
+            $this->name => $currentUserRoles
         ));
     }
 
@@ -26,8 +28,24 @@ class ApiAdminUsersRolesController extends AbstractController
 
         return new JsonModel(array(
             'count' => count($userRoles),
-            'roles' => $userRoles
+            $this->name => $userRoles
         ));
     }
+
+    public function create($data)
+    {
+        return $this->methodNotAllowed();
+    }
+
+    public function update($id, $data)
+    {
+        return $this->methodNotAllowed();
+    }
+
+    public function delete($id)
+    {
+        return $this->methodNotAllowed();
+    }
+
 }
 

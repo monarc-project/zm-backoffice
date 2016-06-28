@@ -8,6 +8,7 @@ use Zend\View\Model\JsonModel;
 class ApiScalesController extends AbstractController
 {
     protected $dependencies = ['anr'];
+    protected $name = 'scales';
 
     /**
      * Get List
@@ -29,7 +30,7 @@ class ApiScalesController extends AbstractController
 
         return new JsonModel(array(
             'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter, ['anr' => $anrId]),
-            'scales' => $scales
+            $this->name => $scales
         ));
     }
 
@@ -47,6 +48,21 @@ class ApiScalesController extends AbstractController
         $this->getService()->updateByAnrAndType($anrId, $type, $data);
 
         return new JsonModel(array('status' => 'ok'));
+    }
+
+    public function get($id)
+    {
+        return $this->methodNotAllowed();
+    }
+
+    public function create($data)
+    {
+        return $this->methodNotAllowed();
+    }
+
+    public function delete($id)
+    {
+        return $this->methodNotAllowed();
     }
 }
 

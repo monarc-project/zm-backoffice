@@ -8,23 +8,7 @@ use Zend\View\Model\JsonModel;
 
 class ApiClientsController extends AbstractController
 {
-    public function getList()
-    {
-        $page = $this->params()->fromQuery('page');
-        $limit = $this->params()->fromQuery('limit');
-        $order = $this->params()->fromQuery('order');
-        $filter = $this->params()->fromQuery('filter');
-
-        /** @var ClientService $service */
-        $service = $this->getService();
-        return new JsonModel(array('count' => $service->getFilteredCount($page, $limit, $order, $filter),
-            'clients' => $service->getList($page, $limit, $order, $filter)));
-    }
-
-    public function get($id)
-    {
-        return new JsonModel($this->getService()->getEntity($id));
-    }
+    protected $name = 'clients';
 
     public function create($data)
     {
@@ -56,15 +40,6 @@ class ApiClientsController extends AbstractController
 
         $service->update($id, $data);
 
-        return new JsonModel(array('status' => 'ok'));
-    }
-
-    public function delete($id)
-    {
-        /** @var ClientService $service */
-        $service = $this->getService();
-
-        $service->delete($id);
         return new JsonModel(array('status' => 'ok'));
     }
 }

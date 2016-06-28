@@ -14,6 +14,7 @@ use Zend\View\Model\JsonModel;
 class ApiObjectsController extends AbstractController
 {
     protected $dependencies = ['category', 'asset', 'rolfTag'];
+    protected $name = 'objects';
 
     /**
      * Get list
@@ -41,69 +42,8 @@ class ApiObjectsController extends AbstractController
 
         return new JsonModel(array(
             'count' => $count,
-            'objects' => $objects
+            $this->name => $objects
         ));
-    }
-
-    /**
-     * Get
-     *
-     * @param mixed $id
-     * @return JsonModel
-     */
-    public function get($id)
-    {
-        $objectCategory = $this->getService()->getEntity($id);
-
-        $this->formatDependencies($objectCategory, $this->dependencies);
-
-        return new JsonModel($objectCategory);
-    }
-
-    /**
-     * Create
-     *
-     * @param mixed $data
-     * @return JsonModel
-     */
-    public function create($data)
-    {
-        $id = $this->getService()->create($data);
-
-        return new JsonModel(
-            array(
-                'status' => 'ok',
-                'id' => $id,
-            )
-        );
-    }
-
-    /**
-     * Update
-     *
-     * @param mixed $id
-     * @param mixed $data
-     * @return JsonModel
-     */
-    public function update($id, $data)
-    {
-        $this->getService()->update($id, $data);
-
-        return new JsonModel(array('status' => 'ok'));
-    }
-
-    /**
-     * Delete
-     *
-     * @param mixed $id
-     * @return JsonModel
-     */
-    public function delete($id)
-    {
-        $service = $this->getService();
-        $service->delete($id);
-
-        return new JsonModel(array('status' => 'ok'));
     }
 }
 

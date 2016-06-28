@@ -14,6 +14,7 @@ use Zend\View\Model\JsonModel;
 class ApiObjectsCategoriesController extends AbstractController
 {
     protected $dependencies = ['parent', 'root'];
+    protected $name = 'categories';
 
     /**
      * Get list
@@ -33,71 +34,8 @@ class ApiObjectsCategoriesController extends AbstractController
 
         return new JsonModel(array(
             'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter),
-            'categories' => $recursiveArray
+            $this->name => $recursiveArray
         ));
-    }
-
-
-
-    /**
-     * Get
-     *
-     * @param mixed $id
-     * @return JsonModel
-     */
-    public function get($id)
-    {
-        $objectCategory = $this->getService()->getEntity($id);
-
-        $this->formatDependencies($objectCategory, $this->dependencies);
-
-        return new JsonModel($objectCategory);
-    }
-
-    /**
-     * Create
-     *
-     * @param mixed $data
-     * @return JsonModel
-     */
-    public function create($data)
-    {
-        $id = $this->getService()->create($data);
-
-        return new JsonModel(
-            array(
-                'status' => 'ok',
-                'id' => $id,
-            )
-        );
-    }
-
-    /**
-     * Update
-     *
-     * @param mixed $id
-     * @param mixed $data
-     * @return JsonModel
-     */
-    public function update($id, $data)
-    {
-        $this->getService()->update($id, $data);
-
-        return new JsonModel(array('status' => 'ok'));
-    }
-
-    /**
-     * Delete
-     *
-     * @param mixed $id
-     * @return JsonModel
-     */
-    public function delete($id)
-    {
-        $service = $this->getService();
-        $service->delete($id);
-
-        return new JsonModel(array('status' => 'ok'));
     }
 
     /**

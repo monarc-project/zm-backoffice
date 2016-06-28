@@ -13,6 +13,8 @@ use Zend\View\Model\JsonModel;
  */
 class ApiAssetsController extends AbstractController
 {
+    protected $name = 'assets';
+
     /**
      * Get list
      *
@@ -39,7 +41,7 @@ class ApiAssetsController extends AbstractController
 
         return new JsonModel(array(
             'count' => $service->getFilteredCount($page, $limit, $order, $filter),
-            'assets' => $assets
+            $this->name => $assets
         ));
     }
 
@@ -60,51 +62,6 @@ class ApiAssetsController extends AbstractController
         }
 
         return new JsonModel($asset);
-    }
-
-    /**
-     * Create
-     *
-     * @param mixed $data
-     * @return JsonModel
-     */
-    public function create($data)
-    {
-        $id = $this->getService()->create($data);
-
-        return new JsonModel(
-            array(
-                'status' => 'ok',
-                'id' => $id,
-            )
-        );
-    }
-
-    /**
-     * Update
-     *
-     * @param mixed $id
-     * @param mixed $data
-     * @return JsonModel
-     */
-    public function update($id, $data)
-    {
-        $this->getService()->update($id, $data);
-
-        return new JsonModel(array('status' => 'ok'));
-    }
-
-    /**
-     * Delete
-     *
-     * @param mixed $id
-     * @return JsonModel
-     */
-    public function delete($id)
-    {
-        $this->getService()->delete($id);
-
-        return new JsonModel(array('status' => 'ok'));
     }
 
 }

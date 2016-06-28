@@ -7,7 +7,12 @@ use Zend\View\Model\JsonModel;
 
 class ApiAdminPasswordsController extends AbstractController
 {
-
+    /**
+     * Create
+     *
+     * @param mixed $data
+     * @return JsonModel
+     */
     public function create($data)
     {
         $service = $this->getService();
@@ -23,6 +28,26 @@ class ApiAdminPasswordsController extends AbstractController
         }
 
         return new JsonModel(array('status' => 'ok'));
+    }
+
+    public function getList()
+    {
+        return $this->methodNotAllowed();
+    }
+
+    public function get($id)
+    {
+        return $this->methodNotAllowed();
+    }
+
+    public function update($id, $data)
+    {
+        return $this->methodNotAllowed();
+    }
+
+    public function delete($id)
+    {
+        return $this->methodNotAllowed();
     }
 }
 

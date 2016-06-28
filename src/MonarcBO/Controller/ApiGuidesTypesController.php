@@ -7,6 +7,8 @@ use Zend\View\Model\JsonModel;
 
 class ApiGuidesTypesController extends AbstractController
 {
+    protected $name = 'type';
+
     /**
      * Get List
      *
@@ -15,8 +17,28 @@ class ApiGuidesTypesController extends AbstractController
     public function getList()
     {
         return new JsonModel(array(
-            'type' => $this->getService()->getTypes()
+            $this->name => $this->getService()->getTypes()
         ));
+    }
+
+    public function get($id)
+    {
+        return $this->methodNotAllowed();
+    }
+
+    public function create($data)
+    {
+        return $this->methodNotAllowed();
+    }
+
+    public function update($id, $data)
+    {
+        return $this->methodNotAllowed();
+    }
+
+    public function delete($id)
+    {
+        return $this->methodNotAllowed();
     }
 }
 

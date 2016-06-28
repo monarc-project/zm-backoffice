@@ -12,23 +12,7 @@ use Zend\View\Model\JsonModel;
  */
 class ApiDocModelsController extends AbstractController
 {
-    /**
-     * Get list
-     *
-     * @return JsonModel
-     */
-    public function getList()
-    {
-        $page = $this->params()->fromQuery('page');
-        $limit = $this->params()->fromQuery('limit');
-        $order = $this->params()->fromQuery('order');
-        $filter = $this->params()->fromQuery('filter');
-
-        return new JsonModel(array(
-            'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter),
-            'docmodels' => $this->getService()->getList($page, $limit, $order, $filter)
-        ));
-    }
+    protected $name = "docmodels";
 
     public function create($data)
     {
@@ -42,17 +26,14 @@ class ApiDocModelsController extends AbstractController
         return new JsonModel(array('status' => 'ok'));
     }
 
-    /**
-     * Delete
-     *
-     * @param mixed $id
-     * @return JsonModel
-     */
-    public function delete($id)
+    public function get($id)
     {
-        $this->getService()->delete($id);
+        return $this->methodNotAllowed();
+    }
 
-        return new JsonModel(array('status' => 'ok'));
+    public function update($id, $data)
+    {
+        return $this->methodNotAllowed();
     }
 }
 

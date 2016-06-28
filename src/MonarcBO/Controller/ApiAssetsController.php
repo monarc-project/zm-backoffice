@@ -63,6 +63,5 @@ class ApiAssetsController extends AbstractController
 
         return new JsonModel($asset);
     }
-
 }
 

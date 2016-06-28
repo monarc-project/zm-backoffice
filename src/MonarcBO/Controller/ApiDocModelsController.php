@@ -35,5 +35,10 @@ class ApiDocModelsController extends AbstractController
     {
         return $this->methodNotAllowed();
     }
+
+    public function patch($id, $data)
+    {
+        return $this->methodNotAllowed();
+    }
 }
 

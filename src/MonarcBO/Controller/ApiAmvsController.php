@@ -21,16 +21,6 @@ class ApiAmvsController extends AbstractController
         return $this->methodNotAllowed();
     }
 
-    public function update($id, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    public function patch($id, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
     public function delete($id)
     {
         return $this->methodNotAllowed();

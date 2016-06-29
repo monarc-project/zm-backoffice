@@ -17,13 +17,11 @@ class ApiAdminPasswordsController extends AbstractController
     {
         $service = $this->getService();
 
-        if (array_key_exists('mail', $data)) {
+        if ((array_key_exists('mail', $data)) && (!array_key_exists('password', $data))) {
             $service->passwordForgotten($data['mail']);
-        } else if (array_key_exists('token', $data)) {
-            if ((array_key_exists('password', $data)) && (array_key_exists('confirm', $data))) {
-                if ($data['password'] == $data['confirm']) {
-                    $service->newPassword($data['token'], $data['password']);
-                }
+        } else if ((array_key_exists('mail', $data)) && (array_key_exists('password', $data)) && (array_key_exists('confirm', $data))){
+            if ($data['password'] == $data['confirm']) {
+                $service->newPassword($data['mail'], $data['password']);
             }
         }
 

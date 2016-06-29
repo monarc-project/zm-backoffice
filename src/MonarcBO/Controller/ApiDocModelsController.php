@@ -5,9 +5,9 @@ use MonarcCore\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Admin Historicals Controller
+ * Api Doc Models Controller
  *
- * Class ApiAdminHistoricalsController
+ * Class ApiDocModelsController
  * @package MonarcBO\Controller
  */
 class ApiDocModelsController extends AbstractController

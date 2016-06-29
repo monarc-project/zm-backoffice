@@ -366,9 +366,12 @@ return array(
             ),
 
             'monarc_api_doc_models' => array(
-                'type' => 'literal',
+                'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/docmodels',
+                    'route' => '/api/docmodels[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
                     'defaults' => array(
                         'controller' => 'MonarcBO\Controller\ApiDocModels',
                     ),

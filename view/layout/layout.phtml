@@ -13,8 +13,7 @@
     <!-- Le styles -->
     <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/png', 'href' => $this->basePath() . '/img/favicon.png'))
         ->prependStylesheet($this->basePath('css/style.css'))
-        ->prependStylesheet('https://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic')
-        ->prependStylesheet('https://fonts.googleapis.com/icon?family=Material+Icons')
+        ->prependStylesheet($this->basePath('css/material-icons.css'))
         ->prependStylesheet($this->basePath('css/angular-common-libs.css')) ?>
 
     <!-- Scripts -->

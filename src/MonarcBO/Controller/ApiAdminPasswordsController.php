@@ -57,13 +57,7 @@ class ApiAdminPasswordsController extends AbstractController
 
     public function patch($token, $data)
     {
-        if ((array_key_exists('password', $data)) && (array_key_exists('confirm', $data))){
-            if ($data['password'] == $data['confirm']) {
-                $this->getService()->newPasswordByToken($token, $data['password']);
-            } else {
-                throw  new \Exception('Password must be the same', 422);
-            }
-        }
+        return $this->methodNotAllowed();
     }
 
     public function delete($id)

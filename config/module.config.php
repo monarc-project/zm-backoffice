@@ -79,6 +79,19 @@ return array(
                 ),
             ),
 
+            'monarc_api_admin_password' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/admin/password/:id',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAdminPassword',
+                    ),
+                ),
+            ),
+
             'monarc_api_models' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -385,6 +398,7 @@ return array(
         ),
         'factories' => array(
             '\MonarcBO\Controller\ApiAdminHistoricals'  => '\MonarcBO\Controller\ApiAdminHistoricalsControllerFactory',
+            '\MonarcBO\Controller\ApiAdminPassword'     => '\MonarcBO\Controller\ApiAdminPasswordControllerFactory',
             '\MonarcBO\Controller\ApiAdminPasswords'    => '\MonarcBO\Controller\ApiAdminPasswordsControllerFactory',
             '\MonarcBO\Controller\ApiAdminRoles'        => '\MonarcBO\Controller\ApiAdminRolesControllerFactory',
             '\MonarcBO\Controller\ApiAdminServers'      => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
@@ -491,9 +505,10 @@ return array(
         ),
         // Admin comptes : Création des comptes et authentification client
         'accadmin'=> array(
+            'monarc_api_admin_password',
             'monarc_api_admin_users',
-            'monarc_api_clients',
             'monarc_api_admin_users_roles',
+            'monarc_api_clients',
         ),
     )
 );

@@ -70,9 +70,8 @@ return array(
             'monarc_api_admin_passwords' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/admin/passwords[/:id]',
+                    'route' => '/api/admin/passwords',
                     'constraints' => array(
-                        'id' => '[0-9]+',
                     ),
                     'defaults' => array(
                         'controller' => 'MonarcBO\Controller\ApiAdminPasswords',

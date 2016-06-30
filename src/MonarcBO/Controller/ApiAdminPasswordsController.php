@@ -12,16 +12,28 @@ class ApiAdminPasswordsController extends AbstractController
      *
      * @param mixed $data
      * @return JsonModel
+     * @throws \Exception
      */
     public function create($data)
     {
-        $service = $this->getService();
+        //password forgotten
+        if ((array_key_exists('email', $data)) && (!array_key_exists('password', $data))) {
+            $this->getService()->passwordForgotten($data['email']);
+        }
 
-        if ((array_key_exists('mail', $data)) && (!array_key_exists('password', $data))) {
-            $service->passwordForgotten($data['mail']);
-        } else if ((array_key_exists('mail', $data)) && (array_key_exists('password', $data)) && (array_key_exists('confirm', $data))){
+        //verify token
+        if ((array_key_exists('token', $data)) && (!array_key_exists('password', $data))) {
+            $result =  $this->getService()->verifyToken($data['token']);
+
+            return new JsonModel(array('status' => $result));
+        }
+
+        //change password not logged
+        if ((array_key_exists('token', $data)) && (array_key_exists('password', $data)) && (array_key_exists('confirm', $data))){
             if ($data['password'] == $data['confirm']) {
-                $service->newPassword($data['mail'], $data['password']);
+                $this->getService()->newPasswordByToken($data['token'], $data['password']);
+            } else {
+                throw  new \Exception('Password must be the same', 422);
             }
         }
 
@@ -43,9 +55,15 @@ class ApiAdminPasswordsController extends AbstractController
         return $this->methodNotAllowed();
     }
 
-    public function patch($id, $data)
+    public function patch($token, $data)
     {
-        return $this->methodNotAllowed();
+        if ((array_key_exists('password', $data)) && (array_key_exists('confirm', $data))){
+            if ($data['password'] == $data['confirm']) {
+                $this->getService()->newPasswordByToken($token, $data['password']);
+            } else {
+                throw  new \Exception('Password must be the same', 422);
+            }
+        }
     }
 
     public function delete($id)

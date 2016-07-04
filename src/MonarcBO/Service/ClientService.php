@@ -66,6 +66,11 @@ class ClientService extends AbstractService
         /** @var Client $entity */
         $entity = $clientTable->getEntity($id);
 
+        if (isset($data['proxy_alias'])) {
+            // Don't allow changing the proxy_alias once set
+            unset($data['proxy_alias']);
+        }
+
         if ($entity != null) {
             $entity->exchangeArray($data);
             $clientTable->save($entity);

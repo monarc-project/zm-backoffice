@@ -15,10 +15,5 @@ class ApiThemesController extends AbstractController
 {
     protected $name = 'themes';
 
-    public function delete($id)
-    {
-        return $this->methodNotAllowed();
-    }
-
 }
 

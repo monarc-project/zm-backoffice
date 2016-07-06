@@ -32,7 +32,6 @@ class ApiObjectsController extends AbstractController
         $lock = $this->params()->fromQuery('lock');
 
         $objects =  $this->getService()->getListSpecific($page, $limit, $order, $filter, $asset, $category, $lock);
-        $count = ($lock == 'true') ? count($objects) : $this->getService()->getFilteredCount($page, $limit, $order, $filter, $asset, $category);
 
         if ($lock == 'true') {
             foreach($objects as $key => $object){
@@ -41,7 +40,7 @@ class ApiObjectsController extends AbstractController
         }
 
         return new JsonModel(array(
-            'count' => $count,
+            'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter, $asset, $category),
             $this->name => $objects
         ));
     }

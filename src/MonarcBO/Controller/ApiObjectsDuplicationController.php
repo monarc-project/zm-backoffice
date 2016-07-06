@@ -24,7 +24,7 @@ class ApiObjectsDuplicationController extends AbstractController
     public function create($data)
     {
         if (array_key_exists('id', $data)) {
-            $id = $this->getService()->duplicate($data['id']);
+            $id = $this->getService()->duplicate($data);
 
             return new JsonModel(
                 array(

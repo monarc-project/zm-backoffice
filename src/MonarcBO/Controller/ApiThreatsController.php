@@ -27,10 +27,12 @@ class ApiThreatsController extends AbstractController
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
+        $status = $this->params()->fromQuery('status');
+        $filterAnd = ($status == "all") ? null : ['status' => (int) $status] ;
 
         $service = $this->getService();
 
-        $threats = $service->getList($page, $limit, $order, $filter);
+        $threats = $service->getList($page, $limit, $order, $filter, $filterAnd);
         foreach($threats as $key => $threat){
             $threat['models']->initialize();
             $models = $threat['models']->getSnapshot();
@@ -43,7 +45,7 @@ class ApiThreatsController extends AbstractController
         }
 
         return new JsonModel(array(
-            'count' => $service->getFilteredCount($page, $limit, $order, $filter),
+            'count' => $service->getFilteredCount($page, $limit, $order, $filter, $filterAnd),
             $this->name => $threats
         ));
     }

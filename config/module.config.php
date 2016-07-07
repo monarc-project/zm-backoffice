@@ -104,6 +104,19 @@ return array(
                     ),
                 ),
             ),
+            'monarc_api_model_objects' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/models/:idm/objects[/:id]',
+                    'constraints' => array(
+                        'idm' => '[0-9]+',
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiModelObject',
+                    ),
+                ),
+            ),
 
             'monarc_api_guides' => array(
                 'type' => 'segment',
@@ -438,6 +451,7 @@ return array(
             '\MonarcBO\Controller\ApiThreats'               => '\MonarcBO\Controller\ApiThreatsControllerFactory',
             '\MonarcBO\Controller\ApiVulnerabilities'       => '\MonarcBO\Controller\ApiVulnerabilitiesControllerFactory',
             '\MonarcBO\Controller\ApiDocModels'             => '\MonarcBO\Controller\ApiDocModelsControllerFactory',
+            '\MonarcBO\Controller\ApiModelObject'           => '\MonarcBO\Controller\ApiModelObjectControllerFactory',
         ),
     ),
 
@@ -509,6 +523,7 @@ return array(
             'monarc_api_vulnerabilities',
             'monarc_api_admin_users_roles',
             'monarc_api_doc_models',
+            'monarc_api_model_objects',
         ),
         // Admin système : Gestion des logs et tout ce qui est non applicatif (Administration)
         'sysadmin'=> array(

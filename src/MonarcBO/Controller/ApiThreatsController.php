@@ -28,6 +28,9 @@ class ApiThreatsController extends AbstractController
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
         $status = $this->params()->fromQuery('status');
+        if (is_null($status)) {
+            $status = 1;
+        }
         $filterAnd = ($status == "all") ? null : ['status' => (int) $status] ;
 
         $service = $this->getService();

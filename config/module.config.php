@@ -422,7 +422,7 @@ return array(
         ),
         'factories' => array(
             '\MonarcBO\Controller\ApiAdminHistoricals'      => '\MonarcBO\Controller\ApiAdminHistoricalsControllerFactory',
-            '\MonarcBO\Controller\ApiAdminPassword'         => '\MonarcBO\Controller\ApiAdminPasswordControllerFactory',
+            '\MonarcBO\Controller\ApiUserPassword'          => '\MonarcBO\Controller\ApiUserPasswordControllerFactory',
             '\MonarcBO\Controller\ApiAdminPasswords'        => '\MonarcBO\Controller\ApiAdminPasswordsControllerFactory',
             '\MonarcBO\Controller\ApiAdminRoles'            => '\MonarcBO\Controller\ApiAdminRolesControllerFactory',
             '\MonarcBO\Controller\ApiAdminServers'          => '\MonarcBO\Controller\ApiAdminServersControllerFactory',

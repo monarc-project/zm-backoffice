@@ -26,10 +26,12 @@ class ApiRolfRisksController extends AbstractController
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
+        $category = $this->params()->fromQuery('category');
+        $tag = $this->params()->fromQuery('tag');
 
         $service = $this->getService();
 
-        $rolfRisks = $service->getList($page, $limit, $order, $filter);
+        $rolfRisks = $service->getListSpecific($page, $limit, $order, $filter, $category, $tag);
         foreach($rolfRisks as $key => $rolfRisk){
 
             $rolfRisk['categories']->initialize();

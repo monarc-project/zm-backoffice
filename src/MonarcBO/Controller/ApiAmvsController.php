@@ -15,10 +15,5 @@ class ApiAmvsController extends AbstractController
 {
     protected $dependencies = ['asset', 'threat', 'vulnerability', 'measure1', 'measure2', 'measure3'];
     protected $name = "amvs";
-
-    public function delete($id)
-    {
-        return $this->methodNotAllowed();
-    }
 }
 

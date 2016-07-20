@@ -27,15 +27,37 @@ class ApiObjectsCategoriesController extends AbstractController
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
+        $parentId = (int) $this->params()->fromQuery('parentId');
+        $lock = $this->params()->fromQuery('lock') == "false" ? false : true;
 
-        $objectCategories = $this->getService()->getList($page, $limit, $order, $filter);
+        $objectCategories = $this->getService()->getListSpecific($page, $limit, $order, $filter, $parentId);
 
-        $recursiveArray = $this->recursiveArray($objectCategories, null, 0);
+        if ($parentId > 0 && $lock) {
+            $recursiveArray = $this->getCleanFields($objectCategories, ['id', 'label1', 'label2', 'label3', 'label4', 'position']);
+        } else {
+            $recursiveArray = $this->recursiveArray($objectCategories, null, 0);
+        }
 
         return new JsonModel(array(
             'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter),
             $this->name => $recursiveArray
         ));
+    }
+
+    public function getCleanFields($items, $fields) {
+        $output = [];
+        foreach ($items as $item) {
+            $item_output = [];
+
+            foreach ($item as $key => $value) {
+                if (in_array($key, $fields)) {
+                    $item_output[$key] = $value;
+                }
+            }
+
+            $output[] = $item_output;
+        }
+        return $output;
     }
 
     /**

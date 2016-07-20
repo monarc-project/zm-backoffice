@@ -4,7 +4,7 @@ namespace MonarcBO\Controller;
 
 use MonarcCore\Controller\AbstractControllerFactory;
 
-class ApiAdminPasswordControllerFactory extends AbstractControllerFactory
+class ApiUserPasswordControllerFactory extends AbstractControllerFactory
 {
     protected $serviceName = '\MonarcCore\Service\PasswordService';
 }

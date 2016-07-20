@@ -5,7 +5,7 @@ namespace MonarcBO\Controller;
 use MonarcCore\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 
-class ApiAdminPasswordController extends AbstractController
+class ApiUserPasswordController extends AbstractController
 {
     public function create($data)
     {

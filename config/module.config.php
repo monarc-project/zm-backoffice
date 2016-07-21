@@ -363,6 +363,17 @@ return array(
                 ),
             ),
 
+            'monarc_api_objects_objects' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/objects-objects',
+                    'constraints' => array(),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiObjectsObjects',
+                    ),
+                ),
+            ),
+
             'monarc_api_objects_categories' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -451,6 +462,7 @@ return array(
             '\MonarcBO\Controller\ApiObjects'               => '\MonarcBO\Controller\ApiObjectsControllerFactory',
             '\MonarcBO\Controller\ApiObjectsDuplication'    => '\MonarcBO\Controller\ApiObjectsDuplicationControllerFactory',
             '\MonarcBO\Controller\ApiObjectsExport'         => '\MonarcBO\Controller\ApiObjectsExportControllerFactory',
+            '\MonarcBO\Controller\ApiObjectsObjects'        => '\MonarcBO\Controller\ApiObjectsObjectsControllerFactory',
             '\MonarcBO\Controller\ApiObjectsCategories'     => '\MonarcBO\Controller\ApiObjectsCategoriesControllerFactory',
             '\MonarcBO\Controller\ApiObjectsRisks'          => '\MonarcBO\Controller\ApiObjectsRisksControllerFactory',
             '\MonarcBO\Controller\ApiScales'                => '\MonarcBO\Controller\ApiScalesControllerFactory',
@@ -526,6 +538,7 @@ return array(
             'monarc_api_objects_duplication',
             'monarc_api_objects_export',
             'monarc_api_objects_risks',
+            'monarc_api_objects_objects',
             'monarc_api_rolf_categories',
             'monarc_api_rolf_risks',
             'monarc_api_rolf_tags',

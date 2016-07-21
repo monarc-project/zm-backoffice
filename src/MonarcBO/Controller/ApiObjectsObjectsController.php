@@ -34,10 +34,5 @@ class ApiObjectsObjectsController extends AbstractController
     {
         return $this->methodNotAllowed();
     }
-
-    public function delete($id)
-    {
-        return $this->methodNotAllowed();
-    }
 }
 

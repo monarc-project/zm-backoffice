@@ -366,7 +366,7 @@ return array(
             'monarc_api_objects_objects' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/objects-objects',
+                    'route' => '/api/objects-objects[/:id]',
                     'constraints' => array(),
                     'defaults' => array(
                         'controller' => 'MonarcBO\Controller\ApiObjectsObjects',

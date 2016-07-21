@@ -26,9 +26,17 @@ class ApiDocModelsController extends AbstractController
         return new JsonModel(array('status' => 'ok'));
     }
 
+    /**
+     * Get
+     *
+     * @param mixed $id
+     * @return JsonModel
+     */
     public function get($id)
     {
-        return $this->methodNotAllowed();
+        $entity = $this->getService()->getEntity($id);
+        var_dump($entity);die();
+        return new JsonModel($entity);
     }
 
     public function update($id, $data)

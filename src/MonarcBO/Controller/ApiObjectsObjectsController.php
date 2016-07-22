@@ -14,8 +14,6 @@ use Zend\View\Model\JsonModel;
  */
 class ApiObjectsObjectsController extends AbstractController
 {
-    protected $componentsService;
-
     public function get($id)
     {
         return $this->methodNotAllowed();

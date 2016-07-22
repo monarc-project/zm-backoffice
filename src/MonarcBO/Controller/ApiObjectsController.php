@@ -44,5 +44,29 @@ class ApiObjectsController extends AbstractController
             $this->name => $objects
         ));
     }
+
+    /**
+     * Get
+     *
+     * @param mixed $id
+     * @return JsonModel
+     */
+    public function get($id)
+    {
+        $mode = $this->params()->fromQuery('mode');
+
+        if ($mode == null || !in_array($mode, ['anr', 'bdc'])) {
+            $mode = 'bdc';
+        }
+
+        $entity = $this->getService()->getEntity($id, $mode);
+
+        if (count($this->dependencies)) {
+            $this->formatDependencies($entity, $this->dependencies);
+        }
+
+        return new JsonModel($entity);
+    }
+
 }
 

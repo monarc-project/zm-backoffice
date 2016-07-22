@@ -31,11 +31,6 @@ class ApiObjectsRisksController extends AbstractController
         $this->methodNotAllowed();
     }
 
-    public function update($id, $data)
-    {
-        $this->methodNotAllowed();
-    }
-
     public function delete($id)
     {
         $this->methodNotAllowed();

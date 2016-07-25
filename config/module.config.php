@@ -104,6 +104,33 @@ return array(
                     ),
                 ),
             ),
+
+            'monarc_api_anr_library' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/anr/:anrid/library[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAnrLibrary',
+                    ),
+                ),
+            ),
+
+            'monarc_api_anr_instances' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/anr/:anrid/instances[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAnrInstances',
+                    ),
+                ),
+            ),
+
             'monarc_api_model_objects' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -473,6 +500,8 @@ return array(
             '\MonarcBO\Controller\ApiAdminServers'          => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
             '\MonarcBO\Controller\ApiAdminUsers'            => '\MonarcBO\Controller\ApiAdminUsersControllerFactory',
             '\MonarcBO\Controller\ApiAdminUsersRoles'       => '\MonarcBO\Controller\ApiAdminUsersRolesControllerFactory',
+            '\MonarcBO\Controller\ApiAnrInstances'          => '\MonarcBO\Controller\ApiAnrInstancesControllerFactory',
+            '\MonarcBO\Controller\ApiAnrLibrary'            => '\MonarcBO\Controller\ApiAnrLibraryControllerFactory',
             '\MonarcBO\Controller\ApiAmvs'                  => '\MonarcBO\Controller\ApiAmvsControllerFactory',
             '\MonarcBO\Controller\ApiAssets'                => '\MonarcBO\Controller\ApiAssetsControllerFactory',
             '\MonarcBO\Controller\ApiClients'               => '\MonarcBO\Controller\ApiClientsControllerFactory',
@@ -557,6 +586,8 @@ return array(
         'dbadmin'=> array(
             'monarc_api_amvs',
             'monarc_api_assets',
+            'monarc_api_anr_instances',
+            'monarc_api_anr_library',
             'monarc_api_instances',
             'monarc_api_measures',
             'monarc_api_models',

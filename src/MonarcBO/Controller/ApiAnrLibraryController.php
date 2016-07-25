@@ -16,9 +16,11 @@ class ApiAnrLibraryController extends AbstractController
 
         $fields = ['id', 'label1', 'label2', 'label3', 'label4', 'position', 'objects'];
 
+        $objectsCategories = $this->getService()->getCategoriesLibraryByAnr($anrId);
+        $recursiveArray = $this->recursiveArray($objectsCategories, null, 0, $fields);
+
         return new JsonModel(array(
-            'count' => count($this->getService()->getCategoriesLibraryByAnr($anrId)),
-            $this->name => $this->recursiveArray($this->getService()->getCategoriesLibraryByAnr($anrId), null, 0, $fields)
+            $this->name => $recursiveArray
         ));
     }
 

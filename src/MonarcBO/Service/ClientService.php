@@ -34,7 +34,7 @@ class ClientService extends AbstractService
 
         return $clientTable->fetchAllFiltered(
             array('id', 'name', 'proxy_alias', 'address', 'postalcode', 'phone', 'fax', 'email', 'contact_fullname',
-                'employees_number', 'contact_email', 'contact_phone'),
+                'employees_number', 'contact_email', 'contact_phone', 'model_id'),
             $page,
             $limit,
             $this->parseFrontendOrder($order),

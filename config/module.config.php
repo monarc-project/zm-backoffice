@@ -365,6 +365,28 @@ return array(
                 ),
             ),
 
+            'monarc_api_objects_export' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/objects-export',
+                    'constraints' => array(),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiObjectsExport',
+                    ),
+                ),
+            ),
+
+            'monarc_api_objects_objects' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/objects-objects[/:id]',
+                    'constraints' => array(),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiObjectsObjects',
+                    ),
+                ),
+            ),
+
             'monarc_api_objects_categories' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -426,6 +448,16 @@ return array(
                     ),
                 ),
             ),
+
+            'monarc_api_user_profile' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route' => '/api/user/profile',
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiUserProfile',
+                    ),
+                ),
+            ),
         ),
     ),
 
@@ -453,6 +485,8 @@ return array(
             '\MonarcBO\Controller\ApiModels'                => '\MonarcBO\Controller\ApiModelsControllerFactory',
             '\MonarcBO\Controller\ApiObjects'               => '\MonarcBO\Controller\ApiObjectsControllerFactory',
             '\MonarcBO\Controller\ApiObjectsDuplication'    => '\MonarcBO\Controller\ApiObjectsDuplicationControllerFactory',
+            '\MonarcBO\Controller\ApiObjectsExport'         => '\MonarcBO\Controller\ApiObjectsExportControllerFactory',
+            '\MonarcBO\Controller\ApiObjectsObjects'        => '\MonarcBO\Controller\ApiObjectsObjectsControllerFactory',
             '\MonarcBO\Controller\ApiObjectsCategories'     => '\MonarcBO\Controller\ApiObjectsCategoriesControllerFactory',
             '\MonarcBO\Controller\ApiObjectsRisks'          => '\MonarcBO\Controller\ApiObjectsRisksControllerFactory',
             '\MonarcBO\Controller\ApiScales'                => '\MonarcBO\Controller\ApiScalesControllerFactory',
@@ -466,6 +500,7 @@ return array(
             '\MonarcBO\Controller\ApiVulnerabilities'       => '\MonarcBO\Controller\ApiVulnerabilitiesControllerFactory',
             '\MonarcBO\Controller\ApiDocModels'             => '\MonarcBO\Controller\ApiDocModelsControllerFactory',
             '\MonarcBO\Controller\ApiModelObject'           => '\MonarcBO\Controller\ApiModelObjectControllerFactory',
+            '\MonarcBO\Controller\ApiUserProfile'           => '\MonarcBO\Controller\ApiUserProfileControllerFactory',
         ),
     ),
 
@@ -516,6 +551,7 @@ return array(
         // Super Admin : Gestion des droits des utilisateurs uniquement (Carnet d’adresses)
         'superadmin'=> array(
             'monarc_api_admin_users_roles',
+            'monarc_api_user_profile',
         ),
         // Admin DB : Gestion des bases de connaissances (paramètres généraux)
         'dbadmin'=> array(
@@ -527,7 +563,9 @@ return array(
             'monarc_api_objects',
             'monarc_api_objects_categories',
             'monarc_api_objects_duplication',
+            'monarc_api_objects_export',
             'monarc_api_objects_risks',
+            'monarc_api_objects_objects',
             'monarc_api_rolf_categories',
             'monarc_api_rolf_risks',
             'monarc_api_rolf_tags',
@@ -539,12 +577,14 @@ return array(
             'monarc_api_admin_users_roles',
             'monarc_api_doc_models',
             'monarc_api_model_objects',
+            'monarc_api_user_profile',
         ),
         // Admin système : Gestion des logs et tout ce qui est non applicatif (Administration)
         'sysadmin'=> array(
             'monarc_api_admin_historicals',
             'monarc_api_admin_servers',
             'monarc_api_admin_users_roles',
+            'monarc_api_user_profile',
         ),
         // Admin comptes : Création des comptes et authentification client
         'accadmin'=> array(
@@ -552,6 +592,7 @@ return array(
             'monarc_api_admin_users',
             'monarc_api_admin_users_roles',
             'monarc_api_clients',
+            'monarc_api_user_profile',
         ),
     )
 );

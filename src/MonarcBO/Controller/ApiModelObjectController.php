@@ -91,7 +91,8 @@ class ApiModelObjectController extends AbstractController
      */
     public function update($id, $data)
     {
-        $this->getService()->update($id,$this->params()->fromRoute('idm'), $data);
+        $data['model'] = $this->params()->fromRoute('idm');
+        $this->getService()->update($id,$data);
 
         return new JsonModel(array('status' => 'ok'));
     }

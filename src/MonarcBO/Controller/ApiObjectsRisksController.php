@@ -15,5 +15,25 @@ class ApiObjectsRisksController extends AbstractController
 {
     protected $dependencies = ['object', 'amv', 'asset', 'threat', 'vulnerability'];
     protected $name = 'risks';
+
+    public function get($id)
+    {
+        $this->methodNotAllowed();
+    }
+
+    public function getList()
+    {
+        $this->methodNotAllowed();
+    }
+
+    public function create($data)
+    {
+        $this->methodNotAllowed();
+    }
+
+    public function delete($id)
+    {
+        $this->methodNotAllowed();
+    }
 }
 

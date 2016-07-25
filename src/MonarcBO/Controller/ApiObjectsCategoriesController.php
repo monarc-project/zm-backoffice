@@ -31,11 +31,12 @@ class ApiObjectsCategoriesController extends AbstractController
         $lock = $this->params()->fromQuery('lock') == "false" ? false : true;
 
         $objectCategories = $this->getService()->getListSpecific($page, $limit, $order, $filter, $parentId);
+        $fields = ['id', 'label1', 'label2', 'label3', 'label4', 'position'];;
 
         if ($parentId > 0 && $lock) {
             $recursiveArray = $this->getCleanFields($objectCategories, ['id', 'label1', 'label2', 'label3', 'label4', 'position']);
         } else {
-            $recursiveArray = $this->recursiveArray($objectCategories, null, 0);
+            $recursiveArray = $this->recursiveArray($objectCategories, null, 0, $fields);
         }
 
         return new JsonModel(array(
@@ -58,42 +59,6 @@ class ApiObjectsCategoriesController extends AbstractController
             $output[] = $item_output;
         }
         return $output;
-    }
-
-    /**
-     * Recursive array
-     *
-     * @param $array
-     * @param $parent
-     * @param $level
-     * @return array
-     */
-    public function recursiveArray($array, $parent, $level)
-    {
-        $fields = ['id', 'label1', 'label2', 'label3', 'label4', 'position'];
-        $recursiveArray = [];
-        foreach ($array AS $node) {
-
-            $parentId = null;
-            if (! is_null($node['parent'])) {
-                $parentId = $node['parent']->id;
-            }
-
-            $nodeArray = [];
-
-            if ($parent == $parentId) {
-                foreach($fields as $field) {
-                    $nodeArray[$field] = $node[$field];
-                }
-                $nodeArray['child'] = $this->recursiveArray($array, $node['id'], ($level + 1));
-
-            }
-            if (!empty($nodeArray)) {
-                $recursiveArray[] = $nodeArray;
-            }
-        }
-
-        return $recursiveArray;
     }
 }
 

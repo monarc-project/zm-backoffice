@@ -30,7 +30,7 @@ class ApiAnrLibraryController extends AbstractController
     {
         $anrId = $this->params()->fromRoute('anrid');
 
-        if (!array_key_exists('objectId', $data)) {
+        if (!isset($data['objectId'])) {
             throw new \Exception('objectId is missing');
         }
 

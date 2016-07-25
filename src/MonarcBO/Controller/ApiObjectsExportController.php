@@ -23,7 +23,7 @@ class ApiObjectsExportController extends AbstractController
      */
     public function create($data)
     {
-        if (array_key_exists('id', $data)) {
+        if (isset($data['id'])) {
             $output = $this->getService()->export($data);
 
             $response = $this->getResponse();

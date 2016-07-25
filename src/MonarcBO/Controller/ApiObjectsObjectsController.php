@@ -28,7 +28,7 @@ class ApiObjectsObjectsController extends AbstractController
     {
         // This works a little different that regular PUT calls - here we just expect a parameter "move" with the
         // value "up" or "down" to move the object. We can't edit any other field anyway.
-        if (array_key_exists('move', $data) && in_array($data['move'], ['up', 'down'])) {
+        if (isset($data['move']) && in_array($data['move'], ['up', 'down'])) {
             /** @var ObjectObjectService $service */
             $service = $this->getService();
             $service->moveObject($id, $data['move']);

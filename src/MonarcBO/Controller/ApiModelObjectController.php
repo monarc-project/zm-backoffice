@@ -71,7 +71,7 @@ class ApiModelObjectController extends AbstractController
      */
     public function create($data)
     {
-    	$data['model'] = $this->params()->fromRoute('idm');
+    	$data['modelId'] = $this->params()->fromRoute('idm');
         $id = $this->getService()->create($data);
 
         return new JsonModel(

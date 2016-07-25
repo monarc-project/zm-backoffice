@@ -7,11 +7,19 @@ use Zend\View\Model\JsonModel;
 
 class ApiAnrLibraryController extends AbstractController
 {
-    protected $name = 'instances';
+    protected $name = 'categories';
 
     public function getList()
     {
-        return $this->methodNotAllowed();
+        $anrId = $this->params()->fromRoute('anrid');
+
+
+        $fields = ['id', 'label1', 'label2', 'label3', 'label4', 'position', 'objects'];
+
+        return new JsonModel(array(
+            'count' => count($this->getService()->getCategoriesLibraryByAnr($anrId)),
+            $this->name => $this->recursiveArray($this->getService()->getCategoriesLibraryByAnr($anrId), null, 0, $fields)
+        ));
     }
 
     public function get($id)

@@ -213,10 +213,10 @@ return array(
             'monarc_api_scales_comments' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/anr/:anrId/scales/:type/comments[/:id]',
+                    'route' => '/api/anr/:anrId/scales/:scaleId/comments[/:id]',
                     'constraints' => array(
                         'anrId' => '[0-9]+',
-                        'type' => '[a-z]+',
+                        'scaleId' => '[0-9]+',
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(

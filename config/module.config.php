@@ -225,19 +225,6 @@ return array(
                 ),
             ),
 
-            'monarc_api_instances' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/anr/:anrId/instances[/:id]',
-                    'constraints' => array(
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiInstances',
-                    ),
-                ),
-            ),
-
             'monarc_api_measures' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -509,7 +496,6 @@ return array(
             '\MonarcBO\Controller\ApiGuides'                => '\MonarcBO\Controller\ApiGuidesControllerFactory',
             '\MonarcBO\Controller\ApiGuidesItems'           => '\MonarcBO\Controller\ApiGuidesItemsControllerFactory',
             '\MonarcBO\Controller\ApiGuidesTypes'           => '\MonarcBO\Controller\ApiGuidesTypesControllerFactory',
-            '\MonarcBO\Controller\ApiInstances'             => '\MonarcBO\Controller\ApiInstancesControllerFactory',
             '\MonarcBO\Controller\ApiMeasures'              => '\MonarcBO\Controller\ApiMeasuresControllerFactory',
             '\MonarcBO\Controller\ApiModels'                => '\MonarcBO\Controller\ApiModelsControllerFactory',
             '\MonarcBO\Controller\ApiObjects'               => '\MonarcBO\Controller\ApiObjectsControllerFactory',
@@ -588,7 +574,6 @@ return array(
             'monarc_api_assets',
             'monarc_api_anr_instances',
             'monarc_api_anr_library',
-            'monarc_api_instances',
             'monarc_api_measures',
             'monarc_api_models',
             'monarc_api_objects',

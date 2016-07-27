@@ -42,12 +42,34 @@ class ApiScalesCommentsController extends AbstractController
 
     public function create($data)
     {
-        return $this->methodNotAllowed();
+        // là
+        $anrId = (int) $this->params()->fromRoute('anrId');
+        $scaleId = (int) $this->params()->fromRoute('scaleId');
+        $data['anr'] = $anrId;
+        $data['scale'] = $scaleId;
+        $id = $this->getService()->create($data);
+        return new JsonModel(
+            array(
+                'status' => 'ok',
+                'id' => $id,
+            )
+        );
     }
 
     public function update($id, $data)
     {
-        return $this->methodNotAllowed();
+        // là
+        $anrId = (int) $this->params()->fromRoute('anrId');
+        $scaleId = (int) $this->params()->fromRoute('scaleId');
+        $data['anr'] = $anrId;
+        $data['scale'] = $scaleId;
+        $id = $this->getService()->update($id,$data);
+        return new JsonModel(
+            array(
+                'status' => 'ok',
+                'id' => $id,
+            )
+        );
     }
 
     public function patch($id, $data)

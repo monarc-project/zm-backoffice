@@ -52,6 +52,7 @@
         ->appendFile($this->basePath('js/kb/models/BackofficeKbModelsDetailsCtrl.js'))
         ->appendFile($this->basePath('js/kb/models/BackofficeAnrObjectInstanceCtrl.js'))
         ->appendFile($this->basePath('js/kb/models/ModelService.js'))
+        ->appendFile($this->basePath('js/AnrService.js'))
         // Other KB sections
         ->appendFile($this->basePath('js/kb/BackofficeAnalysisGuidesCtrl.js'))
         ->appendFile($this->basePath('js/kb/BackofficeAnalysisGuidesItemsCtrl.js'))
@@ -69,7 +70,8 @@
         ->appendFile($this->basePath('js/UserService.js'))
         ->appendFile($this->basePath('js/UserProfileService.js'))
         // Helpers
-        ->appendFile($this->basePath('js/TableHelperService.js')); ?>
+        ->appendFile($this->basePath('js/TableHelperService.js'))
+        ->appendFile($this->basePath('js/DownloadService.js')); ?>
 
 </head>
 <body ng-app="BackofficeApp" layout="column" flex>

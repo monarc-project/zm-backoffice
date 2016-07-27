@@ -17,19 +17,19 @@ class ApiAdminPasswordsController extends AbstractController
     public function create($data)
     {
         //password forgotten
-        if ((array_key_exists('email', $data)) && (!array_key_exists('password', $data))) {
+        if (!empty($data['email']) && empty($data['password'])) {
             $this->getService()->passwordForgotten($data['email']);
         }
 
         //verify token
-        if ((array_key_exists('token', $data)) && (!array_key_exists('password', $data))) {
+        if (!empty($data['token']) && empty($data['password'])) {
             $result =  $this->getService()->verifyToken($data['token']);
 
             return new JsonModel(array('status' => $result));
         }
 
         //change password not logged
-        if ((array_key_exists('token', $data)) && (array_key_exists('password', $data)) && (array_key_exists('confirm', $data))){
+        if (!empty($data['token']) && !empty($data['password']) && !empty($data['confirm'])){
             if ($data['password'] == $data['confirm']) {
                 $this->getService()->newPasswordByToken($data['token'], $data['password']);
             } else {

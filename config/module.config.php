@@ -472,6 +472,16 @@ return array(
                     ),
                 ),
             ),
+
+            'monarc_api_countries' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route' => '/api/countries',
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiCountries',
+                    ),
+                ),
+            ),
         ),
     ),
 
@@ -492,6 +502,7 @@ return array(
             '\MonarcBO\Controller\ApiAmvs'                  => '\MonarcBO\Controller\ApiAmvsControllerFactory',
             '\MonarcBO\Controller\ApiAssets'                => '\MonarcBO\Controller\ApiAssetsControllerFactory',
             '\MonarcBO\Controller\ApiClients'               => '\MonarcBO\Controller\ApiClientsControllerFactory',
+            '\MonarcBO\Controller\ApiCountries'             => '\MonarcBO\Controller\ApiCountriesControllerFactory',
             '\MonarcBO\Controller\ApiConfig'                => '\MonarcBO\Controller\ApiConfigControllerFactory',
             '\MonarcBO\Controller\ApiGuides'                => '\MonarcBO\Controller\ApiGuidesControllerFactory',
             '\MonarcBO\Controller\ApiGuidesItems'           => '\MonarcBO\Controller\ApiGuidesItemsControllerFactory',
@@ -608,6 +619,7 @@ return array(
             'monarc_api_admin_users',
             'monarc_api_admin_users_roles',
             'monarc_api_clients',
+            'monarc_api_countries',
             'monarc_api_user_profile',
         ),
     )

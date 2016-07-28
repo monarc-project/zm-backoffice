@@ -11,6 +11,8 @@ class ClientService extends AbstractService
     protected $clientEntity;
     protected $countryTable;
     protected $countryEntity;
+    protected $cityTable;
+    protected $cityEntity;
 
     public function getTotalCount()
     {
@@ -50,6 +52,8 @@ class ClientService extends AbstractService
         $client = $this->get('clientTable')->get($id);
         $country = $this->countryTable->get($client['country_id']);
         $client['country'] = $country;
+        $city = $this->cityTable->get($client['city_id']);
+        $client['city'] = $city;
 
         return $client;
     }

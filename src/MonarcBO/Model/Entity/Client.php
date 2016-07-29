@@ -70,7 +70,7 @@ class Client extends AbstractEntity
      *
      * @ORM\Column(name="proxy_alias", type="string", length=255, nullable=true)
      */
-    protected $proxy_alias;
+    protected $proxyAlias;
 
     /**
      * @var string
@@ -216,5 +216,41 @@ class Client extends AbstractEntity
         $this->country = $country;
     }
 
+    public function getInputFilter($partial = false){
+
+        if (!$this->inputFilter) {
+            parent::getInputFilter($partial);
+
+            $this->inputFilter->add(array(
+                'name' => 'name',
+                'required' => ($partial) ? false : true,
+                'filters' => array(
+                    array('name' => 'StringTrim',),
+                ),
+                'validators' => array(),
+            ));
+
+            $validators = array();
+            if (!$partial) {
+                $validators[] = array(
+                    'name' => '\MonarcBO\Validator\UniqueClientProxyAlias',
+                    'options' => array(
+                        'adapter' => $this->getDbAdapter(),
+                        'id' => $this->get('id'),
+                    ),
+                );
+            }
+            $this->inputFilter->add(array(
+                'name' => 'proxyAlias',
+                'required' => ($partial) ? false : true,
+                'filters' => array(
+                    array('name' => 'StringTrim',),
+                ),
+                'validators' => $validators
+            ));
+        }
+        return $this->inputFilter;
+    }
+    
 }
 

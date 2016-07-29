@@ -80,6 +80,14 @@ class Module
         );
     }
 
+    public function getValidatorConfig(){
+        return array(
+            'invokables' => array(
+                '\MonarcBO\Validator\UniqueClientProxyAlias' => '\MonarcBO\Validator\UniqueClientProxyAlias',
+            ),
+        );
+    }
+
     public function onDispatchError($e)
     {
         return $this->getJsonModelError($e);

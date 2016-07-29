@@ -50,10 +50,15 @@ class ClientService extends AbstractService
     public function getEntity($id)
     {
         $client = $this->get('clientTable')->get($id);
-        $country = $this->countryTable->get($client['country_id']);
-        $client['country'] = $country;
-        $city = $this->cityTable->get($client['city_id']);
-        $client['city'] = $city;
+
+        if(!empty($client['country_id'])){
+            $country = $this->get('countryTable')->get($client['country_id']);
+            $client['country'] = $country;
+        }
+        if(!empty($client['city_id'])){
+            $city = $this->get('cityTable')->get($client['city_id']);
+            $client['city'] = $city;
+        }
 
         return $client;
     }
@@ -63,7 +68,7 @@ class ClientService extends AbstractService
         /** @var ClientTable $clientTable */
         $clientTable = $this->get('clientTable');
 
-        $entity = new Client();
+        $entity = $this->get('clientEntity');
         $entity->exchangeArray($data);
 
         $clientTable->save($entity);

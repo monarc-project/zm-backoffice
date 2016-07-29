@@ -42,8 +42,8 @@ class Module
     {
         return array(
             'invokables' => array(
-                '\MonarcBO\Model\Entity\Server' => '\MonarcBO\Model\Entity\Server',
-                '\MonarcBO\Model\Entity\Client' => '\MonarcBO\Model\Entity\Client',
+                //'\MonarcBO\Model\Entity\Server' => '\MonarcBO\Model\Entity\Server',
+                //'\MonarcBO\Model\Entity\Client' => '\MonarcBO\Model\Entity\Client',
             ),
             'factories' => array(
                '\MonarcCli\Model\Db' => function($sm){
@@ -59,11 +59,21 @@ class Module
                 '\MonarcBO\Model\Table\ServerTable' => function($sm){
                     return new Model\Table\ServerTable($sm->get('\MonarcCli\Model\Db'));
                 },
+                '\MonarcBO\Model\Entity\Server' => function($sm){
+                    $s = new Model\Entity\Server();
+                    $s->setDbAdapter($sm->get('\MonarcCli\Model\Db'));
+                    return $s;
+                },
                 '\MonarcBO\Service\ServerService' => '\MonarcBO\Service\ServerServiceFactory',
 
                 // Clients table
                 '\MonarcBO\Model\Table\ClientTable' => function($sm){
                     return new Model\Table\ClientTable($sm->get('\MonarcCli\Model\Db'));
+                },
+                '\MonarcBO\Model\Entity\Client' => function($sm){
+                    $c = new Model\Entity\Client();
+                    $c->setDbAdapter($sm->get('\MonarcCli\Model\Db'));
+                    return $c;
                 },
                 '\MonarcBO\Service\ClientService' => '\MonarcBO\Service\ClientServiceFactory',
             ),

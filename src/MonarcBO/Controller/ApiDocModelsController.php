@@ -16,6 +16,7 @@ class ApiDocModelsController extends AbstractController
 
     public function create($data)
     {
+        unset($data['path']);
         $service = $this->getService();
         $file = $this->request->getFiles()->toArray();
         if(!empty($file['file'])){
@@ -90,12 +91,26 @@ class ApiDocModelsController extends AbstractController
 
     public function update($id, $data)
     {
-        return $this->methodNotAllowed();
+        unset($data['path']);
+        $service = $this->getService();
+        $file = $this->request->getFiles()->toArray();
+        if(!empty($file['file'])){
+            $data['path'] = $file['file'];
+        }
+        $service->update($id,$data);
+        return new JsonModel(array('status' => 'ok'));
     }
 
     public function patch($id, $data)
     {
-        return $this->methodNotAllowed();
+        unset($data['path']);
+        $service = $this->getService();
+        $file = $this->request->getFiles()->toArray();
+        if(!empty($file['file'])){
+            $data['path'] = $file['file'];
+        }
+        $service->patch($id,$data);
+        return new JsonModel(array('status' => 'ok'));
     }
 }
 

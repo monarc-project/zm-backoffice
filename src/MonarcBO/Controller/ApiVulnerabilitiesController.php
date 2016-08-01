@@ -25,10 +25,17 @@ class ApiVulnerabilitiesController extends AbstractController
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
+        $status = $this->params()->fromQuery('status');
+
+        $filter_and = null;
+
+        if (!is_null($status)) {
+            $filter_and = ['status' => $status];
+        }
 
         $service = $this->getService();
 
-        $vulnerabilities = $service->getList($page, $limit, $order, $filter);
+        $vulnerabilities = $service->getList($page, $limit, $order, $filter, $filter_and);
         foreach($vulnerabilities as $key => $vulnerability){
             $vulnerability['models']->initialize();
             $models = $vulnerability['models']->getSnapshot();
@@ -39,7 +46,7 @@ class ApiVulnerabilitiesController extends AbstractController
         }
 
         return new JsonModel(array(
-            'count' => $service->getFilteredCount($page, $limit, $order, $filter),
+            'count' => $service->getFilteredCount($page, $limit, $order, $filter, $filter_and),
             $this->name => $vulnerabilities
         ));
     }

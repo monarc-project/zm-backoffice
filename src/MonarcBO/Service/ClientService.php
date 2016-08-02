@@ -87,7 +87,7 @@ class ClientService extends AbstractService
         }
 
         if ($entity != null) {
-            $entity->exchangeArray($data);
+            $entity->exchangeArray($data,true);
             $clientTable->save($entity);
             return true;
         } else {

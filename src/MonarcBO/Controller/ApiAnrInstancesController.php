@@ -3,6 +3,7 @@
 namespace MonarcBO\Controller;
 
 use MonarcCore\Controller\AbstractController;
+use MonarcCore\Service\InstanceService;
 use Zend\View\Model\JsonModel;
 
 class ApiAnrInstancesController extends AbstractController
@@ -18,8 +19,9 @@ class ApiAnrInstancesController extends AbstractController
     {
         $anrId = (int) $this->params()->fromRoute('anrid');
 
-        $instances = $this->getService()->findByAnr($anrId);
-
+        /** @var InstanceService $service */
+        $service = $this->getService();
+        $instances = $service->findByAnr($anrId);
 
         $fields = ['id', 'level',
             'c', 'i', 'd', 'ch', 'ih', 'dh',
@@ -33,9 +35,22 @@ class ApiAnrInstancesController extends AbstractController
         ));
     }
 
+    /**
+     * Update
+     *
+     * @param mixed $id
+     * @param mixed $data
+     * @return JsonModel
+     */
     public function update($id, $data)
     {
-        return $this->methodNotAllowed();
+        $anrId = (int) $this->params()->fromRoute('anrid');
+
+        /** @var InstanceService $service */
+        $service = $this->getService();
+        $service->update($anrId, $id, $data);
+
+        return new JsonModel(array('status' => 'ok'));
     }
 
     public function get($id)
@@ -66,7 +81,13 @@ class ApiAnrInstancesController extends AbstractController
             throw new \Exception(implode(', ', $missing), 412);
         }
 
-        $this->getService()->instantiateObjectToAnr($anrId, $data['object'], $data['parent'], $data['position']);
+        $impacts = [
+            'c' => (array_key_exists('c', $data)) ? $data['c'] : '-1',
+            'i' => (array_key_exists('i', $data)) ? $data['i'] : '-1',
+            'd' => (array_key_exists('d', $data)) ? $data['d'] : '-1',
+        ];
+
+        $this->getService()->instantiateObjectToAnr($anrId, $data['object'], $data['parent'], $data['position'], $impacts);
 
         return new JsonModel(
             array(

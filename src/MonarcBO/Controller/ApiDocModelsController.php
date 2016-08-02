@@ -74,16 +74,20 @@ class ApiDocModelsController extends AbstractController
             $name = implode('_',$name);
 
             $fileContents = file_get_contents($entity['path']);
-            $response = $this->getResponse();
-            $response->setContent($fileContents);
+            if($fileContents !== false){
+                $response = $this->getResponse();
+                $response->setContent($fileContents);
 
-            $headers = $response->getHeaders();
-            $headers->clearHeaders()
-                ->addHeaderLine('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-                ->addHeaderLine('Content-Disposition', 'attachment; filename="' . $name . '"')
-                ->addHeaderLine('Content-Length', strlen($fileContents));
+                $headers = $response->getHeaders();
+                $headers->clearHeaders()
+                    ->addHeaderLine('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+                    ->addHeaderLine('Content-Disposition', 'attachment; filename="' . $name . '"')
+                    ->addHeaderLine('Content-Length', strlen($fileContents));
 
-            return $this->response;
+                return $this->response;
+            }else{
+                throw new \Exception('Document template not found');
+            }
         } else {
             throw new \Exception('Document template not found');
         }

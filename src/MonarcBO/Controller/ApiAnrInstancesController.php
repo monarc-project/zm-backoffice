@@ -48,7 +48,7 @@ class ApiAnrInstancesController extends AbstractController
 
         /** @var InstanceService $service */
         $service = $this->getService();
-        $service->update($anrId, $id, $data);
+        $service->updateInstance($anrId, $id, $data);
 
         return new JsonModel(array('status' => 'ok'));
     }

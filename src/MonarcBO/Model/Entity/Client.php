@@ -138,6 +138,34 @@ class Client extends AbstractEntity
     /**
      * @var string
      *
+     * @ORM\Column(name="first_user_firstname", type="string", length=255, nullable=true)
+     */
+    protected $first_user_firstname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="first_user_lastname", type="string", length=255, nullable=true)
+     */
+    protected $first_user_lastname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="first_user_email", type="string", length=255, nullable=true)
+     */
+    protected $first_user_email;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="first_user_phone", type="string", length=20, nullable=true)
+     */
+    protected $first_user_phone;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="creator", type="string", length=255, nullable=true)
      */
     protected $creator;

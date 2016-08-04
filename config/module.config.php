@@ -105,6 +105,19 @@ return array(
                 ),
             ),
 
+            'monarc_api_anr' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/anr[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAnr',
+                    ),
+                ),
+            ),
+
             'monarc_api_anr_library' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -507,6 +520,7 @@ return array(
             '\MonarcBO\Controller\ApiAdminServers'          => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
             '\MonarcBO\Controller\ApiAdminUsers'            => '\MonarcBO\Controller\ApiAdminUsersControllerFactory',
             '\MonarcBO\Controller\ApiAdminUsersRoles'       => '\MonarcBO\Controller\ApiAdminUsersRolesControllerFactory',
+            '\MonarcBO\Controller\ApiAnr'                   => '\MonarcBO\Controller\ApiAnrControllerFactory',
             '\MonarcBO\Controller\ApiAnrInstances'          => '\MonarcBO\Controller\ApiAnrInstancesControllerFactory',
             '\MonarcBO\Controller\ApiAnrLibrary'            => '\MonarcBO\Controller\ApiAnrLibraryControllerFactory',
             '\MonarcBO\Controller\ApiAmvs'                  => '\MonarcBO\Controller\ApiAmvsControllerFactory',
@@ -594,6 +608,7 @@ return array(
         'dbadmin'=> array(
             'monarc_api_amvs',
             'monarc_api_assets',
+            'monarc_api_anr',
             'monarc_api_anr_instances',
             'monarc_api_anr_library',
             'monarc_api_measures',

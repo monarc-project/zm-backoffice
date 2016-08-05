@@ -26,15 +26,25 @@ class ApiCitiesController extends AbstractController
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
-        $country_id = $this->params()->fromQuery('country_id');
+        $country_id = (int)$this->params()->fromQuery('country_id');
+
+        if (is_null($limit)) {
+            $limit = 20;
+            $page = 1;
+        }
+        if (is_null($order)) {
+            $order = 'label';
+        }
 
         $service = $this->getService();
 
         if (is_null($country_id)) {
             $entities = $service->getList($page, $limit, $order, $filter);
+            $count = $service->getFilteredCount($page, $limit, $order, $filter);
         }
         else {
             $entities = $service->getList($page, $limit, $order, $filter, array('country_id' => $country_id));
+            $count = $service->getFilteredCount($page, $limit, $order, $filter, array('country_id' => $country_id));
         }
 
         if (count($this->dependencies)) {
@@ -44,7 +54,7 @@ class ApiCitiesController extends AbstractController
         }
 
         return new JsonModel(array(
-            'count' => $service->getFilteredCount($page, $limit, $order, $filter),
+            'count' => $count,
             $this->name => $entities
         ));
     }

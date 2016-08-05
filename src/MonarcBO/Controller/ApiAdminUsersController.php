@@ -41,7 +41,7 @@ class ApiAdminUsersController extends AbstractController
             $this->name => $entities
         ));
     }
-    
+
     public function create($data)
     {
         /** @var UserService $service */

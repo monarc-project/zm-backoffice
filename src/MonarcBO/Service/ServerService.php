@@ -23,7 +23,7 @@ class ServerService extends AbstractService
         $serverTable = $this->get('serverTable');
 
         return $serverTable->countFiltered($page, $limit, $this->parseFrontendOrder($order),
-            $this->parseFrontendFilter($filter, array('label', 'ip_address', 'fqdn')));
+            $this->parseFrontendFilter($filter, array('label', 'ip_address', 'fqdn')), $filterAnd);
     }
 
     public function getList($page = 1, $limit = 25, $order = null, $filter = null, $filterAnd = null)
@@ -36,7 +36,8 @@ class ServerService extends AbstractService
             $page,
             $limit,
             $this->parseFrontendOrder($order),
-            $this->parseFrontendFilter($filter, array('label', 'ip_address', 'fqdn'))
+            $this->parseFrontendFilter($filter, array('label', 'ip_address', 'fqdn')),
+            $filterAnd
         );
     }
 

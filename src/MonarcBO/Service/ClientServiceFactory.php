@@ -12,5 +12,7 @@ class ClientServiceFactory extends AbstractServiceFactory
         'countryEntity'=> '\MonarcCore\Model\Entity\Country',
         'cityTable'=> '\MonarcCore\Model\Table\CityTable',
         'cityEntity'=> '\MonarcCore\Model\Entity\City',
+        'serverTable'=> '\MonarcBO\Model\Table\ServerTable',
+        'serverEntity'=> '\MonarcBO\Model\Entity\Server',
     );
 }

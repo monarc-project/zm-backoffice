@@ -129,6 +129,46 @@ class ClientService extends AbstractService
             return null;
         }
 
+        $pathLocal = getcwd()."/config/autoload/local.php";
+        $localConf = array();
+        if(file_exists($pathLocal)){
+            $localConf = require $pathLocal;
+        }
+        $salt = "";
+        if(!empty($localConf['monarc']['salt'])){
+            $salt = $localConf['monarc']['salt'];
+        }
+
+        $fields = array(
+            'status'        => 1,
+            'firstname'     => $client->get('first_user_firstname'),
+            'lastname'      => $client->get('first_user_lastname'),
+            'email'         => $client->get('first_user_email'),
+            'phone'         => $client->get('first_user_phone'),
+            'password'      => password_hash($salt.$client->get('first_user_email'),PASSWORD_BCRYPT),
+            'creator'       => 'System',
+            'created_at'    => date('Y-m-d H:i:s')
+        );
+
+
+        $sqlDump = '';
+        $listValues = '';
+        foreach ($fields as $key => $value) {
+            if ($key != '' && !is_null($value)) {
+                if ($listValues != '') $listValues .= ', ';
+
+                if (is_numeric($value)) {
+                    $listValues .= "`$key` = ".$serverTable->getDb()->quote($value, \PDO::PARAM_INT);
+                }
+                else {
+                    $listValues .= "`$key` = ".$serverTable->getDb()->quote($value, \PDO::PARAM_STR);
+                }
+            }
+        }
+        if ($listValues != '') {
+            $sqlDump = 'INSERT INTO `users` SET '.$listValues;
+        }
+
         $datas = array(
             'server' => $server->get('fqdn'),
             'client' => array(
@@ -148,12 +188,9 @@ class ClientService extends AbstractService
                 'employees_number'      => $client->get('employees_number'),
                 'contact_fullname'      => $client->get('contact_fullname'),
                 'contact_email'         => $client->get('contact_email'),
-                'contact_phone'         => $client->get('contact_phone'),
-                'first_user_firstname'  => $client->get('first_user_firstname'),
-                'first_user_lastname'   => $client->get('first_user_lastname'),
-                'first_user_email'      => $client->get('first_user_email'),
-                'first_user_phone'      => $client->get('first_user_phone')
-            )
+                'contact_phone'         => $client->get('contact_phone')
+            ),
+            'sql_bootstrap' => $sqlDump
         );
 
         $now = date('YmdHis');

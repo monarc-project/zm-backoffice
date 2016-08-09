@@ -193,6 +193,9 @@ class ClientService extends AbstractService
             'sql_bootstrap' => $sqlDump
         );
 
+        if (!is_dir(getcwd().'/data/json/')) {
+            mkdir(getcwd().'/data/json/');
+        }
         $now = date('YmdHis');
         $filename = getcwd().'/data/json/'.$now.'.json';
         file_put_contents($filename, json_encode($datas));

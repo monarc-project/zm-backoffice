@@ -3,6 +3,7 @@
 namespace MonarcBO\Controller;
 
 use MonarcCore\Controller\AbstractController;
+use MonarcCore\Service\ObjectService;
 use Zend\View\Model\JsonModel;
 
 class ApiAnrLibraryController extends AbstractController
@@ -43,7 +44,9 @@ class ApiAnrLibraryController extends AbstractController
             throw new \Exception('objectId is missing');
         }
 
-        $id = $this->getService()->attachObjectToAnr($data['objectId'], $anrId);
+        /** @var ObjectService $service */
+        $service = $this->getService();
+        $id = $service->attachObjectToAnr($data['objectId'], $anrId);
 
         return new JsonModel(
             array(

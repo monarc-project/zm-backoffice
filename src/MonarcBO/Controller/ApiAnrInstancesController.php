@@ -10,6 +10,8 @@ class ApiAnrInstancesController extends AbstractController
 {
     protected $name = 'instances';
 
+    protected $dependencies = ['anr', 'asset', 'object', 'root', 'parent'];
+
     /**
      * Get List
      *
@@ -55,7 +57,13 @@ class ApiAnrInstancesController extends AbstractController
 
     public function get($id)
     {
-        return $this->methodNotAllowed();
+        $entity = $this->getService()->getEntity($id);
+
+        if (count($this->dependencies)) {
+            $this->formatDependencies($entity, $this->dependencies);
+        }
+
+        return new JsonModel($entity);
     }
 
     /**
@@ -87,7 +95,9 @@ class ApiAnrInstancesController extends AbstractController
             'd' => (array_key_exists('d', $data)) ? $data['d'] : '-1',
         ];
 
-        $this->getService()->instantiateObjectToAnr($anrId, $data['object'], $data['parent'], $data['position'], $impacts);
+        /** @var InstanceService $service */
+        $service = $this->getService();
+        $service->instantiateObjectToAnr($anrId, $data['object'], $data['parent'], $data['position'], $impacts);
 
         return new JsonModel(
             array(

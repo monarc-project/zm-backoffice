@@ -106,10 +106,5 @@ class ApiAnrInstancesController extends AbstractController
             )
         );
     }
-
-    public function delete($id)
-    {
-        return $this->methodNotAllowed();
-    }
 }
 

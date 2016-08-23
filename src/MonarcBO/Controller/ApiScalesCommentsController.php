@@ -22,15 +22,17 @@ class ApiScalesCommentsController extends AbstractController
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
         $anrId = (int) $this->params()->fromRoute('anrId');
-        $type = $this->params()->fromRoute('type');
+        $scale = (int) $this->params()->fromRoute('scaleId');
 
-        $comments = $this->getService()->getList($page, $limit, $order, $filter, ['anr' => $anrId, 'type' => $type]);
+        $comments = $this->getService()->getList($page, $limit, $order, $filter, ['anr' => $anrId, 'scale' => $scale]);
         foreach($comments as $key => $type){
             $this->formatDependencies($comments[$key], $this->dependencies);
         }
 
         return new JsonModel(array(
             'count' => count($comments),
+            'anr' => $anrId,
+            'scale' => $scale,
             $this->name => $comments
         ));
     }
@@ -42,12 +44,14 @@ class ApiScalesCommentsController extends AbstractController
 
     public function create($data)
     {
-        // là
         $anrId = (int) $this->params()->fromRoute('anrId');
         $scaleId = (int) $this->params()->fromRoute('scaleId');
+
         $data['anr'] = $anrId;
         $data['scale'] = $scaleId;
+
         $id = $this->getService()->create($data);
+
         return new JsonModel(
             array(
                 'status' => 'ok',
@@ -58,12 +62,14 @@ class ApiScalesCommentsController extends AbstractController
 
     public function update($id, $data)
     {
-        // là
         $anrId = (int) $this->params()->fromRoute('anrId');
         $scaleId = (int) $this->params()->fromRoute('scaleId');
+
         $data['anr'] = $anrId;
         $data['scale'] = $scaleId;
+
         $id = $this->getService()->update($id,$data);
+
         return new JsonModel(
             array(
                 'status' => 'ok',

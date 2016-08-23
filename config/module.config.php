@@ -197,6 +197,21 @@ return array(
                 ),
             ),
 
+            'monarc_api_scales_comments' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/anr/:anrId/scales/:scaleId/comments[/:id]',
+                    'constraints' => array(
+                        'anrId' => '[0-9]+',
+                        'scaleId' => '[0-9]+',
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiScalesComments',
+                    ),
+                ),
+            ),
+
             'monarc_api_scales' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -219,21 +234,6 @@ return array(
                     ),
                     'defaults' => array(
                         'controller' => 'MonarcBO\Controller\ApiScalesTypes',
-                    ),
-                ),
-            ),
-
-            'monarc_api_scales_comments' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/anr/:anrId/scales/:scaleId/comments[/:id]',
-                    'constraints' => array(
-                        'anrId' => '[0-9]+',
-                        'scaleId' => '[0-9]+',
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiScalesComments',
                     ),
                 ),
             ),

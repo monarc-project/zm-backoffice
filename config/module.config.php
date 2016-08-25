@@ -144,6 +144,32 @@ return array(
                 ),
             ),
 
+            'monarc_api_anr_instances_risks' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/anr/:anrid/instances-risks[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAnrInstancesRisks',
+                    ),
+                ),
+            ),
+
+            'monarc_api_anr_instances_risksop' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/anr/:anrid/instances-oprisks[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAnrInstancesRisksOp',
+                    ),
+                ),
+            ),
+
             'monarc_api_model_objects' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -522,6 +548,8 @@ return array(
             '\MonarcBO\Controller\ApiAdminUsersRoles'       => '\MonarcBO\Controller\ApiAdminUsersRolesControllerFactory',
             '\MonarcBO\Controller\ApiAnr'                   => '\MonarcBO\Controller\ApiAnrControllerFactory',
             '\MonarcBO\Controller\ApiAnrInstances'          => '\MonarcBO\Controller\ApiAnrInstancesControllerFactory',
+            '\MonarcBO\Controller\ApiAnrInstancesRisks'     => '\MonarcBO\Controller\ApiAnrInstancesRisksControllerFactory',
+            '\MonarcBO\Controller\ApiAnrInstancesRisksOp'   => '\MonarcBO\Controller\ApiAnrInstancesRisksOpControllerFactory',
             '\MonarcBO\Controller\ApiAnrLibrary'            => '\MonarcBO\Controller\ApiAnrLibraryControllerFactory',
             '\MonarcBO\Controller\ApiAmvs'                  => '\MonarcBO\Controller\ApiAmvsControllerFactory',
             '\MonarcBO\Controller\ApiAssets'                => '\MonarcBO\Controller\ApiAssetsControllerFactory',
@@ -609,6 +637,9 @@ return array(
             'monarc_api_amvs',
             'monarc_api_assets',
             'monarc_api_anr',
+            'monarc_api_anr_instances',
+            'monarc_api_anr_instances_risks',
+            'monarc_api_anr_instances_risksop',
             'monarc_api_anr_instances',
             'monarc_api_anr_library',
             'monarc_api_measures',

@@ -3,11 +3,12 @@
 namespace MonarcBO\Controller;
 
 use MonarcCore\Controller\AbstractController;
+use MonarcCore\Service\InstanceConsequenceService;
 use Zend\View\Model\JsonModel;
 
-class ApiAnrInstancesRisksController extends AbstractController
+class ApiAnrInstancesConsequencesController extends AbstractController
 {
-    protected $name = 'instances-risks';
+    protected $name = 'instances-consequences';
 
     public function getList()
     {
@@ -39,7 +40,6 @@ class ApiAnrInstancesRisksController extends AbstractController
 
         return new JsonModel(array('status' => 'ok'));
     }
-
 
     /**
      * Update

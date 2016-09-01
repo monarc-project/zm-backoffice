@@ -55,6 +55,25 @@ class ApiAnrInstancesController extends AbstractController
         return new JsonModel(array('status' => 'ok'));
     }
 
+    /**
+     * Patch
+     *
+     * @param mixed $id
+     * @param mixed $data
+     * @return JsonModel
+     */
+    public function patch($id, $data)
+    {
+        $anrId = (int) $this->params()->fromRoute('anrid');
+
+        /** @var InstanceService $service */
+        $service = $this->getService();
+        $service->patchInstance($anrId, $id, $data);
+
+        return new JsonModel(array('status' => 'ok'));
+    }
+
+
     public function get($id)
     {
         $anrId = (int) $this->params()->fromRoute('anrid');

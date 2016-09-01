@@ -26,6 +26,9 @@ class ApiObjectsCategoriesController extends AbstractController
         $page = $this->params()->fromQuery('page');
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
+        if(empty($order)){
+            $order = "position";
+        }
         $filter = $this->params()->fromQuery('filter');
         $parentId = (int) $this->params()->fromQuery('parentId');
         $lock = $this->params()->fromQuery('lock') == "false" ? false : true;

@@ -92,19 +92,6 @@ return array(
                 ),
             ),
 
-            'monarc_api_models' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/models[/:id]',
-                    'constraints' => array(
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiModels',
-                    ),
-                ),
-            ),
-
             'monarc_api_anr' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -562,7 +549,6 @@ return array(
             '\MonarcBO\Controller\ApiGuidesItems'               => '\MonarcBO\Controller\ApiGuidesItemsControllerFactory',
             '\MonarcBO\Controller\ApiGuidesTypes'               => '\MonarcBO\Controller\ApiGuidesTypesControllerFactory',
             '\MonarcBO\Controller\ApiMeasures'                  => '\MonarcBO\Controller\ApiMeasuresControllerFactory',
-            '\MonarcBO\Controller\ApiModels'                    => '\MonarcBO\Controller\ApiModelsControllerFactory',
             '\MonarcBO\Controller\ApiObjects'                   => '\MonarcBO\Controller\ApiObjectsControllerFactory',
             '\MonarcBO\Controller\ApiObjectsDuplication'        => '\MonarcBO\Controller\ApiObjectsDuplicationControllerFactory',
             '\MonarcBO\Controller\ApiObjectsExport'             => '\MonarcBO\Controller\ApiObjectsExportControllerFactory',

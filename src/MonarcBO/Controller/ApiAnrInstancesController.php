@@ -93,15 +93,13 @@ class ApiAnrInstancesController extends AbstractController
             throw new \Exception(implode(', ', $missing), 412);
         }
 
-        $impacts = [
-            'c' => (array_key_exists('c', $data)) ? $data['c'] : '-1',
-            'i' => (array_key_exists('i', $data)) ? $data['i'] : '-1',
-            'd' => (array_key_exists('d', $data)) ? $data['d'] : '-1',
-        ];
+        $data['c'] = isset($data['c'])?$data['c']:'-1';
+        $data['i'] = isset($data['i'])?$data['i']:'-1';
+        $data['d'] = isset($data['d'])?$data['d']:'-1';
 
         /** @var InstanceService $service */
         $service = $this->getService();
-        $id = $service->instantiateObjectToAnr($anrId, $data['object'], $data['parent'], $data['position'], $impacts);
+        $id = $service->instantiateObjectToAnr($anrId, $data);
 
         return new JsonModel(
             array(

@@ -92,6 +92,19 @@ return array(
                 ),
             ),
 
+            'monarc_api_models' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/models[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcCore\Controller\ApiModels',
+                    ),
+                ),
+            ),
+
             'monarc_api_anr' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -100,7 +113,7 @@ return array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAnr',
+                        'controller' => 'MonarcCore\Controller\ApiAnr',
                     ),
                 ),
             ),
@@ -113,7 +126,7 @@ return array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAnrLibrary',
+                        'controller' => 'MonarcCore\Controller\ApiAnrLibrary',
                     ),
                 ),
             ),
@@ -126,7 +139,7 @@ return array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAnrInstances',
+                        'controller' => 'MonarcCore\Controller\ApiAnrInstances',
                     ),
                 ),
             ),
@@ -139,7 +152,7 @@ return array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAnrInstancesRisks',
+                        'controller' => 'MonarcCore\Controller\ApiAnrInstancesRisks',
                     ),
                 ),
             ),
@@ -152,7 +165,7 @@ return array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAnrInstancesConsequences',
+                        'controller' => 'MonarcCore\Controller\ApiAnrInstancesConsequences',
                     ),
                 ),
             ),
@@ -165,7 +178,7 @@ return array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAnrInstancesRisksOp',
+                        'controller' => 'MonarcCore\Controller\ApiAnrInstancesRisksOp',
                     ),
                 ),
             ),
@@ -533,12 +546,6 @@ return array(
             '\MonarcBO\Controller\ApiAdminServers'              => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
             '\MonarcBO\Controller\ApiAdminUsers'                => '\MonarcBO\Controller\ApiAdminUsersControllerFactory',
             '\MonarcBO\Controller\ApiAdminUsersRoles'           => '\MonarcBO\Controller\ApiAdminUsersRolesControllerFactory',
-            '\MonarcBO\Controller\ApiAnr'                       => '\MonarcBO\Controller\ApiAnrControllerFactory',
-            '\MonarcBO\Controller\ApiAnrInstances'              => '\MonarcBO\Controller\ApiAnrInstancesControllerFactory',
-            '\MonarcBO\Controller\ApiAnrInstancesConsequences'  => '\MonarcBO\Controller\ApiAnrInstancesConsequencesControllerFactory',
-            '\MonarcBO\Controller\ApiAnrInstancesRisks'         => '\MonarcBO\Controller\ApiAnrInstancesRisksControllerFactory',
-            '\MonarcBO\Controller\ApiAnrInstancesRisksOp'       => '\MonarcBO\Controller\ApiAnrInstancesRisksOpControllerFactory',
-            '\MonarcBO\Controller\ApiAnrLibrary'                => '\MonarcBO\Controller\ApiAnrLibraryControllerFactory',
             '\MonarcBO\Controller\ApiAmvs'                      => '\MonarcBO\Controller\ApiAmvsControllerFactory',
             '\MonarcBO\Controller\ApiAssets'                    => '\MonarcBO\Controller\ApiAssetsControllerFactory',
             '\MonarcBO\Controller\ApiCities'                    => '\MonarcBO\Controller\ApiCitiesControllerFactory',

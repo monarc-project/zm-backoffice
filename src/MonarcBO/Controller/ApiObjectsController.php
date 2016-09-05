@@ -53,13 +53,7 @@ class ApiObjectsController extends AbstractController
      */
     public function get($id)
     {
-        $mode = $this->params()->fromQuery('mode');
-
-        if ($mode == null || !in_array($mode, ['anr', 'bdc'])) {
-            $mode = 'bdc';
-        }
-
-        $entity = $this->getService()->getEntity($id, $mode);
+        $entity = $this->getService()->getCompleteEntity($id);
 
         if (count($this->dependencies)) {
             $this->formatDependencies($entity, $this->dependencies);

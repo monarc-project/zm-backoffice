@@ -246,7 +246,7 @@ return array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiScalesComments',
+                        'controller' => 'MonarcCore\Controller\ApiScalesComments',
                     ),
                 ),
             ),
@@ -259,7 +259,7 @@ return array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiScales',
+                        'controller' => 'MonarcCore\Controller\ApiScales',
                     ),
                 ),
             ),
@@ -272,7 +272,7 @@ return array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiScalesTypes',
+                        'controller' => 'MonarcCore\Controller\ApiScalesTypes',
                     ),
                 ),
             ),
@@ -562,9 +562,6 @@ return array(
             '\MonarcBO\Controller\ApiObjectsObjects'            => '\MonarcBO\Controller\ApiObjectsObjectsControllerFactory',
             '\MonarcBO\Controller\ApiObjectsCategories'         => '\MonarcBO\Controller\ApiObjectsCategoriesControllerFactory',
             '\MonarcBO\Controller\ApiObjectsRisks'              => '\MonarcBO\Controller\ApiObjectsRisksControllerFactory',
-            '\MonarcBO\Controller\ApiScales'                    => '\MonarcBO\Controller\ApiScalesControllerFactory',
-            '\MonarcBO\Controller\ApiScalesTypes'               => '\MonarcBO\Controller\ApiScalesTypesControllerFactory',
-            '\MonarcBO\Controller\ApiScalesComments'            => '\MonarcBO\Controller\ApiScalesCommentsControllerFactory',
             '\MonarcBO\Controller\ApiRolfRisks'                 => '\MonarcBO\Controller\ApiRolfRisksControllerFactory',
             '\MonarcBO\Controller\ApiRolfTags'                  => '\MonarcBO\Controller\ApiRolfTagsControllerFactory',
             '\MonarcBO\Controller\ApiThemes'                    => '\MonarcBO\Controller\ApiThemesControllerFactory',

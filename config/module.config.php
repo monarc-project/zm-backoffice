@@ -40,6 +40,18 @@ return array(
                     ),
                 ),
             ),
+            'monarc_api_admin_servers_get' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/admin/serversget[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiAdminServersGet',
+                    ),
+                ),
+            ),
 
             'monarc_api_clients' => array(
                 'type' => 'segment',
@@ -544,6 +556,7 @@ return array(
             '\MonarcBO\Controller\ApiAdminPasswords'            => '\MonarcBO\Controller\ApiAdminPasswordsControllerFactory',
             '\MonarcBO\Controller\ApiAdminRoles'                => '\MonarcBO\Controller\ApiAdminRolesControllerFactory',
             '\MonarcBO\Controller\ApiAdminServers'              => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
+            '\MonarcBO\Controller\ApiAdminServersGet'           => '\MonarcBO\Controller\ApiAdminServersGetControllerFactory',
             '\MonarcBO\Controller\ApiAdminUsers'                => '\MonarcBO\Controller\ApiAdminUsersControllerFactory',
             '\MonarcBO\Controller\ApiAdminUsersRoles'           => '\MonarcBO\Controller\ApiAdminUsersRolesControllerFactory',
             '\MonarcBO\Controller\ApiAmvs'                      => '\MonarcBO\Controller\ApiAmvsControllerFactory',
@@ -667,6 +680,7 @@ return array(
             'monarc_api_admin_users_roles',
             'monarc_api_cities',
             'monarc_api_clients',
+            'monarc_api_admin_servers_get',
             'monarc_api_countries',
             'monarc_api_user_profile',
         ),

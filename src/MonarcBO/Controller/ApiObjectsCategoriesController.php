@@ -3,6 +3,7 @@
 namespace MonarcBO\Controller;
 
 use MonarcCore\Controller\AbstractController;
+use MonarcCore\Service\ObjectCategoryService;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -23,6 +24,7 @@ class ApiObjectsCategoriesController extends AbstractController
      */
     public function getList()
     {
+
         $page = $this->params()->fromQuery('page');
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
@@ -33,7 +35,12 @@ class ApiObjectsCategoriesController extends AbstractController
         $parentId = (int) $this->params()->fromQuery('parentId');
         $lock = $this->params()->fromQuery('lock') == "false" ? false : true;
 
-        $objectCategories = $this->getService()->getListSpecific($page, $limit, $order, $filter, $parentId);
+        /** @var ObjectCategoryService $service */
+        $service = $this->getService();
+        $objectCategories = $service->getListSpecific($page, $limit, $order, $filter, $parentId);
+
+        var_dump(count($objectCategories));
+
         $fields = ['id', 'label1', 'label2', 'label3', 'label4', 'position'];;
 
         if ($parentId > 0 && $lock) {

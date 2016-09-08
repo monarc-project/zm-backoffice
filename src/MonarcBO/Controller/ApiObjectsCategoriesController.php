@@ -39,8 +39,6 @@ class ApiObjectsCategoriesController extends AbstractController
         $service = $this->getService();
         $objectCategories = $service->getListSpecific($page, $limit, $order, $filter, $parentId);
 
-        var_dump(count($objectCategories));
-
         $fields = ['id', 'label1', 'label2', 'label3', 'label4', 'position'];;
 
         if ($parentId > 0 && $lock) {

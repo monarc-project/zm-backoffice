@@ -621,14 +621,6 @@ return array(
         ),
     ),
 
-
-    // Placeholder for console routes
-    'console' => array(
-        'router' => array(
-            'routes' => array(
-            ),
-        ),
-    ),
     'roles' => array(
         // Super Admin : Gestion des droits des utilisateurs uniquement (Carnet d’adresses)
         'superadmin'=> array(

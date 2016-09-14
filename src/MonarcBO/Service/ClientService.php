@@ -79,6 +79,10 @@ class ClientService extends AbstractService
     }
 
     public function update($id, $data) {
+
+        //security
+        $this->filterPatchFields($data, ['model_id']);
+
         /** @var ClientTable $clientTable */
         $clientTable = $this->get('clientTable');
 

@@ -15,6 +15,12 @@
     },
     "autoload": {
         "psr-0": {"MonarcBO\\":"/"}
-    }
+    },
+    "repositories":[
+        {
+            "type": "vcs",
+            "url": "https://github.com/CASES-LU/zm-core"
+        }
+    ]
 }
 

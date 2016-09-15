@@ -25,13 +25,14 @@ class AdminUserInit extends AbstractSeed
         }
 
         $email = 'admin@netlor.fr';
+        $defaultPassword = 'admin@N3TL0R';
 
         $data = array(
             'status' => 1,
             'firstname' => 'Admin',
             'lastname' => 'Admin',
             'email' => $email,
-            'password' => password_hash($salt.$email,PASSWORD_BCRYPT),
+            'password' => password_hash($salt.$defaultPassword,PASSWORD_BCRYPT),
             'creator' => 'System',
             'created_at' => date('Y-m-d H:i:s'),
         );

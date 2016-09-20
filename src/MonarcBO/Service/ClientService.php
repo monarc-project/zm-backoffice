@@ -15,6 +15,7 @@ class ClientService extends AbstractService
     protected $cityEntity;
     protected $serverEntity;
     protected $serverTable;
+    protected $forbiddenFields = ['model_id'];
 
     public function getTotalCount()
     {
@@ -81,7 +82,7 @@ class ClientService extends AbstractService
     public function update($id, $data) {
 
         //security
-        $this->filterPatchFields($data, ['model_id']);
+        $this->filterPatchFields($data);
 
         /** @var ClientTable $clientTable */
         $clientTable = $this->get('clientTable');

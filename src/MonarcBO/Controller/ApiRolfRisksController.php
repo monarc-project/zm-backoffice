@@ -55,14 +55,14 @@ class ApiRolfRisksController extends AbstractController
     public function get($id)
     {
         $rolfRisk = $this->getService()->getEntity($id);
-
+/*
         $rolfRisk['categories']->initialize();
         $rolfCategories = $rolfRisk['categories']->getSnapshot();
         $rolfRisk['categories'] = array();
         foreach($rolfCategories as $rolfCategory){
             $rolfRisk['categories'][] = $rolfCategory->getJsonArray();
         }
-
+*/
         $rolfRisk['tags']->initialize();
         $rolfTags = $rolfRisk['tags']->getSnapshot();
         $rolfRisk['tags'] = array();

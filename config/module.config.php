@@ -478,19 +478,6 @@ return array(
                 ),
             ),
 
-            'monarc_api_objects_risks' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/objects-risks[/:id]',
-                    'constraints' => array(
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiObjectsRisks',
-                    ),
-                ),
-            ),
-
             'monarc_api_threats' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -663,7 +650,6 @@ return array(
             'monarc_api_objects_categories',
             'monarc_api_objects_duplication',
             'monarc_api_objects_export',
-            'monarc_api_objects_risks',
             'monarc_api_objects_objects',
             'monarc_api_rolf_categories',
             'monarc_api_rolf_risks',

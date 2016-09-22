@@ -59,6 +59,13 @@ class ApiObjectsController extends AbstractController
             $this->formatDependencies($entity, $this->dependencies);
         }
 
+
+        $anrs = [];
+        foreach($entity['anrs'] as $key => $anr) {
+            $anrs[] = $anr->getJsonArray();
+        }
+        $entity['anrs'] = $anrs;
+
         return new JsonModel($entity);
     }
 

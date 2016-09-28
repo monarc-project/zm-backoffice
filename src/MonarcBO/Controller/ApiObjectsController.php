@@ -3,6 +3,7 @@
 namespace MonarcBO\Controller;
 
 use MonarcCore\Controller\AbstractController;
+use MonarcCore\Service\ObjectService;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -31,7 +32,9 @@ class ApiObjectsController extends AbstractController
         $category = (int) $this->params()->fromQuery('category');
         $lock = $this->params()->fromQuery('lock');
 
-        $objects =  $this->getService()->getListSpecific($page, $limit, $order, $filter, $asset, $category, $lock);
+        /** @var ObjectService $service */
+        $service = $this->getService();
+        $objects =  $service->getListSpecific($page, $limit, $order, $filter, $asset, $category, $lock);
 
         if ($lock == 'true') {
             foreach($objects as $key => $object){
@@ -53,20 +56,21 @@ class ApiObjectsController extends AbstractController
      */
     public function get($id)
     {
-        $entity = $this->getService()->getCompleteEntity($id);
+        /** @var ObjectService $service */
+        $service = $this->getService();
+        $object = $service->getCompleteEntity($id);
 
         if (count($this->dependencies)) {
-            $this->formatDependencies($entity, $this->dependencies);
+            $this->formatDependencies($object, $this->dependencies);
         }
-
 
         $anrs = [];
-        foreach($entity['anrs'] as $key => $anr) {
+        foreach($object['anrs'] as $key => $anr) {
             $anrs[] = $anr->getJsonArray();
         }
-        $entity['anrs'] = $anrs;
+        $object['anrs'] = $anrs;
 
-        return new JsonModel($entity);
+        return new JsonModel($object);
     }
 
 }

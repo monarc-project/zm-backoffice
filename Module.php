@@ -31,11 +31,15 @@ class Module
     public function getAutoloaderConfig()
     {
         return array(
-            'Zend\Loader\StandardAutoloader' => array(
+            // ./vendor/bin/classmap_generator.php --library module/MonarcBO/src/MonarcBO -w -s -o module/MonarcBO/autoload_classmap.php
+            'Zend\Loader\ClassMapAutoloader' => array(
+                __DIR__ . '/autoload_classmap.php',
+            ),
+            /*'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
                 ),
-            ),
+            ),*/
         );
     }
 
@@ -47,35 +51,16 @@ class Module
                 //'\MonarcBO\Model\Entity\Client' => '\MonarcBO\Model\Entity\Client',
             ),
             'factories' => array(
-               '\MonarcCli\Model\Db' => function($sm){
-                    try{
-                        $sm->get('doctrine.entitymanager.orm_cli')->getConnection()->connect();
-                        return new \MonarcCore\Model\Db($sm->get('doctrine.entitymanager.orm_cli'));
-                    }catch(\Exception $e){
-                        return new \MonarcCore\Model\Db($sm->get('doctrine.entitymanager.orm_default'));
-                    }
-                },
+               '\MonarcCli\Model\Db' => '\MonarcBO\Service\Model\DbCliFactory',
 
                 // Servers table
-                '\MonarcBO\Model\Table\ServerTable' => function($sm){
-                    return new Model\Table\ServerTable($sm->get('\MonarcCli\Model\Db'));
-                },
-                '\MonarcBO\Model\Entity\Server' => function($sm){
-                    $s = new Model\Entity\Server();
-                    $s->setDbAdapter($sm->get('\MonarcCli\Model\Db'));
-                    return $s;
-                },
+                '\MonarcBO\Model\Table\ServerTable' => '\MonarcBO\Service\Model\Table\ServerServiceModelTable',
+                '\MonarcBO\Model\Entity\Server' => '\MonarcBO\Service\Model\Entity\ServerServiceModelEntity',
                 '\MonarcBO\Service\ServerService' => '\MonarcBO\Service\ServerServiceFactory',
 
                 // Clients table
-                '\MonarcBO\Model\Table\ClientTable' => function($sm){
-                    return new Model\Table\ClientTable($sm->get('\MonarcCli\Model\Db'));
-                },
-                '\MonarcBO\Model\Entity\Client' => function($sm){
-                    $c = new Model\Entity\Client();
-                    $c->setDbAdapter($sm->get('\MonarcCli\Model\Db'));
-                    return $c;
-                },
+                '\MonarcBO\Model\Table\ClientTable' => '\MonarcBO\Service\Model\Table\ClientServiceModelTable',
+                '\MonarcBO\Model\Entity\Client' => '\MonarcBO\Service\Model\Entity\ClientServiceModelEntity',
                 '\MonarcBO\Service\ClientService' => '\MonarcBO\Service\ClientServiceFactory',
             ),
         );

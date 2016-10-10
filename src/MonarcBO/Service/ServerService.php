@@ -46,7 +46,7 @@ class ServerService extends AbstractService
         return $this->get('serverTable')->get($id);
     }
 
-    public function create($data)
+    public function create($data, $last = true)
     {
         /** @var ServerTable $serverTable */
         $serverTable = $this->get('serverTable');

@@ -66,7 +66,7 @@ class ClientService extends AbstractService
         return $client;
     }
 
-    public function create($data)
+    public function create($data, $last = true)
     {
         /** @var ClientTable $clientTable */
         $clientTable = $this->get('clientTable');

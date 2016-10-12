@@ -3,6 +3,7 @@
 namespace MonarcBO\Controller;
 
 use MonarcCore\Controller\AbstractController;
+use MonarcCore\Model\Entity\Object;
 use MonarcCore\Service\ObjectService;
 use Zend\View\Model\JsonModel;
 
@@ -59,7 +60,7 @@ class ApiObjectsController extends AbstractController
     {
         /** @var ObjectService $service */
         $service = $this->getService();
-        $object = $service->getCompleteEntity($id);
+        $object = $service->getCompleteEntity($id, Object::FRONT_OFFICE);
 
         if (count($this->dependencies)) {
             $this->formatDependencies($object, $this->dependencies);

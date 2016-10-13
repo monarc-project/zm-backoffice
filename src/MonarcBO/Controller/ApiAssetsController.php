@@ -31,6 +31,10 @@ class ApiAssetsController extends AbstractController
             $status = 1;
         }
         $filterAnd = ($status == "all") ? null : ['status' => (int) $status] ;
+        $type = $this->params()->fromQuery('type');
+        if (!empty($type)) {
+            $filterAnd['type'] = (int)$type;
+        }
 
 
         $service = $this->getService();

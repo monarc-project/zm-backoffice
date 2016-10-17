@@ -23,21 +23,17 @@ class ApiObjectsExportController extends AbstractController
      */
     public function create($data)
     {
-        if (isset($data['id'])) {
-            $output = $this->getService()->export($data);
+        $output = $this->getService()->export($data);
 
-            $response = $this->getResponse();
-            $response->setContent($output);
+        $response = $this->getResponse();
+        $response->setContent($output);
 
-            $headers = $response->getHeaders();
-            $headers->clearHeaders()
-                ->addHeaderLine('Content-Type', 'application/binary')
-                ->addHeaderLine('Content-Disposition', 'attachment; filename="' . $data['id'] . '.bin"');
+        $headers = $response->getHeaders();
+        $headers->clearHeaders()
+            ->addHeaderLine('Content-Type', 'text/plain; charset=utf-8')
+            ->addHeaderLine('Content-Disposition', 'attachment; filename="' . (empty($data['filename'])?$data['id']:$data['filename']) . '.bin"');
 
-            return $this->response;
-        } else {
-            throw new \Exception('Object to export is required');
-        }
+        return $this->response;
     }
 
     public function get($id)

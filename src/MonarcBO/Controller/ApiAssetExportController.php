@@ -28,7 +28,7 @@ class ApiAssetExportController extends AbstractController
 
         $headers = $response->getHeaders();
         $headers->clearHeaders()
-            ->addHeaderLine('Content-Type', 'application/binary')
+            ->addHeaderLine('Content-Type', 'text/plain; charset=utf-8')
             ->addHeaderLine('Content-Disposition', 'attachment; filename="' . (empty($data['filename'])?$data['id']:$data['filename']) . '.bin"');
 
         return $this->response;

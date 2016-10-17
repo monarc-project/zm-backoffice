@@ -66,6 +66,12 @@ class ClientService extends AbstractService
         return $client;
     }
 
+    /**
+     * Create
+     *
+     * @param $data
+     * @param bool $last
+     */
     public function create($data, $last = true)
     {
         /** @var ClientTable $clientTable */
@@ -109,7 +115,11 @@ class ClientService extends AbstractService
         /** @var ClientTable $clientTable */
         $clientTable = $this->get('clientTable');
 
+        $entity = $clientTable->getEntity($id);
+
         $clientTable->delete($id);
+
+        $this->deleteJSON($entity);
     }
 
     public function getJsonData() {
@@ -123,6 +133,12 @@ class ClientService extends AbstractService
     }
 
 
+    /**
+     * Create JSON
+     *
+     * @param $client
+     * @return string
+     */
     public function createJSON($client) {
         $serverTable = $this->get('serverTable');
         $server = $serverTable->getEntity($client->get('server_id'));
@@ -144,7 +160,9 @@ class ClientService extends AbstractService
             $salt = $localConf['monarc']['salt'];
         }
 
-        $fields = array(
+        //users table database client
+        $fieldsUser = array(
+            'id'            => 1,
             'status'        => 1,
             'firstname'     => $client->get('first_user_firstname'),
             'lastname'      => $client->get('first_user_lastname'),
@@ -155,10 +173,113 @@ class ClientService extends AbstractService
             'created_at'    => date('Y-m-d H:i:s')
         );
 
+        $sqlDumpUsers = '';
+        $listValues = $this->getListValues($fieldsUser, $serverTable);
+        if ($listValues != '') {
+            $sqlDumpUsers = 'INSERT INTO `users` SET ' . $listValues . ';';
+        }
 
-        $sqlDump = '';
+        //users_roles table database client
+        $role1Values = [
+            'user_id'       => 1,
+            'role'          => 'superadminfo',
+            'creator'       => 'System',
+            'created_at'    => date('Y-m-d H:i:s')
+        ];
+        $role2Values = [
+            'user_id'       => 1,
+            'role'          => 'userfo',
+            'creator'       => 'System',
+            'created_at'    => date('Y-m-d H:i:s')
+        ];
+        $sqlDumpUsersRoles = '';
+        $listValues = $this->getListValues($role1Values, $serverTable);
+        if ($listValues != '') {
+            $sqlDumpUsersRoles = 'INSERT INTO `users_roles` SET ' . $listValues . ';';
+        }
+        $listValues = $this->getListValues($role2Values, $serverTable);
+        if ($listValues != '') {
+            $sqlDumpUsersRoles .= ' INSERT INTO `users_roles` SET ' . $listValues . ';';
+        }
+
+        //clients table database client
+        $fieldsClient = array(
+            'id'                    => $client->get('id'),
+            'model_id'              => $client->get('model_id'),
+            'logo_id'               => $client->get('logo_id'),
+            'country_id'            => $client->get('country_id'),
+            'city_id'               => $client->get('city_id'),
+            'name'                  => $client->get('name'),
+            'proxy_alias'           => $client->get('proxy_alias'),
+            'address'               => $client->get('address'),
+            'postal_code'           => $client->get('postal_code'),
+            'phone'                 => $client->get('phone'),
+            'fax'                   => $client->get('fax'),
+            'email'                 => $client->get('email'),
+            'employees_number'      => $client->get('employees_number'),
+            'contact_fullname'      => $client->get('contact_fullname'),
+            'contact_email'         => $client->get('contact_email'),
+            'contact_phone'         => $client->get('contact_phone'),
+            'first_user_firstname'  => $client->get('first_user_firstname'),
+            'first_user_lastname'   => $client->get('first_user_lastname'),
+            'first_user_email'      => $client->get('first_user_email'),
+            'first_user_phone'      => $client->get('first_user_phone'),
+            'creator'               => 'System',
+            'created_at'            => date('Y-m-d H:i:s')
+        );
+
+        $sqlDumpClients = '';
+        $listValues = $this->getListValues($fieldsClient, $serverTable);
+        if ($listValues != '') {
+            $sqlDumpClients = 'INSERT INTO `clients` SET ' . $listValues . ';';
+        }
+
+        $datas = array(
+            'server' => $server->get('fqdn'),
+            'proxy_alias' => $client->get('proxyAlias'),
+            'sql_bootstrap' => $sqlDumpUsers . ' ' . $sqlDumpUsersRoles . ' ' . $sqlDumpClients
+        );
+
+        if (!is_dir(getcwd().'/data/json/')) {
+            mkdir(getcwd().'/data/json/');
+        }
+        $now = date('YmdHis');
+        $filename = getcwd().'/data/json/'.$now.'.json';
+        file_put_contents($filename, json_encode($datas));
+
+        return $filename;
+    }
+
+    public function deleteJSON($client) {
+
+        $serverTable = $this->get('serverTable');
+        $server = $serverTable->getEntity($client->get('server_id'));
+
+        if (is_null($server)) {
+            return null;
+        }
+        if ($server->get('fqdn') == '') {
+            return null;
+        }
+
+        $datas = array(
+            'server' => $server->get('fqdn'),
+            'proxy_alias' => $client->get('proxyAlias')
+        );
+
+        if (!is_dir(getcwd().'/data/json/')) {
+            mkdir(getcwd().'/data/json/');
+        }
+        $now = date('YmdHis');
+        $filename = getcwd().'/data/json/'.$now.'.json';
+        file_put_contents($filename, json_encode($datas));
+
+        return $filename;
+    }
+
+    protected function getListValues($fieldsValues, $serverTable) {
         $listValues = '';
-        foreach ($fields as $key => $value) {
+        foreach ($fieldsValues as $key => $value) {
             if ($key != '' && !is_null($value)) {
                 if ($listValues != '') $listValues .= ', ';
 
@@ -170,45 +291,7 @@ class ClientService extends AbstractService
                 }
             }
         }
-        if ($listValues != '') {
-            $sqlDump = 'INSERT INTO `users` SET '.$listValues;
-        }
 
-        $datas = array(
-            'server' => $server->get('fqdn'),
-            'client' => array(
-                'id'                    => $client->get('id'),
-                'model_id'              => $client->get('model_id'),
-                'server_id'             => $client->get('server_id'),
-                'logo_id'               => $client->get('logo_id'),
-                'country_id'            => $client->get('country_id'),
-                'city_id'               => $client->get('city_id'),
-                'name'                  => $client->get('name'),
-                'proxy_alias'           => $client->get('proxy_alias'),
-                'address'               => $client->get('address'),
-                'postal_code'           => $client->get('postal_code'),
-                'phone'                 => $client->get('phone'),
-                'fax'                   => $client->get('fax'),
-                'email'                 => $client->get('email'),
-                'employees_number'      => $client->get('employees_number'),
-                'contact_fullname'      => $client->get('contact_fullname'),
-                'contact_email'         => $client->get('contact_email'),
-                'contact_phone'         => $client->get('contact_phone'),
-                'first_user_firstname'  => $client->get('first_user_firstname'),
-                'first_user_lastname'   => $client->get('first_user_lastname'),
-                'first_user_email'      => $client->get('first_user_email'),
-                'first_user_phone'      => $client->get('first_user_phone')
-            ),
-            'sql_bootstrap' => $sqlDump
-        );
-
-        if (!is_dir(getcwd().'/data/json/')) {
-            mkdir(getcwd().'/data/json/');
-        }
-        $now = date('YmdHis');
-        $filename = getcwd().'/data/json/'.$now.'.json';
-        file_put_contents($filename, json_encode($datas));
-
-        return $filename;
+        return $listValues;
     }
 }

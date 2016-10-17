@@ -17,6 +17,8 @@ return array(
     'MonarcBO\Controller\ApiAdminUsersRolesControllerFactory'    => __DIR__ . '/src/MonarcBO/Controller/ApiAdminUsersRolesControllerFactory.php',
     'MonarcBO\Controller\ApiAmvsController'                      => __DIR__ . '/src/MonarcBO/Controller/ApiAmvsController.php',
     'MonarcBO\Controller\ApiAmvsControllerFactory'               => __DIR__ . '/src/MonarcBO/Controller/ApiAmvsControllerFactory.php',
+    'MonarcBO\Controller\ApiAssetExportController'               => __DIR__ . '/src/MonarcBO/Controller/ApiAssetExportController.php',
+    'MonarcBO\Controller\ApiAssetExportControllerFactory'        => __DIR__ . '/src/MonarcBO/Controller/ApiAssetExportControllerFactory.php',
     'MonarcBO\Controller\ApiAssetsController'                    => __DIR__ . '/src/MonarcBO/Controller/ApiAssetsController.php',
     'MonarcBO\Controller\ApiAssetsControllerFactory'             => __DIR__ . '/src/MonarcBO/Controller/ApiAssetsControllerFactory.php',
     'MonarcBO\Controller\ApiCitiesController'                    => __DIR__ . '/src/MonarcBO/Controller/ApiCitiesController.php',

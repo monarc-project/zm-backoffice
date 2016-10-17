@@ -193,7 +193,11 @@ class ClientService extends AbstractService
                 'employees_number'      => $client->get('employees_number'),
                 'contact_fullname'      => $client->get('contact_fullname'),
                 'contact_email'         => $client->get('contact_email'),
-                'contact_phone'         => $client->get('contact_phone')
+                'contact_phone'         => $client->get('contact_phone'),
+                'first_user_firstname'  => $client->get('first_user_firstname'),
+                'first_user_lastname'   => $client->get('first_user_lastname'),
+                'first_user_email'      => $client->get('first_user_email'),
+                'first_user_phone'      => $client->get('first_user_phone')
             ),
             'sql_bootstrap' => $sqlDump
         );

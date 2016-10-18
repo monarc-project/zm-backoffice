@@ -61,7 +61,9 @@ class ApiObjectsController extends AbstractController
     {
         /** @var ObjectService $service */
         $service = $this->getService();
-        $object = $service->getCompleteEntity($id, Object::CONTEXT_BDC);
+        $mode = $this->params()->fromQuery('mode');
+        $anr = (int) $this->params()->fromQuery('anr');
+        $object = $service->getCompleteEntity($id, isset($mode) && $mode == Object::CONTEXT_ANR ? Object::CONTEXT_ANR : Object::CONTEXT_BDC, $anr);
 
         if (count($this->dependencies)) {
             $this->formatDependencies($object, $this->dependencies);

@@ -208,6 +208,19 @@ return array(
                 ),
             ),
 
+            'monarc_api_anr_objects' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/anr/:anrid/objects[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcCore\Controller\ApiAnrObject',
+                    ),
+                ),
+            ),
+
             'monarc_api_model_objects' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -669,6 +682,7 @@ return array(
             'monarc_api_anr_instances',
             'monarc_api_anr_library',
             'monarc_api_anr_library_category',
+            'monarc_api_anr_objects',
             'monarc_api_measures',
             'monarc_api_models',
             'monarc_api_objects',

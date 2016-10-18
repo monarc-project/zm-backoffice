@@ -61,7 +61,7 @@ class ApiObjectsController extends AbstractController
     {
         /** @var ObjectService $service */
         $service = $this->getService();
-        $object = $service->getCompleteEntity($id, Object::FRONT_OFFICE);
+        $object = $service->getCompleteEntity($id, Object::CONTEXT_BDC);
 
         if (count($this->dependencies)) {
             $this->formatDependencies($object, $this->dependencies);

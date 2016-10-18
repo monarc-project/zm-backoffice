@@ -15,53 +15,27 @@ return array(
                 ),
             ),
 
-            'monarc_api_admin_users' => array(
+            'monarc_api_admin_historicals' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/admin/users[/:id]',
+                    'route' => '/api/admin/historical[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAdminUsers',
+                        'controller' => 'MonarcBO\Controller\ApiAdminHistoricals',
                     ),
                 ),
             ),
 
-            'monarc_api_admin_servers' => array(
+            'monarc_api_admin_passwords' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/admin/servers[/:id]',
+                    'route' => '/api/admin/passwords',
                     'constraints' => array(
-                        'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAdminServers',
-                    ),
-                ),
-            ),
-            'monarc_api_admin_servers_get' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/admin/serversget[/:id]',
-                    'constraints' => array(
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAdminServersGet',
-                    ),
-                ),
-            ),
-
-            'monarc_api_clients' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/clients[/:id]',
-                    'constraints' => array(
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiClients',
+                        'controller' => 'MonarcBO\Controller\ApiAdminPasswords',
                     ),
                 ),
             ),
@@ -79,145 +53,146 @@ return array(
                 ),
             ),
 
-            'monarc_api_admin_passwords' => array(
+            'monarc_api_admin_servers' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/admin/passwords',
-                    'constraints' => array(
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAdminPasswords',
-                    ),
-                ),
-            ),
-
-            'monarc_api_user_password' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/user/password/:id',
+                    'route' => '/api/admin/servers[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiUserPassword',
+                        'controller' => 'MonarcBO\Controller\ApiAdminServers',
                     ),
                 ),
             ),
 
-            'monarc_api_models' => array(
+            'monarc_api_admin_servers_get' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/models[/:id]',
+                    'route' => '/api/admin/serversget[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcCore\Controller\ApiModels',
+                        'controller' => 'MonarcBO\Controller\ApiAdminServersGet',
                     ),
                 ),
             ),
 
-            'monarc_api_anr' => array(
+            'monarc_api_admin_users' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/anr[/:id]',
+                    'route' => '/api/admin/users[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcCore\Controller\ApiAnr',
+                        'controller' => 'MonarcBO\Controller\ApiAdminUsers',
                     ),
                 ),
             ),
 
-            'monarc_api_anr_library' => array(
+            'monarc_api_admin_users_roles' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/anr/:anrid/library[/:id]',
+                    'route' => '/api/users-roles[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcCore\Controller\ApiAnrLibrary',
+                        'controller' => 'MonarcBO\Controller\ApiAdminUsersRoles',
                     ),
                 ),
             ),
 
-            'monarc_api_anr_library_category' => array(
+            'monarc_api_amvs' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/anr/:anrid/library-category[/:id]',
+                    'route' => '/api/amvs[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcCore\Controller\ApiAnrLibraryCategory',
+                        'controller' => 'MonarcBO\Controller\ApiAmvs',
                     ),
                 ),
             ),
 
-            'monarc_api_anr_instances' => array(
+            'monarc_api_asset_export' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/anr/:anrid/instances[/:id]',
-                    'constraints' => array(
-                        'id' => '[0-9]+',
-                    ),
+                    'route' => '/api/asset/export',
                     'defaults' => array(
-                        'controller' => 'MonarcCore\Controller\ApiAnrInstances',
+                        'controller' => 'MonarcBO\Controller\ApiAssetExport',
                     ),
                 ),
             ),
 
-            'monarc_api_anr_instances_risks' => array(
+            'monarc_api_assets' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/anr/:anrid/instances-risks[/:id]',
+                    'route' => '/api/assets[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcCore\Controller\ApiAnrInstancesRisks',
+                        'controller' => 'MonarcBO\Controller\ApiAssets',
                     ),
                 ),
             ),
 
-            'monarc_api_anr_instances_consequences' => array(
-                'type' => 'segment',
+            'monarc_api_cities' => array(
+                'type' => 'literal',
                 'options' => array(
-                    'route' => '/api/anr/:anrid/instances-consequences[/:id]',
-                    'constraints' => array(
-                        'id' => '[0-9]+',
-                    ),
+                    'route' => '/api/cities',
                     'defaults' => array(
-                        'controller' => 'MonarcCore\Controller\ApiAnrInstancesConsequences',
+                        'controller' => 'MonarcBO\Controller\ApiCities',
                     ),
                 ),
             ),
 
-            'monarc_api_anr_instances_risksop' => array(
+            'monarc_api_clients' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/anr/:anrid/instances-oprisks[/:id]',
+                    'route' => '/api/clients[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcCore\Controller\ApiAnrInstancesRisksOp',
+                        'controller' => 'MonarcBO\Controller\ApiClients',
                     ),
                 ),
             ),
 
-            'monarc_api_model_objects' => array(
+            'monarc_api_config' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route' => '/api/config',
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiConfig',
+                    ),
+                ),
+            ),
+
+            'monarc_api_countries' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route' => '/api/countries',
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiCountries',
+                    ),
+                ),
+            ),
+
+            'monarc_api_doc_models' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/models/:idm/objects[/:id]',
+                    'route' => '/api/docmodels[/:id]',
                     'constraints' => array(
-                        'idm' => '[0-9]+',
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiModelObject',
+                        'controller' => 'MonarcBO\Controller\ApiDocModels',
                     ),
                 ),
             ),
@@ -261,47 +236,6 @@ return array(
                 ),
             ),
 
-            'monarc_api_scales_comments' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/anr/:anrId/scales/:scaleId/comments[/:id]',
-                    'constraints' => array(
-                        'anrId' => '[0-9]+',
-                        'scaleId' => '[0-9]+',
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcCore\Controller\ApiScalesComments',
-                    ),
-                ),
-            ),
-
-            'monarc_api_scales' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/anr/:anrId/scales[/:id]',
-                    'constraints' => array(
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcCore\Controller\ApiScales',
-                    ),
-                ),
-            ),
-
-            'monarc_api_scales_types' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/anr/:anrId/scales-types[/:id]',
-                    'constraints' => array(
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcCore\Controller\ApiScalesTypes',
-                    ),
-                ),
-            ),
-
             'monarc_api_measures' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -315,50 +249,75 @@ return array(
                 ),
             ),
 
-            'monarc_api_assets' => array(
+            'monarc_api_model_objects' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/assets[/:id]',
+                    'route' => '/api/models/:idm/objects[/:id]',
                     'constraints' => array(
+                        'idm' => '[0-9]+',
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAssets',
-                    ),
-                ),
-            ),
-             'monarc_api_asset_export' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/asset/export',
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAssetExport',
+                        'controller' => 'MonarcBO\Controller\ApiModelObject',
                     ),
                 ),
             ),
 
-            'monarc_api_amvs' => array(
+            'monarc_api_objects_categories' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/amvs[/:id]',
+                    'route' => '/api/objects-categories[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAmvs',
+                        'controller' => 'MonarcBO\Controller\ApiObjectsCategories',
                     ),
                 ),
             ),
 
-            'monarc_api_vulnerabilities' => array(
+            'monarc_api_objects' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/vulnerabilities[/:id]',
+                    'route' => '/api/objects[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiVulnerabilities',
+                        'controller' => 'MonarcBO\Controller\ApiObjects',
+                    ),
+                ),
+            ),
+
+            'monarc_api_objects_duplication' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/objects-duplication',
+                    'constraints' => array(),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiObjectsDuplication',
+                    ),
+                ),
+            ),
+
+            'monarc_api_objects_export' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/objects-export',
+                    'constraints' => array(),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiObjectsExport',
+                    ),
+                ),
+            ),
+
+            'monarc_api_objects_objects' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/objects-objects[/:id]',
+                    'constraints' => array(),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiObjectsObjects',
                     ),
                 ),
             ),
@@ -415,91 +374,6 @@ return array(
                 ),
             ),
 
-            'monarc_api_admin_historicals' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/admin/historical[/:id]',
-                    'constraints' => array(
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAdminHistoricals',
-                    ),
-                ),
-            ),
-
-            'monarc_api_admin_users_roles' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/users-roles[/:id]',
-                    'constraints' => array(
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAdminUsersRoles',
-                    ),
-                ),
-            ),
-
-            'monarc_api_objects' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/objects[/:id]',
-                    'constraints' => array(
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiObjects',
-                    ),
-                ),
-            ),
-
-            'monarc_api_objects_duplication' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/objects-duplication',
-                    'constraints' => array(),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiObjectsDuplication',
-                    ),
-                ),
-            ),
-
-            'monarc_api_objects_export' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/objects-export',
-                    'constraints' => array(),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiObjectsExport',
-                    ),
-                ),
-            ),
-
-            'monarc_api_objects_objects' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/objects-objects[/:id]',
-                    'constraints' => array(),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiObjectsObjects',
-                    ),
-                ),
-            ),
-
-            'monarc_api_objects_categories' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/objects-categories[/:id]',
-                    'constraints' => array(
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiObjectsCategories',
-                    ),
-                ),
-            ),
-
             'monarc_api_threats' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -513,25 +387,15 @@ return array(
                 ),
             ),
 
-            'monarc_api_config' => array(
-                'type' => 'literal',
-                'options' => array(
-                    'route' => '/api/config',
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiConfig',
-                    ),
-                ),
-            ),
-
-            'monarc_api_doc_models' => array(
+            'monarc_api_user_password' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/docmodels[/:id]',
+                    'route' => '/api/user/password/:id',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiDocModels',
+                        'controller' => 'MonarcBO\Controller\ApiUserPassword',
                     ),
                 ),
             ),
@@ -546,22 +410,15 @@ return array(
                 ),
             ),
 
-            'monarc_api_countries' => array(
-                'type' => 'literal',
+            'monarc_api_vulnerabilities' => array(
+                'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/countries',
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiCountries',
+                    'route' => '/api/vulnerabilities[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
                     ),
-                ),
-            ),
-
-            'monarc_api_cities' => array(
-                'type' => 'literal',
-                'options' => array(
-                    'route' => '/api/cities',
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiCities',
+                        'controller' => 'MonarcBO\Controller\ApiVulnerabilities',
                     ),
                 ),
             ),
@@ -669,6 +526,7 @@ return array(
             'monarc_api_anr_instances',
             'monarc_api_anr_library',
             'monarc_api_anr_library_category',
+            'monarc_api_anr_objects',
             'monarc_api_measures',
             'monarc_api_models',
             'monarc_api_objects',

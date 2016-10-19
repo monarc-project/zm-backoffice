@@ -68,5 +68,23 @@ class ApiObjectsCategoriesController extends AbstractController
         }
         return $output;
     }
+
+    /**
+     * Create
+     *
+     * @param mixed $data
+     * @return JsonModel
+     */
+    public function create($data)
+    {
+        $obj = $this->getService()->create($data);
+
+        return new JsonModel(
+            array(
+                'status' => 'ok',
+                'categ' => $obj,
+            )
+        );
+    }
 }
 

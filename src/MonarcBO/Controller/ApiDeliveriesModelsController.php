@@ -7,12 +7,12 @@ use Zend\View\Model\JsonModel;
 /**
  * Api Doc Models Controller
  *
- * Class ApiDocModelsController
+ * Class ApiDeliveriesModelsController
  * @package MonarcBO\Controller
  */
-class ApiDocModelsController extends AbstractController
+class ApiDeliveriesModelsController extends AbstractController
 {
-    protected $name = "docmodels";
+    protected $name = "deliveriesmodels";
 
     public function create($data)
     {
@@ -49,7 +49,7 @@ class ApiDocModelsController extends AbstractController
         }
 
         foreach($entities as $k => $v){
-            $entities[$k]['path'] = './api/docmodels/'.$v['id'];
+            $entities[$k]['path'] = './api/deliveriesmodels/'.$v['id'];
         }
 
         return new JsonModel(array(

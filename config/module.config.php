@@ -187,12 +187,12 @@ return array(
             'monarc_api_doc_models' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/docmodels[/:id]',
+                    'route' => '/api/deliveriesmodels[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiDocModels',
+                        'controller' => 'MonarcBO\Controller\ApiDeliveriesModels',
                     ),
                 ),
             ),
@@ -447,7 +447,7 @@ return array(
             '\MonarcBO\Controller\ApiThemes'                    => '\MonarcBO\Controller\ApiThemesControllerFactory',
             '\MonarcBO\Controller\ApiThreats'                   => '\MonarcBO\Controller\ApiThreatsControllerFactory',
             '\MonarcBO\Controller\ApiVulnerabilities'           => '\MonarcBO\Controller\ApiVulnerabilitiesControllerFactory',
-            '\MonarcBO\Controller\ApiDocModels'                 => '\MonarcBO\Controller\ApiDocModelsControllerFactory',
+            '\MonarcBO\Controller\ApiDeliveriesModels'          => '\MonarcBO\Controller\ApiDeliveriesModelsControllerFactory',
             '\MonarcBO\Controller\ApiUserProfile'               => '\MonarcBO\Controller\ApiUserProfileControllerFactory',
         ),
     ),

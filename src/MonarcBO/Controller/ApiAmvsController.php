@@ -28,10 +28,18 @@ class ApiAmvsController extends AbstractController
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
         $status = $this->params()->fromQuery('status');
+        $asset = $this->params()->fromQuery('asset');
         if (is_null($status)) {
             $status = 1;
         }
-        $filterAnd = ($status == "all") ? null : ['status' => (int) $status] ;
+        $filterAnd = [];
+
+        if ($status != 'all') {
+            $filterAnd['status'] = (int) $status;
+        }
+        if ($asset > 0) {
+            $filterAnd['asset'] = (int) $asset;
+        }
 
         $service = $this->getService();
 

@@ -538,6 +538,7 @@ return array(
             'monarc_api_models',
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
+            'monarc_api_anr_objects_parents',
         ),
         // Admin système : Gestion des logs et tout ce qui est non applicatif (Administration)
         'sysadmin'=> array(

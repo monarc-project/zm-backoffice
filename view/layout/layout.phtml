@@ -47,8 +47,11 @@
         ->appendFile($this->basePath('js/anr/ToolsAnrService.js'))
         ->appendFile($this->basePath('js/anr/InstanceService.js'))
 
+        ->appendFile($this->basePath('js/anr/AnrObjectResource.js'))
+
         //Tools
         ->appendFile($this->basePath('js/anr/EditableDirective.js'))
+        ->appendFile($this->basePath('js/anr/DashNullFilter.js'))
         // Admin section
         ->appendFile($this->basePath('js/admin/AdminLogsService.js'))
         ->appendFile($this->basePath('js/admin/AdminServerService.js'))

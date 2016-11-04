@@ -18,7 +18,11 @@ class ApiAdminPasswordsController extends AbstractController
     {
         //password forgotten
         if (!empty($data['email']) && empty($data['password'])) {
-            $this->getService()->passwordForgotten($data['email']);
+            try {
+                $this->getService()->passwordForgotten($data['email']);
+            } catch (\Exception $e) {
+                // Ignore the exception: We don't want to leak any data
+            }
         }
 
         //verify token

@@ -31,6 +31,7 @@ class AdminUserInit extends AbstractSeed
             'status' => 1,
             'firstname' => 'Admin',
             'lastname' => 'Admin',
+            'language' => 1,
             'email' => $email,
             'password' => password_hash($salt.$defaultPassword,PASSWORD_BCRYPT),
             'creator' => 'System',

@@ -83,9 +83,14 @@ class ApiAmvsController extends AbstractController
                     if ($i == count($amvsAsset) - 1) {
                         $entity['implicitPosition'] = 2;
                     } else {
-                        $entity['implicitPosition'] = 3;
-                        $entity['previous'] = $amvsAsset[$i - 1];
-                        $this->formatDependencies($entity['previous'], $this->dependencies);
+                        if ($i == 0) {
+                            $entity['implicitPosition'] = 1;
+                            $entity['previous'] = null;
+                        } else {
+                            $entity['implicitPosition'] = 3;
+                            $entity['previous'] = $amvsAsset[$i - 1];
+                            $this->formatDependencies($entity['previous'], $this->dependencies);
+                        }
                     }
 
                     break;

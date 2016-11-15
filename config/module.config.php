@@ -495,6 +495,7 @@ return array(
             'monarc_api_guides_types',
             'monarc_api_themes',
             'monarc_api_models',
+            'monarc_api_admin_users',
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
         ),

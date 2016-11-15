@@ -19,9 +19,12 @@ class ApiDeliveriesModelsController extends AbstractController
         unset($data['path']);
         $service = $this->getService();
         $file = $this->request->getFiles()->toArray();
-        if(!empty($file['file'])){
-            $data['path'] = $file['file'];
+        for ($i = 1; $i <= 4; ++$i) {
+            if (!empty($file['file'][$i])) {
+                $data['path' . $i] = $file['file'][$i];
+            }
         }
+
         $service->create($data);
 
         return new JsonModel(array('status' => 'ok'));
@@ -48,9 +51,9 @@ class ApiDeliveriesModelsController extends AbstractController
             }
         }
 
-        foreach($entities as $k => $v){
+        /*foreach($entities as $k => $v){
             $entities[$k]['path'] = './api/deliveriesmodels/'.$v['id'];
-        }
+        }*/
 
         return new JsonModel(array(
             'count' => $service->getFilteredCount($page, $limit, $order, $filter),
@@ -68,7 +71,7 @@ class ApiDeliveriesModelsController extends AbstractController
     {
         $entity = $this->getService()->getEntity($id);
         if(!empty($entity)){
-            $name = pathinfo($entity['path'],PATHINFO_BASENAME);
+            $name = pathinfo($entity['path1'],PATHINFO_BASENAME);
             $name = explode('_',$name);
             unset($name[0]);
             $name = implode('_',$name);
@@ -98,8 +101,11 @@ class ApiDeliveriesModelsController extends AbstractController
         unset($data['path']);
         $service = $this->getService();
         $file = $this->request->getFiles()->toArray();
-        if(!empty($file['file'])){
-            $data['path'] = $file['file'];
+
+        for ($i = 1; $i <= 4; ++$i) {
+            if (!empty($file['file'][$i])) {
+                $data['path' . $i] = $file['file'][$i];
+            }
         }
         $service->update($id,$data);
         return new JsonModel(array('status' => 'ok'));

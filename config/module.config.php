@@ -505,6 +505,7 @@ return array(
             'monarc_api_asset_export',
             'monarc_api_anr',
             'monarc_api_anr_risks',
+            'monarc_api_anr_risks_op',
             'monarc_api_anr_export',
             'monarc_api_anr_instances',
             'monarc_api_anr_instances_export',

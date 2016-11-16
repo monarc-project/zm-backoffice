@@ -119,7 +119,7 @@ class Client extends AbstractEntity
      *
      * @ORM\Column(name="contact_fullname", type="string", length=255, nullable=true)
      */
-    protected $contact_fullname;
+    protected $contactFullname;
 
     /**
      * @var string

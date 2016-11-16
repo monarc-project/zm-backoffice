@@ -40,13 +40,13 @@ class ClientService extends AbstractService
         $clientTable = $this->get('clientTable');
 
         return $clientTable->fetchAllFiltered(
-            array('id', 'name', 'proxy_alias', 'address', 'postalcode', 'phone', 'fax', 'email', 'contact_fullname',
+            array('id', 'name', 'proxy_alias', 'address', 'postalcode', 'phone', 'fax', 'email', 'contactFullname',
                 'employees_number', 'contact_email', 'contact_phone', 'model_id'),
             $page,
             $limit,
             $this->parseFrontendOrder($order),
             $this->parseFrontendFilter($filter, array('name', 'address', 'postalcode', 'phone', 'email',
-                'contact_fullname', 'contact_email', 'contact_phone'))
+                'contactFullname', 'contact_email', 'contact_phone'))
         );
     }
 

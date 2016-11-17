@@ -197,6 +197,32 @@ return array(
                 ),
             ),
 
+            'monarc_api_questions' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/questions[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiQuestions',
+                    ),
+                ),
+            ),
+
+            'monarc_api_questions_choices' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/questions-choices[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiQuestionsChoices',
+                    ),
+                ),
+            ),
+
             'monarc_api_guides' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -431,6 +457,8 @@ return array(
             '\MonarcBO\Controller\ApiClients'                   => '\MonarcBO\Controller\ApiClientsControllerFactory',
             '\MonarcBO\Controller\ApiCountries'                 => '\MonarcBO\Controller\ApiCountriesControllerFactory',
             '\MonarcBO\Controller\ApiConfig'                    => '\MonarcBO\Controller\ApiConfigControllerFactory',
+            '\MonarcBO\Controller\ApiQuestions'                 => '\MonarcBO\Controller\ApiQuestionsControllerFactory',
+            '\MonarcBO\Controller\ApiQuestionsChoices'          => '\MonarcBO\Controller\ApiQuestionsChoicesControllerFactory',
             '\MonarcBO\Controller\ApiGuides'                    => '\MonarcBO\Controller\ApiGuidesControllerFactory',
             '\MonarcBO\Controller\ApiGuidesItems'               => '\MonarcBO\Controller\ApiGuidesItemsControllerFactory',
             '\MonarcBO\Controller\ApiGuidesTypes'               => '\MonarcBO\Controller\ApiGuidesTypesControllerFactory',
@@ -517,6 +545,8 @@ return array(
             'monarc_api_anr_library_category',
             'monarc_api_anr_objects',
             'monarc_api_measures',
+            'monarc_api_questions',
+            'monarc_api_questions_choices',
             'monarc_api_models',
             'monarc_api_models_duplication',
             'monarc_api_objects',

@@ -67,11 +67,13 @@
         // KB Models
         ->appendFile($this->basePath('js/kb/models/BackofficeKbModelsCtrl.js'))
         // Other KB sections
+        ->appendFile($this->basePath('js/kb/BackofficeQuestionsCtrl.js'))
         ->appendFile($this->basePath('js/kb/BackofficeAnalysisGuidesCtrl.js'))
         ->appendFile($this->basePath('js/kb/BackofficeAnalysisGuidesItemsCtrl.js'))
         ->appendFile($this->basePath('js/kb/BackofficeDeliveriesModelsCtrl.js'))
         ->appendFile($this->basePath('js/kb/DeliveriesModelsService.js'))
         ->appendFile($this->basePath('js/kb/GuideService.js'))
+        ->appendFile($this->basePath('js/kb/QuestionService.js'))
         // General sections
         ->appendFile($this->basePath('js/BackofficeAccountCtrl.js'))
         ->appendFile($this->basePath('js/BackofficeLoginCtrl.js'))

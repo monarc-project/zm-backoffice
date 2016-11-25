@@ -590,7 +590,6 @@ return array(
         // Admin comptes : Création des comptes et authentification client
         'accadmin'=> array(
             'monarc_api_user_password',
-            'monarc_api_admin_users',
             'monarc_api_cities',
             'monarc_api_clients',
             'monarc_api_admin_servers_get',

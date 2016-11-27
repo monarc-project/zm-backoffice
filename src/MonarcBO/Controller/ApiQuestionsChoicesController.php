@@ -37,6 +37,7 @@ class ApiQuestionsChoicesController extends AbstractController
             /** @var QuestionChoice $choiceEntity */
             $choiceEntity = new QuestionChoice();
             $choiceEntity->setQuestion($question);
+            $choiceEntity->squeezeAutoPositionning(true);
             $choiceEntity->exchangeArray($c);
             $table->save($choiceEntity);
             ++$pos;

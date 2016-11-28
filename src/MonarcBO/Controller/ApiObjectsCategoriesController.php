@@ -32,23 +32,38 @@ class ApiObjectsCategoriesController extends AbstractController
             $order = "position";
         }
         $filter = $this->params()->fromQuery('filter');
-        $parentId = (int) $this->params()->fromQuery('parentId');
         $lock = $this->params()->fromQuery('lock') == "false" ? false : true;
 
         /** @var ObjectCategoryService $service */
         $service = $this->getService();
-        $objectCategories = $service->getListSpecific($page, $limit, $order, $filter, $parentId);
+
+        $filterAnd = [];
+        $catid = (int)$this->params()->fromQuery('catid');
+        if(!empty($catid)){
+            $filterAnd['id'] = [
+                'op' => '!=',
+                'value' => $catid,
+            ];
+        }
+        $parentId = (int) $this->params()->fromQuery('parentId');
+        if ($parentId > 0) {
+            $filterAnd['parent'] = $parentId;
+        }elseif(!$lock){
+            $filterAnd['parent'] = null;
+        }
+
+        $objectCategories = $service->getListSpecific($page, $limit, $order, $filter, $filterAnd);
 
         $fields = ['id', 'label1', 'label2', 'label3', 'label4', 'position'];;
 
         if ($parentId > 0 && $lock) {
-            $recursiveArray = $this->getCleanFields($objectCategories, ['id', 'label1', 'label2', 'label3', 'label4', 'position']);
+            $recursiveArray = $this->getCleanFields($objectCategories, $fields);
         } else {
             $recursiveArray = $this->recursiveArray($objectCategories, null, 0, $fields);
         }
 
         return new JsonModel(array(
-            'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter),
+            'count' => $this->getService()->getFilteredCount($page, $limit, $order, $filter,$filterAnd),
             $this->name => $recursiveArray
         ));
     }

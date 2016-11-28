@@ -29,6 +29,7 @@ class ApiAmvsController extends AbstractController
         $filter = $this->params()->fromQuery('filter');
         $status = $this->params()->fromQuery('status');
         $asset = $this->params()->fromQuery('asset');
+        $amvid = $this->params()->fromQuery('amvid');
         if (is_null($status)) {
             $status = 1;
         }
@@ -39,6 +40,13 @@ class ApiAmvsController extends AbstractController
         }
         if ($asset > 0) {
             $filterAnd['asset'] = (int) $asset;
+        }
+
+        if(!empty($amvid)){
+            $filterAnd['id'] = [
+                'op' => '!=',
+                'value' => (int)$amvid,
+            ];
         }
 
         $service = $this->getService();

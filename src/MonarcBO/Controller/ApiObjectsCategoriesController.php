@@ -39,14 +39,19 @@ class ApiObjectsCategoriesController extends AbstractController
 
         $filterAnd = [];
         $catid = (int)$this->params()->fromQuery('catid');
+        $parentId = (int) $this->params()->fromQuery('parentId');
         if(!empty($catid)){
             $filterAnd['id'] = [
-                'op' => '!=',
-                'value' => $catid,
+                'op' => 'NOT IN',
+                'value' => [$catid],
             ];
-        }
-        $parentId = (int) $this->params()->fromQuery('parentId');
-        if ($parentId > 0) {
+            if ($parentId > 0) {
+                $filterAnd['id']['value'][] = $parentId;
+                $filterAnd['parent'] = $parentId;
+            }else{
+                $filterAnd['parent'] = null;
+            }
+        }elseif ($parentId > 0) {
             $filterAnd['parent'] = $parentId;
         }elseif(!$lock){
             $filterAnd['parent'] = null;

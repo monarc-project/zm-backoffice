@@ -186,14 +186,12 @@ class ClientService extends AbstractService
             'creator'       => 'System',
             'created_at'    => date('Y-m-d H:i:s')
         ];
-        /*
         $role2Values = [
             'user_id'       => 1,
             'role'          => 'userfo',
             'creator'       => 'System',
             'created_at'    => date('Y-m-d H:i:s')
         ];
-        */
         $sqlDumpUsersRoles = '';
         $listValues = $this->getListValues($role1Values, $serverTable);
         if ($listValues != '') {

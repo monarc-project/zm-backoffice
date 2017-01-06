@@ -53,14 +53,18 @@ class ApiDeliveriesModelsController extends AbstractController
 
         foreach($entities as $k => $v){
             for($i=1;$i<=4;$i++){
+                $entities[$k]['filename'.$i] = '';
                 if(!empty($entities[$k]['path'.$i]) && file_exists($entities[$k]['path'.$i])){
+                    $name = explode('_',pathinfo($entities[$k]['path'.$i],PATHINFO_BASENAME));
+                    unset($name[0]);
+                    $entities[$k]['filename'.$i] = implode('_',$name);
                     $entities[$k]['path'.$i] = './api/deliveriesmodels/'.$v['id'].'?lang='.$i;
                 }
             }
         }
 
         return new JsonModel(array(
-            'count' => $service->getFilteredCount($page, $limit, $order, $filter),
+            'count' => count($entities),
             $this->name => $entities
         ));
     }

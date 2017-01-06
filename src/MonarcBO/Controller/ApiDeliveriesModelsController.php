@@ -107,15 +107,14 @@ class ApiDeliveriesModelsController extends AbstractController
 
     public function update($id, $data)
     {
-        unset($data['path']);
+        
         $service = $this->getService();
         $file = $this->request->getFiles()->toArray();
 
-        if (!empty($file['file'])){
-            for ($i = 1; $i <= 4; ++$i) {
-                if (!empty($file['file'][$i])) {
-                    $data['path' . $i] = $file['file'][$i];
-                }
+        for ($i = 1; $i <= 4; ++$i) {
+            unset($data['path'.$i]);
+            if (!empty($file['file'][$i])) {
+                $data['path' . $i] = $file['file'][$i];
             }
         }
         $service->update($id,$data);
@@ -124,14 +123,12 @@ class ApiDeliveriesModelsController extends AbstractController
 
     public function patch($id, $data)
     {
-        unset($data['path']);
         $service = $this->getService();
         $file = $this->request->getFiles()->toArray();
-        if (!empty($file['file'])){
-            for ($i = 1; $i <= 4; ++$i) {
-                if (!empty($file['file'][$i])) {
-                    $data['path' . $i] = $file['file'][$i];
-                }
+        for ($i = 1; $i <= 4; ++$i) {
+            unset($data['path'.$i]);
+            if (!empty($file['file'][$i])) {
+                $data['path' . $i] = $file['file'][$i];
             }
         }
         $service->patch($id,$data);

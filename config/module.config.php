@@ -615,5 +615,6 @@ return array(
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
         ),
-    )
+    ),
+    'activeLanguages' => array('fr','en','es'),
 );

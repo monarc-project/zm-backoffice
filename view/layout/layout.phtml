@@ -85,7 +85,9 @@
         ->appendFile($this->basePath('js/UserProfileService.js'))
         // Helpers
         ->appendFile($this->basePath('js/TableHelperService.js'))
-        ->appendFile($this->basePath('js/anr/DownloadService.js')); ?>
+        ->appendFile($this->basePath('js/anr/DownloadService.js'))
+        // FO compatibility
+        ->appendFile($this->basePath('js/ClientRecommandationService.js')); ?>
 
 </head>
 <body ng-app="BackofficeApp" layout="column" flex>

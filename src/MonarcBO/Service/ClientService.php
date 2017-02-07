@@ -31,7 +31,7 @@ class ClientService extends AbstractService
 
         return $clientTable->countFiltered($page, $limit, $this->parseFrontendOrder($order),
             $this->parseFrontendFilter($filter, array('name', 'address', 'postalcode', 'phone', 'email',
-                'contact_fullname', 'contact_email', 'contact_phone')));
+                'contactFullname', 'contact_email', 'contact_phone')));
     }
 
     public function getList($page = 1, $limit = 25, $order = null, $filter = null, $filterAnd = null)

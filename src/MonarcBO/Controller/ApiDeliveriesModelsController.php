@@ -99,13 +99,13 @@ class ApiDeliveriesModelsController extends AbstractController
 
                     return $this->response;
                 }else{
-                    throw new \Exception('Document template not found');
+                    throw new \MonarcCore\Exception\Exception('Document template not found');
                 }
             }else{
-                throw new \Exception('Document template not found');
+                throw new \MonarcCore\Exception\Exception('Document template not found');
             }
         } else {
-            throw new \Exception('Document template not found');
+            throw new \MonarcCore\Exception\Exception('Document template not found');
         }
     }
 

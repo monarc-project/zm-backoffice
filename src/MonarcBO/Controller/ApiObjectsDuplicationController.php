@@ -19,7 +19,7 @@ class ApiObjectsDuplicationController extends AbstractController
      *
      * @param mixed $data
      * @return JsonModel
-     * @throws \Exception
+     * @throws \MonarcCore\Exception\Exception
      */
     public function create($data)
     {
@@ -33,7 +33,7 @@ class ApiObjectsDuplicationController extends AbstractController
                 )
             );
         } else {
-            throw new \Exception('Object to duplicate is required');
+            throw new \MonarcCore\Exception\Exception('Object to duplicate is required');
         }
     }
 

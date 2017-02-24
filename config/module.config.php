@@ -118,16 +118,6 @@ return array(
                 ),
             ),
 
-            'monarc_api_asset_export' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api/asset/export',
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAssetExport',
-                    ),
-                ),
-            ),
-
             'monarc_api_assets' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -465,7 +455,6 @@ return array(
             '\MonarcBO\Controller\ApiAdminUsersRoles'           => '\MonarcBO\Controller\ApiAdminUsersRolesControllerFactory',
             '\MonarcBO\Controller\ApiAmvs'                      => '\MonarcBO\Controller\ApiAmvsControllerFactory',
             '\MonarcBO\Controller\ApiAssets'                    => '\MonarcBO\Controller\ApiAssetsControllerFactory',
-            '\MonarcBO\Controller\ApiAssetExport'               => '\MonarcBO\Controller\ApiAssetExportControllerFactory',
             '\MonarcBO\Controller\ApiCities'                    => '\MonarcBO\Controller\ApiCitiesControllerFactory',
             '\MonarcBO\Controller\ApiClients'                   => '\MonarcBO\Controller\ApiClientsControllerFactory',
             '\MonarcBO\Controller\ApiCountries'                 => '\MonarcBO\Controller\ApiCountriesControllerFactory',

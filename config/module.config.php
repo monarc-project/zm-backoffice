@@ -533,7 +533,6 @@ return array(
         'dbadmin'=> array(
             'monarc_api_amvs',
             'monarc_api_assets',
-            'monarc_api_asset_export',
             'monarc_api_anr',
             'monarc_api_anr_risks',
             'monarc_api_anr_risks_op',

@@ -67,7 +67,6 @@ return array(
     'MonarcBO\Controller\ApiUserProfileControllerFactory'        => __DIR__ . '/src/MonarcBO/Controller/ApiUserProfileControllerFactory.php',
     'MonarcBO\Controller\ApiVulnerabilitiesController'           => __DIR__ . '/src/MonarcBO/Controller/ApiVulnerabilitiesController.php',
     'MonarcBO\Controller\ApiVulnerabilitiesControllerFactory'    => __DIR__ . '/src/MonarcBO/Controller/ApiVulnerabilitiesControllerFactory.php',
-    'MonarcBO\Controller\IndexController'                        => __DIR__ . '/src/MonarcBO/Controller/IndexController.php',
     'MonarcBO\Model\Entity\Client'                               => __DIR__ . '/src/MonarcBO/Model/Entity/Client.php',
     'MonarcBO\Model\Entity\Server'                               => __DIR__ . '/src/MonarcBO/Model/Entity/Server.php',
     'MonarcBO\Model\Table\ClientTable'                           => __DIR__ . '/src/MonarcBO/Model/Table/ClientTable.php',

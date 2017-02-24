@@ -9,7 +9,7 @@ return array(
                 'options' => array(
                     'route' => '/',
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\Index',
+                        'controller' => '\MonarcBO\Controller\Index',
                         'action' => 'index',
                     ),
                 ),
@@ -442,9 +442,9 @@ return array(
 
     'controllers' => array(
         'invokables' => array(
-            '\MonarcBO\Controller\Index' => '\MonarcBO\Controller\IndexController',
         ),
         'factories' => array(
+            '\MonarcBO\Controller\Index'                        => '\MonarcCore\Controller\IndexControllerFactory',
             '\MonarcBO\Controller\ApiAdminHistoricals'          => '\MonarcBO\Controller\ApiAdminHistoricalsControllerFactory',
             '\MonarcBO\Controller\ApiUserPassword'              => '\MonarcBO\Controller\ApiUserPasswordControllerFactory',
             '\MonarcBO\Controller\ApiAdminPasswords'            => '\MonarcBO\Controller\ApiAdminPasswordsControllerFactory',
@@ -493,6 +493,7 @@ return array(
         ),
         'template_map' => array(
             'monarc-bo/index/index' => __DIR__ . '/../view/layout/layout.phtml',
+            'error/404' => __DIR__ . '/../view/layout/layout.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',

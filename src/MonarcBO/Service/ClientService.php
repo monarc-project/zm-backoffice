@@ -1,10 +1,21 @@
 <?php
+/**
+ * @link      https://github.com/CASES-LU for the canonical source repository
+ * @copyright Copyright (c) Cases is a registered trademark of SECURITYMADEIN.LU
+ * @license   MyCases is licensed under the GNU Affero GPL v3 - See license.txt for more information
+ */
 namespace MonarcBO\Service;
 
 use MonarcBO\Model\Entity\Client;
 use MonarcBO\Model\Table\ClientTable;
 use MonarcCore\Service\AbstractService;
 
+/**
+ * This class is the service that handles clients.
+ * @see \MonarcBO\Model\Entity\Client
+ * @see \MonarcBO\Model\Table\ClientTable
+ * @package MonarcBO\Service
+ */
 class ClientService extends AbstractService
 {
     protected $clientTable;
@@ -17,6 +28,10 @@ class ClientService extends AbstractService
     protected $serverTable;
     protected $forbiddenFields = ['model_id'];
 
+    /**
+     * Counts and returns the number of clients in database
+     * @return int The number of clients
+     */
     public function getTotalCount()
     {
         /** @var ClientTable $clientTable */
@@ -24,6 +39,9 @@ class ClientService extends AbstractService
         return $clientTable->count();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getFilteredCount($page = 1, $limit = 25, $order = null, $filter = null, $filterAnd = null)
     {
         /** @var ClientTable $clientTable */
@@ -34,6 +52,9 @@ class ClientService extends AbstractService
                 'contactFullname', 'contact_email', 'contact_phone')));
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getList($page = 1, $limit = 25, $order = null, $filter = null, $filterAnd = null)
     {
         /** @var ClientTable $clientTable */
@@ -50,6 +71,9 @@ class ClientService extends AbstractService
         );
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getEntity($id)
     {
         $client = $this->get('clientTable')->get($id);
@@ -67,10 +91,7 @@ class ClientService extends AbstractService
     }
 
     /**
-     * Create
-     *
-     * @param $data
-     * @param bool $last
+     * @inheritdoc
      */
     public function create($data, $last = true)
     {
@@ -85,6 +106,9 @@ class ClientService extends AbstractService
         $this->createJSON($entity);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function update($id, $data) {
 
         //security
@@ -110,6 +134,9 @@ class ClientService extends AbstractService
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function delete($id)
     {
         /** @var ClientTable $clientTable */
@@ -122,22 +149,12 @@ class ClientService extends AbstractService
         $this->deleteJSON($entity);
     }
 
-    public function getJsonData() {
-        $var = get_object_vars($this);
-        foreach ($var as &$value) {
-            if (is_object($value) && method_exists($value,'getJsonData')) {
-                $value = $value->getJsonData();
-            }
-        }
-        return $var;
-    }
-
-
     /**
-     * Create JSON
+     * Created the JSON file to build the client environment on a server and stores it in data/json/.
+     * Then returns the JSON file path.
      *
-     * @param $client
-     * @return string
+     * @param \MonarcBO\Model\Entity\Client $client
+     * @return string The JSON file path
      */
     public function createJSON($client) {
         $serverTable = $this->get('serverTable');
@@ -250,6 +267,13 @@ class ClientService extends AbstractService
         return $filename;
     }
 
+    /**
+     * Created the JSON file to delete the client environment on a server and stores it in data/json/.
+     * Then returns the JSON file path.
+     *
+     * @param \MonarcBO\Model\Entity\Client $client
+     * @return string The JSON file path
+     */
     public function deleteJSON($client) {
 
         $serverTable = $this->get('serverTable');
@@ -277,6 +301,13 @@ class ClientService extends AbstractService
         return $filename;
     }
 
+    /**
+     * Create a formatted list of data to insert.
+     *
+     * @param array $fieldsValues The list of data to be inserted
+     * @param \MonarcBO\Model\Table\ServerTable $serverTable
+     * @return string The formatted list of data to insert
+     */
     protected function getListValues($fieldsValues, $serverTable) {
         $listValues = '';
         foreach ($fieldsValues as $key => $value) {

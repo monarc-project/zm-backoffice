@@ -4,17 +4,6 @@ namespace MonarcBO;
 return array(
     'router' => array(
         'routes' => array(
-            'home' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
-                    'route' => '/',
-                    'defaults' => array(
-                        'controller' => '\MonarcBO\Controller\Index',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-
             'monarc_api_admin_historicals' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -444,7 +433,6 @@ return array(
         'invokables' => array(
         ),
         'factories' => array(
-            '\MonarcBO\Controller\Index'                        => '\MonarcCore\Controller\IndexControllerFactory',
             '\MonarcBO\Controller\ApiAdminHistoricals'          => '\MonarcBO\Controller\ApiAdminHistoricalsControllerFactory',
             '\MonarcBO\Controller\ApiUserPassword'              => '\MonarcBO\Controller\ApiUserPasswordControllerFactory',
             '\MonarcBO\Controller\ApiAdminPasswords'            => '\MonarcBO\Controller\ApiAdminPasswordsControllerFactory',

@@ -43,7 +43,7 @@ class ApiObjectsController extends AbstractController
         $objects =  $service->getListSpecific($page, $limit, $order, $filter, $asset, $category, $model, $anr, $lock);
 
         return new JsonModel(array(
-            'count' => $service->getFilteredCount($page, $limit, $order, $filter, $asset, $category, $model, $anr),
+            'count' => $service->getFilteredCount($filter, $asset, $category, $model, $anr),
             $this->name => $objects
         ));
     }

@@ -62,7 +62,7 @@ class ApiAmvsController extends AbstractController
         }
 
         return new JsonModel(array(
-            'count' => $service->getFilteredCount($page, $limit, $order, $filter, $filterAnd),
+            'count' => $service->getFilteredCount($filter, $filterAnd),
             $this->name => $entities
         ));
     }

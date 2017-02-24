@@ -42,13 +42,12 @@ class ClientService extends AbstractService
     /**
      * @inheritdoc
      */
-    public function getFilteredCount($page = 1, $limit = 25, $order = null, $filter = null, $filterAnd = null)
+    public function getFilteredCount($filter = null, $filterAnd = null)
     {
         /** @var ClientTable $clientTable */
         $clientTable = $this->get('clientTable');
 
-        return $clientTable->countFiltered($page, $limit, $this->parseFrontendOrder($order),
-            $this->parseFrontendFilter($filter, array('name', 'address', 'postalcode', 'phone', 'email',
+        return $clientTable->countFiltered($this->parseFrontendFilter($filter, array('name', 'address', 'postalcode', 'phone', 'email',
                 'contactFullname', 'contact_email', 'contact_phone')));
     }
 

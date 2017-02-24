@@ -43,11 +43,11 @@ class ApiCitiesController extends AbstractController
 
         if (is_null($country_id)) {
             $entities = $service->getList($page, $limit, $order, $filter);
-            $count = $service->getFilteredCount($page, $limit, $order, $filter);
+            $count = $service->getFilteredCount($filter);
         }
         else {
             $entities = $service->getList($page, $limit, $order, $filter, array('country_id' => $country_id));
-            $count = $service->getFilteredCount($page, $limit, $order, $filter, array('country_id' => $country_id));
+            $count = $service->getFilteredCount($filter, array('country_id' => $country_id));
         }
 
         if (count($this->dependencies)) {

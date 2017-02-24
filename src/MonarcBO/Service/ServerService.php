@@ -35,13 +35,12 @@ class ServerService extends AbstractService
     /**
      * @inheritdoc
      */
-    public function getFilteredCount($page = 1, $limit = 25, $order = null, $filter = null, $filterAnd = null)
+    public function getFilteredCount($filter = null, $filterAnd = null)
     {
         /** @var ServerTable $serverTable */
         $serverTable = $this->get('serverTable');
 
-        return $serverTable->countFiltered($page, $limit, $this->parseFrontendOrder($order),
-            $this->parseFrontendFilter($filter, array('label', 'ip_address', 'fqdn')), $filterAnd);
+        return $serverTable->countFiltered($this->parseFrontendFilter($filter, array('label', 'ip_address', 'fqdn')), $filterAnd);
     }
 
     /**

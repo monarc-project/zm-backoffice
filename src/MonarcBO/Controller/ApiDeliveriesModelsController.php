@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link      https://github.com/CASES-LU for the canonical source repository
+ * @copyright Copyright (c) Cases is a registered trademark of SECURITYMADEIN.LU
+ * @license   MyCases is licensed under the GNU Affero GPL v3 - See license.txt for more information
+ */
 namespace MonarcBO\Controller;
 
 use MonarcCore\Controller\AbstractController;
@@ -14,6 +19,9 @@ class ApiDeliveriesModelsController extends AbstractController
 {
     protected $name = "deliveriesmodels";
 
+    /**
+     * @inheritdoc
+     */
     public function create($data)
     {
         unset($data['path']);
@@ -31,9 +39,7 @@ class ApiDeliveriesModelsController extends AbstractController
     }
 
     /**
-     * Get list
-     *
-     * @return JsonModel
+     * @inheritdoc
      */
     public function getList()
     {
@@ -70,10 +76,7 @@ class ApiDeliveriesModelsController extends AbstractController
     }
 
     /**
-     * Get
-     *
-     * @param mixed $id
-     * @return JsonModel
+     * @inheritdoc
      */
     public function get($id)
     {
@@ -109,6 +112,9 @@ class ApiDeliveriesModelsController extends AbstractController
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function update($id, $data)
     {
         
@@ -125,6 +131,9 @@ class ApiDeliveriesModelsController extends AbstractController
         return new JsonModel(array('status' => 'ok'));
     }
 
+    /**
+     * @inheritdoc
+     */
     public function patch($id, $data)
     {
         $service = $this->getService();

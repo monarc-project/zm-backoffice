@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link      https://github.com/CASES-LU for the canonical source repository
+ * @copyright Copyright (c) Cases is a registered trademark of SECURITYMADEIN.LU
+ * @license   MyCases is licensed under the GNU Affero GPL v3 - See license.txt for more information
+ */
 
 namespace MonarcBO\Controller;
 
@@ -6,14 +11,18 @@ use MonarcBO\Service\ServerService;
 use MonarcCore\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 
+/**
+ * Api Admin Servers Controller
+ *
+ * Class ApiAdminServersController
+ * @package MonarcBO\Controller
+ */
 class ApiAdminServersController extends AbstractController
 {
     protected $name = 'servers';
 
     /**
-     * Get list
-     *
-     * @return JsonModel
+     * @inheritdoc
      */
     public function getList()
     {
@@ -42,6 +51,9 @@ class ApiAdminServersController extends AbstractController
         ));
     }
 
+    /**
+     * @inheritdoc
+     */
     public function create($data)
     {
         /** @var ServerService $service */

@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link      https://github.com/CASES-LU for the canonical source repository
+ * @copyright Copyright (c) Cases is a registered trademark of SECURITYMADEIN.LU
+ * @license   MyCases is licensed under the GNU Affero GPL v3 - See license.txt for more information
+ */
 
 namespace MonarcBO\Controller;
 
@@ -8,11 +13,20 @@ use MonarcCore\Model\Table\QuestionChoiceTable;
 use MonarcCore\Service\QuestionChoiceService;
 use Zend\View\Model\JsonModel;
 
+/**
+ * Api Questions Choices Controller
+ *
+ * Class ApiQuestionsChoicesController
+ * @package MonarcBO\Controller
+ */
 class ApiQuestionsChoicesController extends AbstractController
 {
     protected $dependencies = ['questions'];
     protected $name = 'choices';
 
+    /**
+     * @inheritdoc
+     */
     public function replaceList($data) {
         /** @var QuestionChoiceService $service */
         $service = $this->getService();

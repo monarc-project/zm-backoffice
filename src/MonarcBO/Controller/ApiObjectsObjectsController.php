@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link      https://github.com/CASES-LU for the canonical source repository
+ * @copyright Copyright (c) Cases is a registered trademark of SECURITYMADEIN.LU
+ * @license   MyCases is licensed under the GNU Affero GPL v3 - See license.txt for more information
+ */
 
 namespace MonarcBO\Controller;
 
@@ -14,16 +19,25 @@ use Zend\View\Model\JsonModel;
  */
 class ApiObjectsObjectsController extends AbstractController
 {
+    /**
+     * @inheritdoc
+     */
     public function get($id)
     {
         return $this->methodNotAllowed();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getList()
     {
         return $this->methodNotAllowed();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function update($id, $data)
     {
         // This works a little different that regular PUT calls - here we just expect a parameter "move" with the
@@ -37,6 +51,9 @@ class ApiObjectsObjectsController extends AbstractController
         return new JsonModel(array("status" => "ok"));
     }
 
+    /**
+     * @inheritdoc
+     */
     public function patch($id, $data)
     {
         return $this->methodNotAllowed();

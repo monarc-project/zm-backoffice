@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link      https://github.com/CASES-LU for the canonical source repository
+ * @copyright Copyright (c) Cases is a registered trademark of SECURITYMADEIN.LU
+ * @license   MyCases is licensed under the GNU Affero GPL v3 - See license.txt for more information
+ */
 
 namespace MonarcBO\Controller;
 
@@ -17,9 +22,7 @@ class ApiAmvsController extends AbstractController
     protected $name = "amvs";
 
     /**
-     * Get list
-     *
-     * @return JsonModel
+     * @inheritdoc
      */
     public function getList()
     {
@@ -65,10 +68,7 @@ class ApiAmvsController extends AbstractController
     }
 
     /**
-     * Get
-     *
-     * @param mixed $id
-     * @return JsonModel
+     * @inheritdoc
      */
     public function get($id)
     {

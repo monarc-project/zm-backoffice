@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link      https://github.com/CASES-LU for the canonical source repository
+ * @copyright Copyright (c) Cases is a registered trademark of SECURITYMADEIN.LU
+ * @license   MyCases is licensed under the GNU Affero GPL v3 - See license.txt for more information
+ */
 
 namespace MonarcBO\Controller;
 
@@ -18,9 +23,7 @@ class ApiObjectsCategoriesController extends AbstractController
     protected $name = 'categories';
 
     /**
-     * Get list
-     *
-     * @return JsonModel
+     * @inheritdoc
      */
     public function getList()
     {
@@ -73,6 +76,9 @@ class ApiObjectsCategoriesController extends AbstractController
         ));
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getCleanFields($items, $fields) {
         $output = [];
         foreach ($items as $item) {
@@ -90,10 +96,7 @@ class ApiObjectsCategoriesController extends AbstractController
     }
 
     /**
-     * Create
-     *
-     * @param mixed $data
-     * @return JsonModel
+     * @inheritdoc
      */
     public function create($data)
     {

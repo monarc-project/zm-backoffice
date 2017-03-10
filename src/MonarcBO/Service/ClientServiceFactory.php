@@ -24,5 +24,6 @@ class ClientServiceFactory extends AbstractServiceFactory
         'cityEntity'=> '\MonarcCore\Model\Entity\City',
         'serverTable'=> '\MonarcBO\Model\Table\ServerTable',
         'serverEntity'=> '\MonarcBO\Model\Entity\Server',
+        'config' => 'Config',
     );
 }

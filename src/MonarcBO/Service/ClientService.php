@@ -27,6 +27,7 @@ class ClientService extends AbstractService
     protected $serverEntity;
     protected $serverTable;
     protected $forbiddenFields = ['model_id'];
+    protected $config;
 
     /**
      * Counts and returns the number of clients in database
@@ -261,7 +262,7 @@ class ClientService extends AbstractService
             'sql_bootstrap' => $sqlDumpUsers . ' ' . $sqlDumpUsersRoles . ' ' . $sqlDumpClients
         );
 
-        $path = $localConf['spool_path_create'];
+        $path = $this->config['spool_path_create'];
 
         if (!is_dir($path)) {
             mkdir($path, 0750, true);
@@ -298,12 +299,7 @@ class ClientService extends AbstractService
             'proxy_alias' => $client->get('proxyAlias')
         );
 
-        $pathLocal = getcwd()."/config/autoload/local.php";
-        $localConf = array();
-        if(file_exists($pathLocal)){
-            $localConf = require $pathLocal;
-        }
-        $path = $localConf['spool_path_delete'];
+        $path = $this->config['spool_path_delete'];
 
         if (!is_dir($path)) {
             mkdir($path, 0750, true);

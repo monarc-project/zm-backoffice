@@ -145,7 +145,12 @@ class ClientService extends AbstractService
 
         $clientTable->delete($id);
 
-        $this->deleteJSON($entity);
+        if($this->deleteJSON($entity)){//supposed to return
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     /**
@@ -256,11 +261,14 @@ class ClientService extends AbstractService
             'sql_bootstrap' => $sqlDumpUsers . ' ' . $sqlDumpUsersRoles . ' ' . $sqlDumpClients
         );
 
-        if (!is_dir(getcwd().'/data/json/')) {
-            mkdir(getcwd().'/data/json/');
+        $path = $localConf['spool_path_create'];
+
+        if (!is_dir($path)) {
+            mkdir($path, 0750, true);
         }
+
         $now = date('YmdHis');
-        $filename = getcwd().'/data/json/'.$now.'.json';
+        $filename = $path.$now.'.json';
         file_put_contents($filename, json_encode($datas));
 
         return $filename;
@@ -290,11 +298,18 @@ class ClientService extends AbstractService
             'proxy_alias' => $client->get('proxyAlias')
         );
 
-        if (!is_dir(getcwd().'/data/json/')) {
-            mkdir(getcwd().'/data/json/');
+        $pathLocal = getcwd()."/config/autoload/local.php";
+        $localConf = array();
+        if(file_exists($pathLocal)){
+            $localConf = require $pathLocal;
+        }
+        $path = $localConf['spool_path_delete'];
+
+        if (!is_dir($path)) {
+            mkdir($path, 0750, true);
         }
         $now = date('YmdHis');
-        $filename = getcwd().'/data/json/'.$now.'.json';
+        $filename = $path.$now.'.json';
         file_put_contents($filename, json_encode($datas));
 
         return $filename;

@@ -14,7 +14,7 @@
                     {"name": "Thomas Metois", "email": "thomas@netlor.fr"}
                 ],
                 "source": {
-                    "url": "https://github.com/CASES-LU/zm-backoffice",
+                    "url": "https://github.com/monarc-project/zm-backoffice",
                     "type": "git",
                     "reference": "master"
                 },

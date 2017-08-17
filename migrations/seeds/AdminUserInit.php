@@ -24,8 +24,8 @@ class AdminUserInit extends AbstractSeed
             $salt = $localConf['monarc']['salt'];
         }
 
-        $email = 'admin@netlor.fr';
-        $defaultPassword = 'admin@N3TL0R';
+        $email = 'admin@admin.test';
+        $defaultPassword = 'admin';
 
         $data = array(
             'status' => 1,

@@ -93,4 +93,3 @@ class ApiAdminUsersController extends AbstractController
         return new JsonModel(array('status' => 'ok'));
     }
 }
-

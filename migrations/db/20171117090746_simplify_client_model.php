@@ -37,7 +37,6 @@ class SimplifyClientModel extends AbstractMigration
             ->removeColumn('email')
             ->removeColumn('employees_number')
             ->removeColumn('contact_fullname')
-            ->removeColumn('contact_email')
             ->removeColumn('contact_phone')
             ->removeColumn('first_user_phone')
             ->update();

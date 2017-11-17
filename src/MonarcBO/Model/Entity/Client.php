@@ -63,6 +63,13 @@ class Client extends AbstractEntity
     protected $proxyAlias;
 
     /**
+    * @var string
+    *
+    * @ORM\Column(name="contact_email", type="string", length=255, nullable=true)
+    */
+    protected $contact_email;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="first_user_firstname", type="string", length=255, nullable=true)

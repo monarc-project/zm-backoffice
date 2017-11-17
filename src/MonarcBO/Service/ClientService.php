@@ -20,10 +20,6 @@ class ClientService extends AbstractService
 {
     protected $clientTable;
     protected $clientEntity;
-    protected $countryTable;
-    protected $countryEntity;
-    protected $cityTable;
-    protected $cityEntity;
     protected $serverEntity;
     protected $serverTable;
     protected $forbiddenFields = ['model_id'];
@@ -48,8 +44,8 @@ class ClientService extends AbstractService
         /** @var ClientTable $clientTable */
         $clientTable = $this->get('clientTable');
 
-        return $clientTable->countFiltered($this->parseFrontendFilter($filter, array('name', 'address', 'postalcode', 'phone', 'email',
-                'contactFullname', 'contact_email', 'contact_phone')));
+        return $clientTable->countFiltered($this->parseFrontendFilter($filter, array('name', 'first_user_email',
+                'proxyAlias', 'createdAt')));
     }
 
     /**
@@ -61,13 +57,11 @@ class ClientService extends AbstractService
         $clientTable = $this->get('clientTable');
 
         return $clientTable->fetchAllFiltered(
-            array('id', 'name', 'proxy_alias', 'address', 'postalcode', 'phone', 'fax', 'email', 'contactFullname',
-                'employees_number', 'contact_email', 'contact_phone', 'model_id'),
+            array('id', 'name', 'first_user_email', 'proxyAlias', 'createdAt', 'model_id'),
             $page,
             $limit,
             $this->parseFrontendOrder($order),
-            $this->parseFrontendFilter($filter, array('name', 'address', 'postalcode', 'phone', 'email',
-                'contactFullname', 'contact_email', 'contact_phone'))
+            $this->parseFrontendFilter($filter, array('name', 'first_user_email', 'proxyAlias', 'createdAt', 'model_id'))
         );
     }
 
@@ -77,16 +71,6 @@ class ClientService extends AbstractService
     public function getEntity($id)
     {
         $client = $this->get('clientTable')->get($id);
-
-        if(!empty($client['country_id'])){
-            $country = $this->get('countryTable')->get($client['country_id']);
-            $client['country'] = $country;
-        }
-        if(!empty($client['city_id'])){
-            $city = $this->get('cityTable')->get($client['city_id']);
-            $client['city'] = $city;
-        }
-
         return $client;
     }
 
@@ -189,7 +173,6 @@ class ClientService extends AbstractService
             'firstname'     => $client->get('first_user_firstname'),
             'lastname'      => $client->get('first_user_lastname'),
             'email'         => $client->get('first_user_email'),
-            'phone'         => $client->get('first_user_phone'),
             'password'      => password_hash($salt.$client->get('first_user_email'),PASSWORD_BCRYPT),
             'creator'       => 'System',
             'created_at'    => date('Y-m-d H:i:s')
@@ -229,23 +212,11 @@ class ClientService extends AbstractService
             'id'                    => $client->get('id'),
             'model_id'              => $client->get('model_id'),
             'logo_id'               => $client->get('logo_id'),
-            'country_id'            => $client->get('country_id'),
-            'city_id'               => $client->get('city_id'),
             'name'                  => $client->get('name'),
             'proxy_alias'           => $client->get('proxy_alias'),
-            'address'               => $client->get('address'),
-            'postal_code'           => $client->get('postal_code'),
-            'phone'                 => $client->get('phone'),
-            'fax'                   => $client->get('fax'),
-            'email'                 => $client->get('email'),
-            'employees_number'      => $client->get('employees_number'),
-            'contact_fullname'      => $client->get('contact_fullname'),
-            'contact_email'         => $client->get('contact_email'),
-            'contact_phone'         => $client->get('contact_phone'),
             'first_user_firstname'  => $client->get('first_user_firstname'),
             'first_user_lastname'   => $client->get('first_user_lastname'),
             'first_user_email'      => $client->get('first_user_email'),
-            'first_user_phone'      => $client->get('first_user_phone'),
             'creator'               => 'System',
             'created_at'            => date('Y-m-d H:i:s')
         );

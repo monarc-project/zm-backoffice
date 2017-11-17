@@ -120,16 +120,6 @@ return array(
                 ),
             ),
 
-            'monarc_api_cities' => array(
-                'type' => 'literal',
-                'options' => array(
-                    'route' => '/api/cities',
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiCities',
-                    ),
-                ),
-            ),
-
             'monarc_api_clients' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -149,16 +139,6 @@ return array(
                     'route' => '/api/config',
                     'defaults' => array(
                         'controller' => 'MonarcBO\Controller\ApiConfig',
-                    ),
-                ),
-            ),
-
-            'monarc_api_countries' => array(
-                'type' => 'literal',
-                'options' => array(
-                    'route' => '/api/countries',
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiCountries',
                     ),
                 ),
             ),
@@ -443,9 +423,7 @@ return array(
             '\MonarcBO\Controller\ApiAdminUsersRoles'           => '\MonarcBO\Controller\ApiAdminUsersRolesControllerFactory',
             '\MonarcBO\Controller\ApiAmvs'                      => '\MonarcBO\Controller\ApiAmvsControllerFactory',
             '\MonarcBO\Controller\ApiAssets'                    => '\MonarcBO\Controller\ApiAssetsControllerFactory',
-            '\MonarcBO\Controller\ApiCities'                    => '\MonarcBO\Controller\ApiCitiesControllerFactory',
             '\MonarcBO\Controller\ApiClients'                   => '\MonarcBO\Controller\ApiClientsControllerFactory',
-            '\MonarcBO\Controller\ApiCountries'                 => '\MonarcBO\Controller\ApiCountriesControllerFactory',
             '\MonarcBO\Controller\ApiConfig'                    => '\MonarcBO\Controller\ApiConfigControllerFactory',
             '\MonarcBO\Controller\ApiQuestions'                 => '\MonarcBO\Controller\ApiQuestionsControllerFactory',
             '\MonarcBO\Controller\ApiQuestionsChoices'          => '\MonarcBO\Controller\ApiQuestionsChoicesControllerFactory',
@@ -580,10 +558,8 @@ return array(
         // Admin comptes : Création des comptes et authentification client
         'accadmin'=> array(
             'monarc_api_user_password',
-            'monarc_api_cities',
             'monarc_api_clients',
             'monarc_api_admin_servers_get',
-            'monarc_api_countries',
             'monarc_api_guides',
             'monarc_api_guides_items',
             'monarc_api_guides_types',
@@ -593,5 +569,5 @@ return array(
             'monarc_api_user_profile',
         ),
     ),
-    'activeLanguages' => array('fr','en','es'),
+    'activeLanguages' => array('fr','en','es','ne'),
 );

@@ -29,10 +29,13 @@ class ApiDeliveriesModelsController extends AbstractController
         $file = $this->request->getFiles()->toArray();
         for ($i = 1; $i <= 4; ++$i) {
             if (!empty($file['file'][$i])) {
+                // $file['file'][$i]['name'] =  $i . "_" .$data['category'] . "_" . $file['file'][$i]['name'];
+                // $file['file'][$i]['name'] =  $i . "_" .$data['category'] . ".docx";
+                $file['file'][$i]['name'] =  $data['category'] . ".docx";
                 $data['path' . $i] = $file['file'][$i];
             }
         }
-
+        // file_put_contents('php://stderr', print_r($data, TRUE));
         $service->create($data);
 
         return new JsonModel(array('status' => 'ok'));
@@ -61,9 +64,9 @@ class ApiDeliveriesModelsController extends AbstractController
             for($i=1;$i<=4;$i++){
                 $entities[$k]['filename'.$i] = '';
                 if(!empty($entities[$k]['path'.$i]) && file_exists($entities[$k]['path'.$i])){
-                    $name = explode('_',pathinfo($entities[$k]['path'.$i],PATHINFO_BASENAME));
-                    unset($name[0]);
-                    $entities[$k]['filename'.$i] = implode('_',$name);
+                    // $name = explode('_',pathinfo($entities[$k]['path'.$i],PATHINFO_BASENAME));
+                    // unset($name[0]);
+                    $entities[$k]['filename'.$i] = pathinfo($entities[$k]['path'.$i],PATHINFO_BASENAME);
                     $entities[$k]['path'.$i] = './api/deliveriesmodels/'.$v['id'].'?lang='.$i;
                 }
             }
@@ -85,9 +88,6 @@ class ApiDeliveriesModelsController extends AbstractController
             $lang = $this->params()->fromQuery('lang',1);
             if(isset($entity['path'.$lang]) && file_exists($entity['path'.$lang])){
                 $name = pathinfo($entity['path'.$lang],PATHINFO_BASENAME);
-                $name = explode('_',$name);
-                unset($name[0]);
-                $name = implode('_',$name);
 
                 $fileContents = file_get_contents($entity['path'.$lang]);
                 if($fileContents !== false){
@@ -117,7 +117,7 @@ class ApiDeliveriesModelsController extends AbstractController
      */
     public function update($id, $data)
     {
-        
+
         $service = $this->getService();
         $file = $this->request->getFiles()->toArray();
 
@@ -148,4 +148,3 @@ class ApiDeliveriesModelsController extends AbstractController
         return new JsonModel(array('status' => 'ok'));
     }
 }
-

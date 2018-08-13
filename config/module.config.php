@@ -358,6 +358,16 @@ return array(
                 ),
             ),
 
+            'monarc_api_soacategory' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/category',
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiSOACategory',
+                    ),
+                ),
+            ),
+
             'monarc_api_threats' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -441,6 +451,7 @@ return array(
             '\MonarcBO\Controller\ApiRolfRisks'                 => '\MonarcBO\Controller\ApiRolfRisksControllerFactory',
             '\MonarcBO\Controller\ApiRolfTags'                  => '\MonarcBO\Controller\ApiRolfTagsControllerFactory',
             '\MonarcBO\Controller\ApiThemes'                    => '\MonarcBO\Controller\ApiThemesControllerFactory',
+            '\MonarcBO\Controller\ApiSOACategory'               => '\MonarcBO\Controller\ApiSOACategoryControllerFactory',
             '\MonarcBO\Controller\ApiThreats'                   => '\MonarcBO\Controller\ApiThreatsControllerFactory',
             '\MonarcBO\Controller\ApiVulnerabilities'           => '\MonarcBO\Controller\ApiVulnerabilitiesControllerFactory',
             '\MonarcBO\Controller\ApiDeliveriesModels'          => '\MonarcBO\Controller\ApiDeliveriesModelsControllerFactory',
@@ -491,6 +502,7 @@ return array(
             'monarc_api_guides_items',
             'monarc_api_guides_types',
             'monarc_api_themes',
+            'monarc_api_soacategory',
             'monarc_api_models',
             'monarc_api_admin_users',
             'monarc_api_admin_users_roles',
@@ -537,6 +549,7 @@ return array(
             'monarc_api_guides_items',
             'monarc_api_guides_types',
             'monarc_api_themes',
+            'monarc_api_soacategory',
             'monarc_api_models',
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
@@ -550,6 +563,7 @@ return array(
             'monarc_api_guides_items',
             'monarc_api_guides_types',
             'monarc_api_themes',
+            'monarc_api_soacategory',
             'monarc_api_models',
             'monarc_api_models_duplication',
             'monarc_api_admin_users_roles',
@@ -564,6 +578,7 @@ return array(
             'monarc_api_guides_items',
             'monarc_api_guides_types',
             'monarc_api_themes',
+            'monarc_api_soacategory',
             'monarc_api_models',
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',

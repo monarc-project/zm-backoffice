@@ -362,12 +362,12 @@ return array(
             'monarc_api_soacategory' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/category[/:id]',
+                    'route' => '/api/soacategory[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiSOACategory',
+                        'controller' => 'MonarcBO\Controller\ApiSoaCategory',
                     ),
                 ),
             ),
@@ -455,7 +455,7 @@ return array(
             '\MonarcBO\Controller\ApiRolfRisks'                 => '\MonarcBO\Controller\ApiRolfRisksControllerFactory',
             '\MonarcBO\Controller\ApiRolfTags'                  => '\MonarcBO\Controller\ApiRolfTagsControllerFactory',
             '\MonarcBO\Controller\ApiThemes'                    => '\MonarcBO\Controller\ApiThemesControllerFactory',
-            '\MonarcBO\Controller\ApiSOACategory'               => '\MonarcBO\Controller\ApiSOACategoryControllerFactory',
+            '\MonarcBO\Controller\ApiSoaCategory'               => '\MonarcBO\Controller\ApiSoaCategoryControllerFactory',
             '\MonarcBO\Controller\ApiThreats'                   => '\MonarcBO\Controller\ApiThreatsControllerFactory',
             '\MonarcBO\Controller\ApiVulnerabilities'           => '\MonarcBO\Controller\ApiVulnerabilitiesControllerFactory',
             '\MonarcBO\Controller\ApiDeliveriesModels'          => '\MonarcBO\Controller\ApiDeliveriesModelsControllerFactory',

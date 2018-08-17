@@ -12,7 +12,7 @@ use MonarcCore\Controller\AbstractControllerFactory;
  * Factory class attached to SOACategoryService
  * @package MonarcBO\Controller
  */
-class ApiSOACategoryControllerFactory extends AbstractControllerFactory
+class ApiSoaCategoryControllerFactory extends AbstractControllerFactory
 {
-    protected $serviceName = '\MonarcCore\Service\SOACategoryService';
+    protected $serviceName = '\MonarcCore\Service\SoaCategoryService';
 }

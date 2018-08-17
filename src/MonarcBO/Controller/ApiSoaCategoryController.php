@@ -16,7 +16,7 @@ use Zend\View\Model\JsonModel;
  * Class ApiSOACategoryController
  * @package MonarcBO\Controller
  */
-class ApiSOACategoryController extends AbstractController
+class ApiSoaCategoryController extends AbstractController
 {
     protected $name = 'categories';
 

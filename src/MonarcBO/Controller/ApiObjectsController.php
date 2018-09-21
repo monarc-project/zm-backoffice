@@ -8,7 +8,7 @@
 namespace MonarcBO\Controller;
 
 use MonarcCore\Controller\AbstractController;
-use MonarcCore\Model\Entity\Object;
+use MonarcCore\Model\Entity\MonarcObject;
 use MonarcCore\Service\ObjectService;
 use Zend\View\Model\JsonModel;
 
@@ -57,7 +57,7 @@ class ApiObjectsController extends AbstractController
         $service = $this->getService();
         $mode = $this->params()->fromQuery('mode');
         $anr = (int) $this->params()->fromQuery('anr');
-        $object = $service->getCompleteEntity($id, isset($mode) && $mode == Object::CONTEXT_ANR ? Object::CONTEXT_ANR : Object::CONTEXT_BDC, $anr);
+        $object = $service->getCompleteEntity($id, isset($mode) && $mode == MonarcObject::CONTEXT_ANR ? MonarcObject::CONTEXT_ANR : MonarcObject::CONTEXT_BDC, $anr);
 
         if (count($this->dependencies)) {
             $this->formatDependencies($object, $this->dependencies);
@@ -73,4 +73,3 @@ class ApiObjectsController extends AbstractController
     }
 
 }
-

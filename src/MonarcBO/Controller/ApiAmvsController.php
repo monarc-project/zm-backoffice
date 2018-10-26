@@ -18,7 +18,7 @@ use Zend\View\Model\JsonModel;
  */
 class ApiAmvsController extends AbstractController
 {
-    protected $dependencies = ['asset', 'threat', 'vulnerability', 'measure1', 'measure2', 'measure3'];
+    protected $dependencies = ['asset', 'threat', 'vulnerability', 'measures'];
     protected $name = "amvs";
 
     /**
@@ -111,4 +111,3 @@ class ApiAmvsController extends AbstractController
         return new JsonModel($entity);
     }
 }
-

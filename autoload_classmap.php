@@ -47,6 +47,8 @@ return array(
     'MonarcBO\Controller\ApiQuestionsChoicesControllerFactory'   => __DIR__ . '/src/MonarcBO/Controller/ApiQuestionsChoicesControllerFactory.php',
     'MonarcBO\Controller\ApiQuestionsController'                 => __DIR__ . '/src/MonarcBO/Controller/ApiQuestionsController.php',
     'MonarcBO\Controller\ApiQuestionsControllerFactory'          => __DIR__ . '/src/MonarcBO/Controller/ApiQuestionsControllerFactory.php',
+    'MonarcBO\Controller\ApiReferentialsController'              => __DIR__ . '/src/MonarcBO/Controller/ApiReferentialsController.php',
+    'MonarcBO\Controller\ApiReferentialsControllerFactory'       => __DIR__ . '/src/MonarcBO/Controller/ApiReferentialsControllerFactory.php',
     'MonarcBO\Controller\ApiRolfCategoriesController'            => __DIR__ . '/src/MonarcBO/Controller/ApiRolfCategoriesController.php',
     'MonarcBO\Controller\ApiRolfCategoriesControllerFactory'     => __DIR__ . '/src/MonarcBO/Controller/ApiRolfCategoriesControllerFactory.php',
     'MonarcBO\Controller\ApiRolfRisksController'                 => __DIR__ . '/src/MonarcBO/Controller/ApiRolfRisksController.php',

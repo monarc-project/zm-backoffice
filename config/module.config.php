@@ -221,6 +221,19 @@ return array(
                 ),
             ),
 
+            'monarc_api_referentials' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/referentials[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiReferentials',
+                    ),
+                ),
+            ),
+
             'monarc_api_measures' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -444,6 +457,7 @@ return array(
             '\MonarcBO\Controller\ApiGuides'                    => '\MonarcBO\Controller\ApiGuidesControllerFactory',
             '\MonarcBO\Controller\ApiGuidesItems'               => '\MonarcBO\Controller\ApiGuidesItemsControllerFactory',
             '\MonarcBO\Controller\ApiGuidesTypes'               => '\MonarcBO\Controller\ApiGuidesTypesControllerFactory',
+            '\MonarcBO\Controller\ApiReferentials'              => '\MonarcBO\Controller\ApiReferentialsControllerFactory',
             '\MonarcBO\Controller\ApiMeasures'                  => '\MonarcBO\Controller\ApiMeasuresControllerFactory',
             '\MonarcBO\Controller\ApiObjects'                   => '\MonarcBO\Controller\ApiObjectsControllerFactory',
             '\MonarcBO\Controller\ApiObjectsDuplication'        => '\MonarcBO\Controller\ApiObjectsDuplicationControllerFactory',
@@ -528,6 +542,7 @@ return array(
             'monarc_api_anr_library',
             'monarc_api_anr_library_category',
             'monarc_api_anr_objects',
+            'monarc_api_referentials',
             'monarc_api_measures',
             'monarc_api_questions',
             'monarc_api_questions_choices',

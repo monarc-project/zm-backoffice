@@ -19,14 +19,14 @@ use Zend\View\Model\JsonModel;
 class ApiReferentialsController extends AbstractController
 {
     protected $name = 'referentials';
-    // protected $dependencies = ['category'];
+    // protected $dependencies = ['measures'];
 
     /**
      * @inheritdoc
      */
     public function getList()
     {
-        file_put_contents('php://stderr', print_r('ApiReferentialsController::getList', TRUE));
+        file_put_contents('php://stderr', print_r('ApiReferentialsController::getList', TRUE).PHP_EOL);
         $page = $this->params()->fromQuery('page');
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
@@ -35,11 +35,11 @@ class ApiReferentialsController extends AbstractController
         $service = $this->getService();
 
         $entities = $service->getList($page, $limit, $order, $filter);
-        // if (count($this->dependencies)) {
-        //     foreach ($entities as $key => $entity) {
-        //         $this->formatDependencies($entities[$key], $this->dependencies);
-        //     }
-        // }
+        if (count($this->dependencies)) {
+            foreach ($entities as $key => $entity) {
+                $this->formatDependencies($entities[$key], $this->dependencies);
+            }
+        }
 
         return new JsonModel(array(
             'count' => $service->getFilteredCount($filter),

@@ -226,7 +226,7 @@ return array(
                 'options' => array(
                     'route' => '/api/referentials[/:id]',
                     'constraints' => array(
-                        'id' => '[0-9]+',
+                        'id' => '[a-zA-Z0-9-]*',
                     ),
                     'defaults' => array(
                         'controller' => 'MonarcBO\Controller\ApiReferentials',

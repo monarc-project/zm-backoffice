@@ -46,4 +46,5 @@ class ApiReferentialsController extends AbstractController
             $this->name => $entities
         ));
     }
+
 }

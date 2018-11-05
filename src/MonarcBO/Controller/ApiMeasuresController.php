@@ -37,7 +37,10 @@ class ApiMeasuresController extends AbstractController
             $status = 1;
         }
         $filterAnd = ($status == "all") ? null : ['status' => (int) $status] ;
-        $filterAnd['referential'] = (array)$referential;
+        if ($referential) {
+          $filterAnd['referential'] = (array)$referential;
+        }
+
         $service = $this->getService();
 
         $entities = $service->getList($page, $limit, $order, $filter, $filterAnd);

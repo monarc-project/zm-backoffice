@@ -19,7 +19,7 @@ use Zend\View\Model\JsonModel;
 class ApiMeasuresController extends AbstractController
 {
     protected $name = 'measures';
-    protected $dependencies = ['category', 'referential'];
+    protected $dependencies = ['category', 'referential', 'measuresLinked', 'measuresLinkedToMe'];
 
     /**
      * @inheritdoc

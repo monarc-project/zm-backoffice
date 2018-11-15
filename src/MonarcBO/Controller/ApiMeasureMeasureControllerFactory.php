@@ -9,10 +9,10 @@ namespace MonarcBO\Controller;
 use MonarcCore\Controller\AbstractControllerFactory;
 
 /**
- * Factory class attached to ApiObjectsExportController
+ * Factory class attached to ApiMeasureMeasureController
  * @package MonarcFO\Controller
  */
 class ApiMeasureMeasureControllerFactory extends AbstractControllerFactory
 {
-    protected $serviceName = '\MonarcCore\Service\MeasureMeasure';
+    protected $serviceName = '\MonarcCore\Service\MeasureMeasureService';
 }

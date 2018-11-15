@@ -18,8 +18,8 @@ use Zend\View\Model\JsonModel;
  */
 class ApiMeasureMeasureController extends AbstractController
 {
-    protected $name = 'measuremeasure';
-    protected $dependencies = [];
+    protected $name = 'MeasureMeasure';
+    protected $dependencies = ['father','child'];
 
     /**
      * @inheritdoc
@@ -30,14 +30,14 @@ class ApiMeasureMeasureController extends AbstractController
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
-        $status = $this->params()->fromQuery('status');
+      //  $status = $this->params()->fromQuery('status');
         $fatherId = $this->params()->fromQuery('fatherId');
         $childId = $this->params()->fromQuery('childId');
         $filterAnd = [];
-        if (is_null($status)) {
-            $status = 1;
-        }
-        $filterAnd = ($status == "all") ? null : ['status' => (int) $status] ;
+        // if (is_null($status)) {
+        //     $status = 1;
+        // }
+        // $filterAnd = ($status == "all") ? null : ['status' => (int) $status] ;
         if ($fatherId) {
           $filterAnd['father'] = (int) $fatherId;
         }

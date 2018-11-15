@@ -247,6 +247,19 @@ return array(
                 ),
             ),
 
+            'monarc_api_measuremeasure' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api/measuremeasure[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'MonarcBO\Controller\ApiMeasureMeasure',
+                    ),
+                ),
+            ),
+
             'monarc_api_objects_categories' => array(
                 'type' => 'segment',
                 'options' => array(

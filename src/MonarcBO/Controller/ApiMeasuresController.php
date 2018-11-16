@@ -32,6 +32,7 @@ class ApiMeasuresController extends AbstractController
         $filter = $this->params()->fromQuery('filter');
         $status = $this->params()->fromQuery('status');
         $referential = $this->params()->fromQuery('referential');
+        $category = $this->params()->fromQuery('category');
         $filterAnd = [];
         if (is_null($status)) {
             $status = 1;
@@ -39,6 +40,9 @@ class ApiMeasuresController extends AbstractController
         $filterAnd = ($status == "all") ? null : ['status' => (int) $status] ;
         if ($referential) {
           $filterAnd['referential'] = (array)$referential;
+        }
+        if ($category) {
+          $filterAnd['category'] = (int)$category;
         }
 
         $service = $this->getService();

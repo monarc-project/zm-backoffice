@@ -75,7 +75,7 @@ class ApiAmvsController extends AbstractController
         $entity = $this->getService()->getEntity($id);
 
         if (count($this->dependencies)) {
-            $this->formatDependencies($entity, $this->dependencies);
+            $this->formatDependencies($entity, $this->dependencies, '\MonarcCore\Model\Entity\Measure', ['referential']);
         }
 
         // Find out the entity's implicitPosition and previous

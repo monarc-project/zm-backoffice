@@ -57,4 +57,11 @@ class ApiReferentialsController extends AbstractController
 
         return new JsonModel($entity);
     }
+
+    public function update($id, $data)
+    {
+        $this->getService()->update(['uniqid' => $id], $data);
+
+        return new JsonModel(['status' => 'ok']);
+    }
 }

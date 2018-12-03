@@ -55,8 +55,20 @@ class ApiMeasuresController extends AbstractController
         }
 
         return new JsonModel(array(
-            'count' => $service->getFilteredCount($filter, $filterAnd),
+          //  'count' => $service->getFilteredCount($filter, $filterAnd),
             $this->name => $entities
         ));
+    }
+
+    public function update($id, $data)
+    {
+      $data ['referential'] = $data['referential']['uniqid']; //all the objects is send but we just need the uniqid
+      return parent::update($id,$data);
+    }
+
+    public function create($data)
+    {
+      $data ['referential'] = $data['referential']['uniqid']; //all the objects is send but we just need the uniqid
+      return parent::create($data);
     }
 }

@@ -250,7 +250,7 @@ return array(
             'monarc_api_measuremeasure' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/api/measuremeasure[/:id]',
+                    'route' => '/api/measuresmeasures[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+',
                     ),

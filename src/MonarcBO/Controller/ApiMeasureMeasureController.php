@@ -59,4 +59,16 @@ class ApiMeasureMeasureController extends AbstractController
             $this->name => $entities
         ));
     }
+
+    public function deleteList($data)
+    {
+        if($data==null) //we delete one measuremeasure
+        {
+          $fatherId = $this->params()->fromQuery('father');
+          $childId = $this->params()->fromQuery('child');
+          $this->getService()->delete(['father'=>$fatherId, 'child'=>$childId]);
+          return new JsonModel(['status' => 'ok']);
+        }else
+          return parent::deleteList($data);
+    }
 }

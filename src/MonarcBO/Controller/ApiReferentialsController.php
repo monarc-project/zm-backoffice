@@ -45,22 +45,4 @@ class ApiReferentialsController extends AbstractController
             $this->name => $entities
         ));
     }
-
-    public function get($id)
-    {
-        $entity = $this->getService()->getEntity(['uniqid' => $id]); //set the id in a table because it's a uniqid
-
-        if (count($this->dependencies)) {
-            $this->formatDependencies($entity, $this->dependencies);
-        }
-
-        return new JsonModel($entity);
-    }
-
-    public function update($id, $data)
-    {
-        $this->getService()->update(['uniqid' => $id], $data);
-
-        return new JsonModel(['status' => 'ok']);
-    }
 }

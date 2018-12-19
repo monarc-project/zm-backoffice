@@ -26,7 +26,6 @@ class ApiReferentialsController extends AbstractController
      */
     public function getList()
     {
-        file_put_contents('php://stderr', print_r('ApiReferentialsController::getList', TRUE).PHP_EOL);
         $page = $this->params()->fromQuery('page');
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');

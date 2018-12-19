@@ -42,7 +42,7 @@ class ApiReferentialsController extends AbstractController
         }
 
         return new JsonModel(array(
-            //'count' => $service->getFilteredCount($filter),
+            'count' => $service->getFilteredCount($filter),
             $this->name => $entities
         ));
     }

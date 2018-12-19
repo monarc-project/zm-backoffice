@@ -55,7 +55,7 @@ class ApiMeasuresController extends AbstractController
         }
 
         return new JsonModel(array(
-          //  'count' => $service->getFilteredCount($filter, $filterAnd),
+           'count' => $service->getFilteredCount($filter, $filterAnd),
             $this->name => $entities
         ));
     }

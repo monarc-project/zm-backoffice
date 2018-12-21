@@ -71,4 +71,13 @@ class ApiMeasuresController extends AbstractController
       $data ['referential'] = $data['referential']['uniqid']; //all the objects is send but we just need the uniqid
       return parent::create($data);
     }
+
+    public function deleteList($data)
+    {
+      $new_data = [];
+      foreach ($data as $uniqid) {
+        $new_data[] = ['uniqid' => $uniqid];
+      }
+      return parent::deleteList($new_data);
+    }
 }

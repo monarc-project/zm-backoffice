@@ -62,15 +62,15 @@ class ApiMeasuresController extends AbstractController
 
     public function update($id, $data)
     {
-      $data ['referential'] = $data['referential']['uniqid']; //all the objects is send but we just need the uniqid
+      $data ['referential'] = $data['referential']['uuid']; //all the objects is send but we just need the uuid
       return parent::update($id,$data);
     }
 
     public function deleteList($data)
     {
       $new_data = [];
-      foreach ($data as $uniqid) {
-        $new_data[] = ['uniqid' => $uniqid];
+      foreach ($data as $uuid) {
+        $new_data[] = ['uuid' => $uuid];
       }
       return parent::deleteList($new_data);
     }

@@ -110,4 +110,16 @@ class ApiAmvsController extends AbstractController
 
         return new JsonModel($entity);
     }
+
+    public function patchList($data)
+    {
+      $service = $this->getService();
+
+      $service->createLinkedAmvs($data['fromReferential'],$data['toReferential']);
+
+      return new JsonModel([
+          'status' =>  'ok',
+      ]);
+
+    }
 }

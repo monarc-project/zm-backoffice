@@ -20,6 +20,7 @@ use Zend\View\Model\JsonModel;
 class ApiRolfRisksController extends AbstractController
 {
     protected $name = 'risks';
+    protected $dependencies = ['measures','tags'];
 
     /**
      * @inheritdoc
@@ -53,20 +54,4 @@ class ApiRolfRisksController extends AbstractController
         ));
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function get($id)
-    {
-        $rolfRisk = $this->getService()->getEntity($id);
-
-        $rolfRisk['tags']->initialize();
-        $rolfTags = $rolfRisk['tags']->getSnapshot();
-        $rolfRisk['tags'] = array();
-        foreach($rolfTags as $rolfTag){
-            $rolfRisk['tags'][] = $rolfTag->getJsonArray();
-        }
-
-        return new JsonModel($rolfRisk);
-    }
 }

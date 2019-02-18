@@ -22,6 +22,17 @@ class ApiRolfRisksController extends AbstractController
     protected $name = 'risks';
     protected $dependencies = ['measures','tags'];
 
+    public function get($id)
+    {
+        $entity = $this->getService()->getEntity($id);
+
+        if (count($this->dependencies)) {
+            $this->formatDependencies($entity, $this->dependencies, '\MonarcCore\Model\Entity\Measure', ['referential']);
+        }
+
+        return new JsonModel($entity);
+    }
+
     /**
      * @inheritdoc
      */
@@ -40,6 +51,10 @@ class ApiRolfRisksController extends AbstractController
         $rolfRisks = $service->getListSpecific($page, $limit, $order, $filter, $category, $tag);
         foreach($rolfRisks as $key => $rolfRisk){
 
+            if (count($this->dependencies)) {
+                    $this->formatDependencies($rolfRisks[$key], $this->dependencies, '\MonarcCore\Model\Entity\Measure', ['referential']);
+            }
+
             $rolfRisk['tags']->initialize();
             $rolfTags = $rolfRisk['tags']->getSnapshot();
             $rolfRisks[$key]['tags'] = array();
@@ -52,6 +67,27 @@ class ApiRolfRisksController extends AbstractController
             'count' => $service->getFilteredCount($filter),
             $this->name => $rolfRisks
         ));
+    }
+
+    public function update($id, $data)
+    {
+      $measures= array();
+      foreach ($data['measures'] as $measure) {
+        $measures[] = ['uuid' => $measure];
+      }
+      $data['measures'] = $measures;
+      return parent::update($id, $data);
+    }
+
+    public function patchList($data)
+    {
+      $service = $this->getService();
+
+      $service->createLinkedRisks($data['fromReferential'],$data['toReferential']);
+
+      return new JsonModel([
+          'status' =>  'ok',
+      ]);
     }
 
 }

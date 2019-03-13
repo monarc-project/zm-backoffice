@@ -403,7 +403,7 @@ return array(
                 'options' => array(
                     'route' => '/api/threats[/:id]',
                     'constraints' => array(
-                        'id' => '[0-9]+',
+                        'id' => '[a-f0-9-]*',
                     ),
                     'defaults' => array(
                         'controller' => 'MonarcBO\Controller\ApiThreats',

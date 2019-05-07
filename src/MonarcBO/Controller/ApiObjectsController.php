@@ -32,7 +32,7 @@ class ApiObjectsController extends AbstractController
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
-        $asset = (int) $this->params()->fromQuery('asset');
+        $asset = $this->params()->fromQuery('asset');
         $category = (int) $this->params()->fromQuery('category');
         $model = (int) $this->params()->fromQuery('model');
         $anr = (int) $this->params()->fromQuery('anr');

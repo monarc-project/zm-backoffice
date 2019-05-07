@@ -41,14 +41,14 @@ class ApiAmvsController extends AbstractController
         if ($status != 'all') {
             $filterAnd['status'] = (int) $status;
         }
-        if ($asset > 0) {
-            $filterAnd['asset'] = (int) $asset;
+        if ($asset != null) {
+            $filterAnd['a.uuid'] = $asset;
         }
 
         if(!empty($amvid)){
-            $filterAnd['id'] = [
+            $filterAnd['uuid'] = [
                 'op' => '!=',
-                'value' => (int)$amvid,
+                'value' => $amvid,
             ];
         }
 
@@ -83,11 +83,10 @@ class ApiAmvsController extends AbstractController
             $entity['implicitPosition'] = 1;
         } else {
             // We're not at the beginning, get all AMV links of the same asset, and figure out position and previous
-            $amvsAsset = $this->getService()->getList(1, 0, 'position', null, ['asset' => $entity['asset']['id']]);
-
+            $amvsAsset = $this->getService()->getList(1, 0, 'position', null, ['a.uuid' => $entity['asset']['uuid']->toString()]);
             $i = 0;
             foreach ($amvsAsset as $amv) {
-                if ($amv['id'] == $entity['id']) {
+                if ($amv['uuid'] == $entity['uuid']) {
                     if ($i == count($amvsAsset) - 1) {
                         $entity['implicitPosition'] = 2;
                     } else {

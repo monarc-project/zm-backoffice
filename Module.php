@@ -1,6 +1,9 @@
 <?php
-namespace MonarcBO;
 
+namespace Monarc\BackOffice;
+
+use Monarc\Core\Service\ConnectedUserService;
+use Zend\Console\Request;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\Permissions\Rbac\Rbac;
@@ -11,7 +14,7 @@ class Module
 {
     public function onBootstrap(MvcEvent $e)
     {
-        if(!$e->getRequest() instanceof \Zend\Console\Request){
+        if (!$e->getRequest() instanceof Request) {
             $eventManager = $e->getApplication()->getEventManager();
             $moduleRouteListener = new ModuleRouteListener();
             $moduleRouteListener->attach($eventManager);
@@ -26,52 +29,6 @@ class Module
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
-    }
-
-    public function getAutoloaderConfig()
-    {
-        return array(
-            // ./vendor/bin/classmap_generator.php --library module/MonarcBO/src/MonarcBO -w -s -o module/MonarcBO/autoload_classmap.php
-            'Zend\Loader\ClassMapAutoloader' => array(
-                __DIR__ . '/autoload_classmap.php',
-            ),
-            /*'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
-                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                ),
-            ),*/
-        );
-    }
-
-    public function getServiceConfig()
-    {
-        return array(
-            'invokables' => array(
-                //'\MonarcBO\Model\Entity\Server' => '\MonarcBO\Model\Entity\Server',
-                //'\MonarcBO\Model\Entity\Client' => '\MonarcBO\Model\Entity\Client',
-            ),
-            'factories' => array(
-               '\MonarcCli\Model\Db' => '\MonarcBO\Service\Model\DbCliFactory',
-
-                // Servers table
-                '\MonarcBO\Model\Table\ServerTable' => '\MonarcBO\Service\Model\Table\ServerServiceModelTable',
-                '\MonarcBO\Model\Entity\Server' => '\MonarcBO\Service\Model\Entity\ServerServiceModelEntity',
-                '\MonarcBO\Service\ServerService' => '\MonarcBO\Service\ServerServiceFactory',
-
-                // Clients table
-                '\MonarcBO\Model\Table\ClientTable' => '\MonarcBO\Service\Model\Table\ClientServiceModelTable',
-                '\MonarcBO\Model\Entity\Client' => '\MonarcBO\Service\Model\Entity\ClientServiceModelEntity',
-                '\MonarcBO\Service\ClientService' => '\MonarcBO\Service\ClientServiceFactory',
-            ),
-        );
-    }
-
-    public function getValidatorConfig(){
-        return array(
-            'invokables' => array(
-                '\MonarcBO\Validator\UniqueClientProxyAlias' => '\MonarcBO\Validator\UniqueClientProxyAlias',
-            ),
-        );
     }
 
     public function onDispatchError($e)
@@ -107,8 +64,8 @@ class Module
             }
         }
         $errorJson = array(
-            'message'   => $exception ? $exception->getMessage() : 'An error occurred during execution; please try again later.',
-            'error'     => $error,
+            'message' => $exception ? $exception->getMessage() : 'An error occurred during execution; please try again later.',
+            'error' => $error,
             'exception' => $exceptionJson,
         );
         if ($error == 'error-router-no-match') {
@@ -116,6 +73,7 @@ class Module
         }
         $model = new JsonModel(array('errors' => array($errorJson)));
         $e->setResult($model);
+
         return $model;
     }
 
@@ -129,9 +87,9 @@ class Module
         $sm = $e->getApplication()->getServiceManager();
         $config = $sm->get('Config');
 
-        $globalPermissions = isset($config['permissions'])?$config['permissions']:array();
+        $globalPermissions = isset($config['permissions']) ? $config['permissions'] : array();
 
-        $rolesPermissions = isset($config['roles'])?$config['roles']:array();
+        $rolesPermissions = isset($config['roles']) ? $config['roles'] : array();
 
         $rbac = new Rbac();
         foreach ($rolesPermissions as $role => $permissions) {
@@ -139,15 +97,15 @@ class Module
             $role = new Role($role);
 
             //global permissions
-            foreach($globalPermissions as $globalPermission) {
-                if (! $role->hasPermission($globalPermission)) {
+            foreach ($globalPermissions as $globalPermission) {
+                if (!$role->hasPermission($globalPermission)) {
                     $role->addPermission($globalPermission);
                 }
             }
 
             //role permissions
             foreach ($permissions as $permission) {
-                if (! $role->hasPermission($permission)) {
+                if (!$role->hasPermission($permission)) {
                     $role->addPermission($permission);
                 }
             }
@@ -157,8 +115,8 @@ class Module
 
         //add role for guest (user not logged)
         $role = new Role('guest');
-        foreach($globalPermissions as $globalPermission) {
-            if (! $role->hasPermission($globalPermission)) {
+        foreach ($globalPermissions as $globalPermission) {
+            if (!$role->hasPermission($globalPermission)) {
                 $role->addPermission($globalPermission);
             }
         }
@@ -171,39 +129,33 @@ class Module
 
     /**
      * Check Rbac
-     * 
+     *
      * @param MvcEvent $e
+     *
      * @return \Zend\Stdlib\ResponseInterface
      */
-    public function checkRbac(MvcEvent $e) {
+    public function checkRbac(MvcEvent $e)
+    {
         $route = $e->getRouteMatch()->getMatchedRouteName();
-
-        //retrieve connected user
         $sm = $e->getApplication()->getServiceManager();
-        $connectedUserService = $sm->get('\MonarcCore\Service\ConnectedUserService');
+
+        /** @var ConnectedUserService $connectedUserService */
+        $connectedUserService = $sm->get(ConnectedUserService::class);
         $connectedUser = $connectedUserService->getConnectedUser();
 
-        //retrieve user roles
-        $userRoleService = $sm->get('\MonarcCore\Service\UserRoleService');
-        $userRoles = $userRoleService->getList(1, 25, null, $connectedUser['id']);
-
-        $roles = [];
-        foreach($userRoles as $userRole) {
-            $roles[] = $userRole['role'];
-        }
-
-        if (empty($roles)) {
-            $roles[] = 'guest';
+        $roles[] = 'guest';
+        if ($connectedUser !== null) {
+            $roles = $connectedUser->getRoles();
         }
 
         $isGranted = false;
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             if ($e->getViewModel()->rbac->isGranted($role, $route)) {
                 $isGranted = true;
             }
         }
 
-        if (! $isGranted) {
+        if (!$isGranted) {
             $response = $e->getResponse();
             $response->setStatusCode(401);
 

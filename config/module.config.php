@@ -1,535 +1,569 @@
 <?php
-namespace MonarcBO;
 
-return array(
-    'router' => array(
-        'routes' => array(
-            'monarc_api_admin_historicals' => array(
+use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Monarc\BackOffice\Controller;
+use Monarc\BackOffice\Model\DbCli;
+use Monarc\BackOffice\Model\Entity\Client;
+use Monarc\BackOffice\Model\Entity\Server;
+use Monarc\BackOffice\Model\Table\ClientTable;
+use Monarc\BackOffice\Model\Table\ServerTable;
+use Monarc\BackOffice\Service\ClientService;
+use Monarc\BackOffice\Service\ClientServiceFactory;
+use Monarc\BackOffice\Service\Model\DbCliFactory;
+use Monarc\BackOffice\Service\Model\Entity\ClientServiceModelEntity;
+use Monarc\BackOffice\Service\Model\Entity\ServerServiceModelEntity;
+use Monarc\BackOffice\Service\ServerService;
+use Monarc\BackOffice\Service\ServerServiceFactory;
+use Monarc\BackOffice\Validator\UniqueClientProxyAlias;
+use Zend\Di\Container\AutowireFactory;
+
+return [
+    'router' => [
+        'routes' => [
+            'monarc_api_admin_historicals' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/admin/historical[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAdminHistoricals',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiAdminHistoricalsController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_admin_passwords' => array(
+            'monarc_api_admin_passwords' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/admin/passwords',
-                    'constraints' => array(
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAdminPasswords',
-                    ),
-                ),
-            ),
+                    'constraints' => [],
+                    'defaults' => [
+                        'controller' => Controller\ApiAdminPasswordsController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_admin_roles' => array(
+            'monarc_api_admin_roles' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/admin/roles[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAdminRoles',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiAdminRolesController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_admin_servers' => array(
+            'monarc_api_admin_servers' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/admin/servers[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAdminServers',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiAdminServersController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_admin_servers_get' => array(
+            'monarc_api_admin_servers_get' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/admin/serversget[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAdminServersGet',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiAdminServersGetController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_admin_users' => array(
+            'monarc_api_admin_users' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/admin/users[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAdminUsers',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiAdminUsersController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_admin_users_roles' => array(
+            'monarc_api_admin_users_roles' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/users-roles[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAdminUsersRoles',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiAdminUsersRolesController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_amvs' => array(
+            'monarc_api_amvs' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/amvs[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[a-f0-9-]*',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAmvs',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiAmvsController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_assets' => array(
+            'monarc_api_assets' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/assets[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[a-f0-9-]*',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiAssets',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiAssetsController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_clients' => array(
+            'monarc_api_clients' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/clients[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiClients',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiClientsController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_config' => array(
+            'monarc_api_config' => [
                 'type' => 'literal',
-                'options' => array(
+                'options' => [
                     'route' => '/api/config',
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiConfig',
-                    ),
-                ),
-            ),
+                    'defaults' => [
+                        'controller' => Controller\ApiConfigController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_doc_models' => array(
+            'monarc_api_doc_models' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/deliveriesmodels[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiDeliveriesModels',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiDeliveriesModelsController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_questions' => array(
+            'monarc_api_questions' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/questions[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiQuestions',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiQuestionsController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_questions_choices' => array(
+            'monarc_api_questions_choices' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/questions-choices[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiQuestionsChoices',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiQuestionsChoicesController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_guides' => array(
+            'monarc_api_guides' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/guides[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiGuides',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiGuidesController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_guides_items' => array(
+            'monarc_api_guides_items' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/guides-items[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiGuidesItems',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiGuidesItemsController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_guides_types' => array(
+            'monarc_api_guides_types' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/guides-types[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiGuidesTypes',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiGuidesTypesController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_referentials' => array(
+            'monarc_api_referentials' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/referentials[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[a-f0-9-]*',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiReferentials',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiReferentialsController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_measures' => array(
+            'monarc_api_measures' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/measures[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[a-f0-9-]*',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiMeasures',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiMeasuresController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_measuremeasure' => array(
+            'monarc_api_measuremeasure' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/measuresmeasures[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiMeasureMeasure',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiMeasureMeasureController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_objects_categories' => array(
+            'monarc_api_objects_categories' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/objects-categories[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiObjectsCategories',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiObjectsCategoriesController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_models' => array(
+            'monarc_api_models' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/models[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcCore\Controller\ApiModels',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiModelsController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_objects' => array(
+            'monarc_api_objects' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/objects[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[a-f0-9-]*',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiObjects',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiObjectsController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_objects_duplication' => array(
+            'monarc_api_objects_duplication' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/objects-duplication',
-                    'constraints' => array(),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiObjectsDuplication',
-                    ),
-                ),
-            ),
+                    'constraints' => [],
+                    'defaults' => [
+                        'controller' => Controller\ApiObjectsDuplicationController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_objects_export' => array(
+            'monarc_api_objects_export' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/objects-export',
-                    'constraints' => array(),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiObjectsExport',
-                    ),
-                ),
-            ),
+                    'constraints' => [],
+                    'defaults' => [
+                        'controller' => Controller\ApiObjectsExportController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_objects_objects' => array(
+            'monarc_api_objects_objects' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/objects-objects[/:id]',
-                    'constraints' => array(),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiObjectsObjects',
-                    ),
-                ),
-            ),
+                    'constraints' => [],
+                    'defaults' => [
+                        'controller' => Controller\ApiObjectsObjectsController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_rolf_categories' => array(
+            'monarc_api_rolf_categories' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/rolf-categories[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiRolfCategories',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiRolfCategoriesController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_rolf_risks' => array(
+            'monarc_api_rolf_risks' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/rolf-risks[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiRolfRisks',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiRolfRisksController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_rolf_tags' => array(
+            'monarc_api_rolf_tags' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/rolf-tags[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiRolfTags',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiRolfTagsController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_themes' => array(
+            'monarc_api_themes' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/themes[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiThemes',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiThemesController::class,
+                    ],
+                ],
+            ],
 
 
-            'monarc_api_soacategory' => array(
+            'monarc_api_soacategory' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/soacategory[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiSoaCategory',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiSoaCategoryController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_threats' => array(
+            'monarc_api_threats' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/threats[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[a-f0-9-]*',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiThreats',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiThreatsController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_user_password' => array(
+            'monarc_api_user_password' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/user/password/:id',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiUserPassword',
-                    ),
-                ),
-            ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiUserPasswordController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_user_profile' => array(
+            'monarc_api_user_profile' => [
                 'type' => 'literal',
-                'options' => array(
+                'options' => [
                     'route' => '/api/user/profile',
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiUserProfile',
-                    ),
-                ),
-            ),
+                    'defaults' => [
+                        'controller' => Controller\ApiUserProfileController::class,
+                    ],
+                ],
+            ],
 
-            'monarc_api_vulnerabilities' => array(
+            'monarc_api_vulnerabilities' => [
                 'type' => 'segment',
-                'options' => array(
+                'options' => [
                     'route' => '/api/vulnerabilities[/:id]',
-                    'constraints' => array(
+                    'constraints' => [
                         'id' => '[a-f0-9-]*',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'MonarcBO\Controller\ApiVulnerabilities',
-                    ),
-                ),
-            ),
-        ),
-    ),
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiVulnerabilitiesController::class,
+                    ],
+                ],
+            ],
+        ],
+    ],
 
-    'controllers' => array(
-        'invokables' => array(
-        ),
-        'factories' => array(
-            '\MonarcBO\Controller\ApiAdminHistoricals'          => '\MonarcBO\Controller\ApiAdminHistoricalsControllerFactory',
-            '\MonarcBO\Controller\ApiUserPassword'              => '\MonarcBO\Controller\ApiUserPasswordControllerFactory',
-            '\MonarcBO\Controller\ApiAdminPasswords'            => '\MonarcBO\Controller\ApiAdminPasswordsControllerFactory',
-            '\MonarcBO\Controller\ApiAdminRoles'                => '\MonarcBO\Controller\ApiAdminRolesControllerFactory',
-            '\MonarcBO\Controller\ApiAdminServers'              => '\MonarcBO\Controller\ApiAdminServersControllerFactory',
-            '\MonarcBO\Controller\ApiAdminServersGet'           => '\MonarcBO\Controller\ApiAdminServersGetControllerFactory',
-            '\MonarcBO\Controller\ApiAdminUsers'                => '\MonarcBO\Controller\ApiAdminUsersControllerFactory',
-            '\MonarcBO\Controller\ApiAdminUsersRoles'           => '\MonarcBO\Controller\ApiAdminUsersRolesControllerFactory',
-            '\MonarcBO\Controller\ApiAmvs'                      => '\MonarcBO\Controller\ApiAmvsControllerFactory',
-            '\MonarcBO\Controller\ApiAssets'                    => '\MonarcBO\Controller\ApiAssetsControllerFactory',
-            '\MonarcBO\Controller\ApiClients'                   => '\MonarcBO\Controller\ApiClientsControllerFactory',
-            '\MonarcBO\Controller\ApiConfig'                    => '\MonarcBO\Controller\ApiConfigControllerFactory',
-            '\MonarcBO\Controller\ApiQuestions'                 => '\MonarcBO\Controller\ApiQuestionsControllerFactory',
-            '\MonarcBO\Controller\ApiQuestionsChoices'          => '\MonarcBO\Controller\ApiQuestionsChoicesControllerFactory',
-            '\MonarcBO\Controller\ApiGuides'                    => '\MonarcBO\Controller\ApiGuidesControllerFactory',
-            '\MonarcBO\Controller\ApiGuidesItems'               => '\MonarcBO\Controller\ApiGuidesItemsControllerFactory',
-            '\MonarcBO\Controller\ApiGuidesTypes'               => '\MonarcBO\Controller\ApiGuidesTypesControllerFactory',
-            '\MonarcBO\Controller\ApiReferentials'              => '\MonarcBO\Controller\ApiReferentialsControllerFactory',
-            '\MonarcBO\Controller\ApiMeasures'                  => '\MonarcBO\Controller\ApiMeasuresControllerFactory',
-            '\MonarcBO\Controller\ApiMeasureMeasure'            => '\MonarcBO\Controller\ApiMeasureMeasureControllerFactory',
-            '\MonarcBO\Controller\ApiObjects'                   => '\MonarcBO\Controller\ApiObjectsControllerFactory',
-            '\MonarcBO\Controller\ApiObjectsDuplication'        => '\MonarcBO\Controller\ApiObjectsDuplicationControllerFactory',
-            '\MonarcBO\Controller\ApiObjectsExport'             => '\MonarcBO\Controller\ApiObjectsExportControllerFactory',
-            '\MonarcBO\Controller\ApiObjectsObjects'            => '\MonarcBO\Controller\ApiObjectsObjectsControllerFactory',
-            '\MonarcBO\Controller\ApiObjectsCategories'         => '\MonarcBO\Controller\ApiObjectsCategoriesControllerFactory',
-            '\MonarcBO\Controller\ApiObjectsRisks'              => '\MonarcBO\Controller\ApiObjectsRisksControllerFactory',
-            '\MonarcBO\Controller\ApiRolfCategories'            => '\MonarcBO\Controller\ApiRolfCategoriesControllerFactory',
-            '\MonarcBO\Controller\ApiRolfRisks'                 => '\MonarcBO\Controller\ApiRolfRisksControllerFactory',
-            '\MonarcBO\Controller\ApiRolfTags'                  => '\MonarcBO\Controller\ApiRolfTagsControllerFactory',
-            '\MonarcBO\Controller\ApiThemes'                    => '\MonarcBO\Controller\ApiThemesControllerFactory',
-            '\MonarcBO\Controller\ApiSoaCategory'               => '\MonarcBO\Controller\ApiSoaCategoryControllerFactory',
-            '\MonarcBO\Controller\ApiThreats'                   => '\MonarcBO\Controller\ApiThreatsControllerFactory',
-            '\MonarcBO\Controller\ApiVulnerabilities'           => '\MonarcBO\Controller\ApiVulnerabilitiesControllerFactory',
-            '\MonarcBO\Controller\ApiDeliveriesModels'          => '\MonarcBO\Controller\ApiDeliveriesModelsControllerFactory',
-            '\MonarcBO\Controller\ApiUserProfile'               => '\MonarcBO\Controller\ApiUserProfileControllerFactory',
-        ),
-    ),
+    'controllers' => [
+        'invokables' => [],
+        'factories' => [
+            Controller\ApiAdminHistoricalsController::class => Controller\ApiAdminHistoricalsControllerFactory::class,
+            Controller\ApiUserPasswordController::class => Controller\ApiUserPasswordControllerFactory::class,
+            Controller\ApiAdminPasswordsController::class => Controller\ApiAdminPasswordsControllerFactory::class,
+            Controller\ApiAdminRolesController::class => Controller\ApiAdminRolesControllerFactory::class,
+            Controller\ApiAdminServersController::class => Controller\ApiAdminServersControllerFactory::class,
+            Controller\ApiAdminServersGetController::class => Controller\ApiAdminServersGetControllerFactory::class,
+            Controller\ApiAdminUsersController::class => Controller\ApiAdminUsersControllerFactory::class,
+            Controller\ApiAdminUsersRolesController::class => Controller\ApiAdminUsersRolesControllerFactory::class,
+            Controller\ApiAmvsController::class => Controller\ApiAmvsControllerFactory::class,
+            Controller\ApiAssetsController::class => Controller\ApiAssetsControllerFactory::class,
+            Controller\ApiClientsController::class => Controller\ApiClientsControllerFactory::class,
+            Controller\ApiConfigController::class => Controller\ApiConfigControllerFactory::class,
+            Controller\ApiQuestionsController::class => Controller\ApiQuestionsControllerFactory::class,
+            Controller\ApiQuestionsChoicesController::class => Controller\ApiQuestionsChoicesControllerFactory::class,
+            Controller\ApiGuidesController::class => Controller\ApiGuidesControllerFactory::class,
+            Controller\ApiGuidesItemsController::class => Controller\ApiGuidesItemsControllerFactory::class,
+            Controller\ApiGuidesTypesController::class => Controller\ApiGuidesTypesControllerFactory::class,
+            Controller\ApiReferentialsController::class => Controller\ApiReferentialsControllerFactory::class,
+            Controller\ApiMeasuresController::class => Controller\ApiMeasuresControllerFactory::class,
+            Controller\ApiMeasureMeasureController::class => Controller\ApiMeasureMeasureControllerFactory::class,
+            Controller\ApiObjectsController::class => Controller\ApiObjectsControllerFactory::class,
+            Controller\ApiObjectsDuplicationController::class => Controller\ApiObjectsDuplicationControllerFactory::class,
+            Controller\ApiObjectsExportController::class => Controller\ApiObjectsExportControllerFactory::class,
+            Controller\ApiObjectsObjectsController::class => Controller\ApiObjectsObjectsControllerFactory::class,
+            Controller\ApiObjectsCategoriesController::class => Controller\ApiObjectsCategoriesControllerFactory::class,
+            Controller\ApiRolfCategoriesController::class => Controller\ApiRolfCategoriesControllerFactory::class,
+            Controller\ApiRolfRisksController::class => Controller\ApiRolfRisksControllerFactory::class,
+            Controller\ApiRolfTagsController::class => Controller\ApiRolfTagsControllerFactory::class,
+            Controller\ApiThemesController::class => Controller\ApiThemesControllerFactory::class,
+            Controller\ApiSoaCategoryController::class => Controller\ApiSoaCategoryControllerFactory::class,
+            Controller\ApiThreatsController::class => Controller\ApiThreatsControllerFactory::class,
+            Controller\ApiVulnerabilitiesController::class => Controller\ApiVulnerabilitiesControllerFactory::class,
+            Controller\ApiDeliveriesModelsController::class => Controller\ApiDeliveriesModelsControllerFactory::class,
+            Controller\ApiUserProfileController::class => Controller\ApiUserProfileControllerFactory::class,
+        ],
+    ],
 
-    'view_manager' => array(
+    'service_manager' => [
+        'invokables' => [
+            UniqueClientProxyAlias::class => UniqueClientProxyAlias::class,
+        ],
+        'factories' => [
+            DbCli::class => DbCliFactory::class,
+
+            ServerTable::class => AutowireFactory::class,
+            ClientTable::class => AutowireFactory::class,
+
+            // TODO: remove the factories and refactor the services, instantiate entities from the services directly.
+            Server::class => ServerServiceModelEntity::class,
+            ServerService::class => ServerServiceFactory::class,
+            Client::class => ClientServiceModelEntity::class,
+            ClientService::class => ClientServiceFactory::class,
+        ],
+    ],
+
+    'view_manager' => [
         'display_not_found_reason' => true,
-        'display_exceptions'       => true,
-        'doctype'                  => 'HTML5',
-        'not_found_template'       => 'error/404',
-        'exception_template'       => 'error/index',
-        'strategies' => array(
+        'display_exceptions' => true,
+        'doctype' => 'HTML5',
+        'not_found_template' => 'error/404',
+        'exception_template' => 'error/index',
+        'strategies' => [
             'viewJsonStrategy'
-        ),
-        'template_map' => array(
+        ],
+        'template_map' => [
             'monarc-bo/index/index' => __DIR__ . '/../view/layout/layout.phtml',
             'error/404' => __DIR__ . '/../view/layout/layout.phtml',
-        ),
-        'template_path_stack' => array(
+        ],
+        'template_path_stack' => [
             __DIR__ . '/../view',
-        ),
-    ),
+        ],
+    ],
 
-    'doctrine' => array(
-        'driver' => array(
-            'Monarc_cli_driver' => array(
-                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+    'doctrine' => [
+        'driver' => [
+            'Monarc_cli_driver' => [
+                'class' => AnnotationDriver::class,
                 'cache' => 'array',
-                'paths' => array(
-                    __DIR__ . '/../src/MonarcBO/Model/Entity',
-                ),
-            ),
-            'orm_cli' => array(
-                'class' => 'Doctrine\ORM\Mapping\Driver\DriverChain',
-                'drivers' => array(
-                    'MonarcBO\Model\Entity' => 'Monarc_cli_driver',
-                ),
-            ),
-        ),
-    ),
+                'paths' => [
+                    __DIR__ . '/../src/Model/Entity',
+                    __DIR__ . '/../../core/src/Model/Entity',
+                    __DIR__ . '/../../backoffice/src/Model/Entity',
+                ],
+            ],
+            'orm_cli' => [
+                'class' => MappingDriverChain::class,
+                'drivers' => [
+                    'Monarc\BackOffice\Model\Entity' => 'Monarc_cli_driver',
+                ],
+            ],
+        ],
+    ],
 
-    'roles' => array(
+    'roles' => [
         // Super Admin : Gestion des droits des utilisateurs uniquement (Carnet d’adresses)
-        'superadmin'=> array(
+        'superadmin' => [
             'monarc_api_guides',
             'monarc_api_guides_items',
             'monarc_api_guides_types',
@@ -539,9 +573,9 @@ return array(
             'monarc_api_admin_users',
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
-        ),
+        ],
         // Admin DB : Gestion des bases de connaissances (paramètres généraux)
-        'dbadmin'=> array(
+        'dbadmin' => [
             'monarc_api_amvs',
             'monarc_api_assets',
             'monarc_api_anr',
@@ -588,9 +622,9 @@ return array(
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
             'monarc_api_anr_objects_parents',
-        ),
+        ],
         // Admin système : Gestion des logs et tout ce qui est non applicatif (Administration)
-        'sysadmin'=> array(
+        'sysadmin' => [
             'monarc_api_admin_historicals',
             'monarc_api_admin_servers',
             'monarc_api_guides',
@@ -602,9 +636,9 @@ return array(
             'monarc_api_models_duplication',
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
-        ),
+        ],
         // Admin comptes : Création des comptes et authentification client
-        'accadmin'=> array(
+        'accadmin' => [
             'monarc_api_user_password',
             'monarc_api_clients',
             'monarc_api_admin_servers_get',
@@ -616,7 +650,7 @@ return array(
             'monarc_api_models',
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
-        ),
-    ),
-    'activeLanguages' => array('fr','en','es','ne'),
-);
+        ],
+    ],
+    'activeLanguages' => ['fr', 'en', 'es', 'ne'],
+];

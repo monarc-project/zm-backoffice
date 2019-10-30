@@ -1,7 +1,6 @@
 {
     "name": "monarc/backoffice",
-    "type": "Back office for monarc/monarc-backoffice application",
-    "description": "Backoffice for Monarc project",
+    "description": "Backoffice for monarc/monarc-backoffice application",
     "authors": [
         {"name": "Cyril Rouyer", "email": "cyril@netlor.fr"},
         {"name": "Guillaume Lesniak", "email": "guillaume@netlor.fr"},

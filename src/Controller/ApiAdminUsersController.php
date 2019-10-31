@@ -23,7 +23,7 @@ class ApiAdminUsersController extends AbstractController
 
     public function __construct(UserService $userService)
     {
-        parent::__construct($userService;
+        parent::__construct($userService);
     }
 
     /**

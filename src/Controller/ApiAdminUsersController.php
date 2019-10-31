@@ -41,15 +41,10 @@ class ApiAdminUsersController extends AbstractRestfulController
         $filterAnd = $status === 'all' ? null : ['status' => (int)$status];
 
         $entities = $this->userService->getList($page, $limit, $order, $filter, $filterAnd);
-        if (count($this->dependencies)) {
-            foreach ($entities as $key => $entity) {
-                $this->formatDependencies($entities[$key], $this->dependencies);
-            }
-        }
 
         return new JsonModel(array(
             'count' => $this->userService->getFilteredCount($filter, $filterAnd),
-            $this->name => $entities
+            'users' => $entities
         ));
     }
 
@@ -116,15 +111,6 @@ class ApiAdminUsersController extends AbstractRestfulController
     public function delete($id)
     {
         if ($this->userService->delete($id)) {
-            return new JsonModel(array('status' => 'ok'));
-        }
-
-        return new JsonModel(array('status' => 'ko'));
-    }
-
-    public function deleteList($data)
-    {
-        if ($this->userService->deleteList($data)) {
             return new JsonModel(array('status' => 'ok'));
         }
 

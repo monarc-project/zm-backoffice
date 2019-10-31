@@ -7,6 +7,7 @@
 
 namespace Monarc\BackOffice\Controller;
 
+use Monarc\Core\Model\Table\UserTable;
 use Monarc\Core\Service\UserService;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
@@ -22,9 +23,13 @@ class ApiAdminUsersController extends AbstractRestfulController
     /** @var UserService */
     private $userService;
 
-    public function __construct(UserService $userService)
+    /** @var UserTable */
+    private $userTable;
+
+    public function __construct(UserService $userService, UserTable $userTable)
     {
         $this->userService = $userService;
+        $this->userTable = $userTable;
     }
 
     /**
@@ -46,6 +51,22 @@ class ApiAdminUsersController extends AbstractRestfulController
             'count' => $this->userService->getFilteredCount($filter, $filterAnd),
             'users' => $entities
         ));
+    }
+
+    public function get($id)
+    {
+        $user = $this->userTable->findById($id);
+
+        // TODO: use a normalizer instead.
+        return new JsonModel([
+            'id' => $user->getId(),
+            'status' => $user->getStatus(),
+            'firstname' => $user->getFirstname(),
+            'lastname' => $user->getLastname(),
+            'email' => $user->getEmail(),
+            'language' => $user->getLanguage(),
+            'role' => $user->getRoles(),
+        ]);
     }
 
     /**

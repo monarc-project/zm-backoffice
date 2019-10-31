@@ -16,6 +16,7 @@ use Monarc\BackOffice\Service\Model\Entity\ServerServiceModelEntity;
 use Monarc\BackOffice\Service\ServerService;
 use Monarc\BackOffice\Service\ServerServiceFactory;
 use Monarc\BackOffice\Validator\UniqueClientProxyAlias;
+use Monarc\Core\Controller\ApiModelsController;
 use Zend\Di\Container\AutowireFactory;
 
 return [
@@ -297,7 +298,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiModelsController::class,
+                        'controller' => ApiModelsController::class,
                     ],
                 ],
             ],
@@ -344,19 +345,6 @@ return [
                     'constraints' => [],
                     'defaults' => [
                         'controller' => Controller\ApiObjectsObjectsController::class,
-                    ],
-                ],
-            ],
-
-            'monarc_api_rolf_categories' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/rolf-categories[/:id]',
-                    'constraints' => [
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\ApiRolfCategoriesController::class,
                     ],
                 ],
             ],

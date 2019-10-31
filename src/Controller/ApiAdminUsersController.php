@@ -8,22 +8,23 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Service\UserService;
-use Monarc\Core\Controller\AbstractController;
+use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
 /**
- * TODO: extend AbstractRestfulController and remove AbstractController.
- *
  * Class ApiAdminUsersController
  * @package Monarc\BackOffice\Controller
  */
-class ApiAdminUsersController extends AbstractController
+class ApiAdminUsersController extends AbstractRestfulController
 {
     protected $name = 'users';
 
+    /** @var UserService */
+    private $userService;
+
     public function __construct(UserService $userService)
     {
-        parent::__construct($userService);
+        $this->userService = $userService;
     }
 
     /**
@@ -35,15 +36,11 @@ class ApiAdminUsersController extends AbstractController
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
-        $status = $this->params()->fromQuery('status');
-        if (is_null($status)) {
-            $status = 1;
-        }
-        $filterAnd = ($status == "all") ? null : ['status' => (int) $status] ;
+        $status = $this->params()->fromQuery('status', 1);
 
-        $service = $this->getService();
+        $filterAnd = $status === 'all' ? null : ['status' => (int)$status];
 
-        $entities = $service->getList($page, $limit, $order, $filter, $filterAnd);
+        $entities = $this->userService->getList($page, $limit, $order, $filter, $filterAnd);
         if (count($this->dependencies)) {
             foreach ($entities as $key => $entity) {
                 $this->formatDependencies($entities[$key], $this->dependencies);
@@ -51,7 +48,7 @@ class ApiAdminUsersController extends AbstractController
         }
 
         return new JsonModel(array(
-            'count' => $service->getFilteredCount($filter, $filterAnd),
+            'count' => $this->userService->getFilteredCount($filter, $filterAnd),
             $this->name => $entities
         ));
     }
@@ -61,15 +58,18 @@ class ApiAdminUsersController extends AbstractController
      */
     public function create($data)
     {
-        /** @var UserService $service */
-        $service = $this->getService();
-
         // Security: Don't allow changing role, password, status and history fields. To clean later.
-        if (isset($data['salt'])) unset($data['salt']);
-        if (isset($data['dateStart'])) unset($data['dateStart']);
-        if (isset($data['dateEnd'])) unset($data['dateEnd']);
+        if (isset($data['salt'])) {
+            unset($data['salt']);
+        }
+        if (isset($data['dateStart'])) {
+            unset($data['dateStart']);
+        }
+        if (isset($data['dateEnd'])) {
+            unset($data['dateEnd']);
+        }
 
-        $service->create($data);
+        $this->userService->create($data);
 
         return new JsonModel(array('status' => 'ok'));
     }
@@ -79,22 +79,55 @@ class ApiAdminUsersController extends AbstractController
      */
     public function update($id, $data)
     {
-        /** @var UserService $service */
-        $service = $this->getService();
-
         // Security: Don't allow changing role, password, status and history fields. To clean later.
-        if (isset($data['status'])) unset($data['status']);
-        if (isset($data['id'])) unset($data['id']);
-        if (isset($data['salt'])) unset($data['salt']);
-        if (isset($data['updatedAt'])) unset($data['updatedAt']);
-        if (isset($data['updater'])) unset($data['updater']);
-        if (isset($data['createdAt'])) unset($data['createdAt']);
-        if (isset($data['creator'])) unset($data['creator']);
-        if (isset($data['dateStart'])) unset($data['dateStart']);
-        if (isset($data['dateEnd'])) unset($data['dateEnd']);
+        if (isset($data['status'])) {
+            unset($data['status']);
+        }
+        if (isset($data['id'])) {
+            unset($data['id']);
+        }
+        if (isset($data['salt'])) {
+            unset($data['salt']);
+        }
+        if (isset($data['updatedAt'])) {
+            unset($data['updatedAt']);
+        }
+        if (isset($data['updater'])) {
+            unset($data['updater']);
+        }
+        if (isset($data['createdAt'])) {
+            unset($data['createdAt']);
+        }
+        if (isset($data['creator'])) {
+            unset($data['creator']);
+        }
+        if (isset($data['dateStart'])) {
+            unset($data['dateStart']);
+        }
+        if (isset($data['dateEnd'])) {
+            unset($data['dateEnd']);
+        }
 
-        $service->update($id, $data);
+        $this->userService->update($id, $data);
 
         return new JsonModel(array('status' => 'ok'));
+    }
+
+    public function delete($id)
+    {
+        if ($this->userService->delete($id)) {
+            return new JsonModel(array('status' => 'ok'));
+        }
+
+        return new JsonModel(array('status' => 'ko'));
+    }
+
+    public function deleteList($data)
+    {
+        if ($this->userService->deleteList($data)) {
+            return new JsonModel(array('status' => 'ok'));
+        }
+
+        return new JsonModel(array('status' => 'ko'));
     }
 }

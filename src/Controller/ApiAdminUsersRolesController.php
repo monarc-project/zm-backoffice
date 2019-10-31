@@ -7,7 +7,8 @@
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Service\UserRoleService;
+use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -16,24 +17,29 @@ use Zend\View\Model\JsonModel;
  * Class ApiAdminUsersRolesController
  * @package Monarc\BackOffice\Controller
  */
-class ApiAdminUsersRolesController extends AbstractController
+class ApiAdminUsersRolesController extends AbstractRestfulController
 {
-    protected $name = 'roles';
+    /** @var UserRoleService */
+    private $userRoleService;
+
+    public function __construct(UserRoleService $userRoleService)
+    {
+        $this->userRoleService = $userRoleService;
+    }
 
     /**
      * @inheritdoc
      */
-    public function getList() {
+    public function getList()
+    {
+        $token = $this->getRequest()->getHeader('token');
 
-        $request = $this->getRequest();
-        $token = $request->getHeader('token');
+        $currentUserRoles = $this->userRoleService->getByUserToken($token);
 
-        $currentUserRoles = $this->getService()->getByUserToken($token);
-
-        return new JsonModel(array(
-            'count' => count($currentUserRoles),
-            $this->name => $currentUserRoles
-        ));
+        return new JsonModel([
+            'count' => \count($currentUserRoles),
+            'roles' => $currentUserRoles,
+        ]);
     }
 
     /**
@@ -41,45 +47,11 @@ class ApiAdminUsersRolesController extends AbstractController
      */
     public function get($id)
     {
-        $userRoles = $this->getService()->getByUserId($id);
+        $userRoles = $this->userRoleService->getByUserId($id);
 
-        return new JsonModel(array(
-            'count' => count($userRoles),
-            $this->name => $userRoles
-        ));
+        return new JsonModel([
+            'count' => \count($userRoles),
+            'roles' => $userRoles
+        ]);
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function create($data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function update($id, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function patch($id, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function delete($id)
-    {
-        return $this->methodNotAllowed();
-    }
-
 }
-

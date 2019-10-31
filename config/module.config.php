@@ -475,7 +475,7 @@ return [
             Controller\ApiAdminServersController::class => Controller\ApiAdminServersControllerFactory::class,
             Controller\ApiAdminServersGetController::class => Controller\ApiAdminServersGetControllerFactory::class,
             Controller\ApiAdminUsersController::class => Controller\ApiAdminUsersControllerFactory::class,
-            Controller\ApiAdminUsersRolesController::class => Controller\ApiAdminUsersRolesControllerFactory::class,
+            Controller\ApiAdminUsersRolesController::class => AutowireFactory::class,
             Controller\ApiAmvsController::class => Controller\ApiAmvsControllerFactory::class,
             Controller\ApiAssetsController::class => Controller\ApiAssetsControllerFactory::class,
             Controller\ApiClientsController::class => Controller\ApiClientsControllerFactory::class,
@@ -501,7 +501,7 @@ return [
             Controller\ApiThreatsController::class => Controller\ApiThreatsControllerFactory::class,
             Controller\ApiVulnerabilitiesController::class => Controller\ApiVulnerabilitiesControllerFactory::class,
             Controller\ApiDeliveriesModelsController::class => Controller\ApiDeliveriesModelsControllerFactory::class,
-            Controller\ApiUserProfileController::class => Controller\ApiUserProfileControllerFactory::class,
+            Controller\ApiUserProfileController::class => AutowireFactory::class,
         ],
     ],
 

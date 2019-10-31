@@ -95,6 +95,39 @@ class ApiAdminUsersController extends AbstractRestfulController
      */
     public function update($id, $data)
     {
+        $data = $this->filterRequestData($data)
+
+        $this->userService->update($id, $data);
+
+        return new JsonModel(array('status' => 'ok'));
+    }
+
+    public function patch($id, $data)
+    {
+        $data = $this->filterRequestData($data);
+
+        $this->userService->patch($id, $data);
+
+        return new JsonModel(array('status' => 'ok'));
+    }
+
+    public function delete($id)
+    {
+        if ($this->userService->delete($id)) {
+            return new JsonModel(array('status' => 'ok'));
+        }
+
+        return new JsonModel(array('status' => 'ko'));
+    }
+
+    /**
+     * @param $data
+     *
+     * @return mixed
+     */
+    private function filterRequestData($data)
+    {
+        // TODO: replace with a Filter.
         // Security: Don't allow changing role, password, status and history fields. To clean later.
         if (isset($data['status'])) {
             unset($data['status']);
@@ -123,18 +156,6 @@ class ApiAdminUsersController extends AbstractRestfulController
         if (isset($data['dateEnd'])) {
             unset($data['dateEnd']);
         }
-
-        $this->userService->update($id, $data);
-
-        return new JsonModel(array('status' => 'ok'));
-    }
-
-    public function delete($id)
-    {
-        if ($this->userService->delete($id)) {
-            return new JsonModel(array('status' => 'ok'));
-        }
-
-        return new JsonModel(array('status' => 'ko'));
-    }
+        return $data;
+}
 }

@@ -530,7 +530,7 @@ return [
         'not_found_template' => 'error/404',
         'exception_template' => 'error/index',
         'strategies' => [
-            'viewJsonStrategy'
+            'ViewJsonStrategy'
         ],
         'template_map' => [
             'monarc-bo/index/index' => __DIR__ . '/../view/layout/layout.phtml',

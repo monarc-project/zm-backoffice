@@ -7,8 +7,8 @@
 
 namespace Monarc\BackOffice\Model\Table;
 
+use Monarc\BackOffice\Model\DbCli;
 use Monarc\BackOffice\Model\Entity\Client;
-use Monarc\Core\Model\Db;
 use Monarc\Core\Model\Table\AbstractEntityTable;
 use Monarc\Core\Service\ConnectedUserService;
 
@@ -18,7 +18,7 @@ use Monarc\Core\Service\ConnectedUserService;
  */
 class ClientTable extends AbstractEntityTable
 {
-    public function __construct(Db $dbService, ConnectedUserService $connectedUserService)
+    public function __construct(DbCli $dbService, ConnectedUserService $connectedUserService)
     {
         parent::__construct($dbService, Client::class, $connectedUserService);
     }

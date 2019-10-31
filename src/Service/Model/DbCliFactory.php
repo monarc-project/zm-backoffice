@@ -3,7 +3,7 @@
 namespace Monarc\BackOffice\Service\Model;
 
 use Interop\Container\ContainerInterface;
-use Monarc\Core\Model\DbCli;
+use Monarc\BackOffice\Model\DbCli;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 class DbCliFactory implements FactoryInterface

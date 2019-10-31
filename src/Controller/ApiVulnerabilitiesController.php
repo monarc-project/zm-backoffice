@@ -12,7 +12,7 @@ use Monarc\Core\Service\VulnerabilityService;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Vulnerabilities Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiAssetsController
  * @package Monarc\BackOffice\Controller

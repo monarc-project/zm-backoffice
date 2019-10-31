@@ -12,7 +12,7 @@ use Monarc\Core\Service\ObjectObjectService;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Objects Components Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiObjectsObjectsController
  * @package Monarc\BackOffice\Controller

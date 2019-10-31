@@ -12,7 +12,7 @@ use Monarc\Core\Service\MeasureService;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Measures Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiMeasuresController
  * @package Monarc\BackOffice\Controller

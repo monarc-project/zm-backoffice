@@ -12,7 +12,7 @@ use Monarc\Core\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Clients Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiAClientsController
  * @package Monarc\BackOffice\Controller

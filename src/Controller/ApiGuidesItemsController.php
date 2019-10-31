@@ -12,7 +12,7 @@ use Monarc\Core\Service\GuideItemService;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Guides Items Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiGuidesItemsController
  * @package Monarc\BackOffice\Controller

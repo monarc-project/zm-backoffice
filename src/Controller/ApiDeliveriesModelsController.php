@@ -13,7 +13,7 @@ use Monarc\Core\Service\DeliveriesModelsService;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Doc Models Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiDeliveriesModelsController
  * @package Monarc\BackOffice\Controller

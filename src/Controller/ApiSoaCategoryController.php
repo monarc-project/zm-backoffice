@@ -12,7 +12,7 @@ use Monarc\Core\Service\SoaCategoryService;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api SOACategory Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiSOACategoryController
  * @package Monarc\BackOffice\Controller
@@ -61,5 +61,4 @@ class ApiSoaCategoryController extends AbstractController
             $this->name => $entities
         ));
     }
-
 }

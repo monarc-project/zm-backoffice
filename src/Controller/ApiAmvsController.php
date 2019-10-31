@@ -13,7 +13,7 @@ use Monarc\Core\Service\AmvService;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Amvs Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiAmvsController
  * @package Monarc\BackOffice\Controller

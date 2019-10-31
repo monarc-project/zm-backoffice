@@ -11,7 +11,7 @@ use Monarc\Core\Controller\AbstractController;
 use Monarc\Core\Service\QuestionService;
 
 /**
- * Api Questions Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiQuestionsController
  * @package Monarc\BackOffice\Controller

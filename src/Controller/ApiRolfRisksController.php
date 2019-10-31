@@ -13,7 +13,7 @@ use Monarc\Core\Service\RolfRiskService;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Rolf Risks Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiRolfRisksController
  * @package Monarc\BackOffice\Controller

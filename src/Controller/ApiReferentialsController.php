@@ -12,7 +12,7 @@ use Monarc\Core\Service\ReferentialService;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Referentials Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiReferentialsController
  * @package Monarc\BackOffice\Controller

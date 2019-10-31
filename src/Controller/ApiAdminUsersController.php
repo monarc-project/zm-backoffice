@@ -12,7 +12,7 @@ use Monarc\Core\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Admin Users Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiAdminUsersController
  * @package Monarc\BackOffice\Controller

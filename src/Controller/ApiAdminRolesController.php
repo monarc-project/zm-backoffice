@@ -12,7 +12,6 @@ use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Admin Roles Controller
  * TODO: seems it's not used.
  *
  * Class ApiAdminRolesController

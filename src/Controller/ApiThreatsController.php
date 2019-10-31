@@ -12,7 +12,7 @@ use Monarc\Core\Service\ThreatService;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Threats Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiThreatsController
  * @package Monarc\BackOffice\Controller

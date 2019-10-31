@@ -12,7 +12,7 @@ use Monarc\Core\Controller\AbstractController;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Admin Servers Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiAdminServersController
  * @package Monarc\BackOffice\Controller
@@ -36,10 +36,11 @@ class ApiAdminServersController extends AbstractController
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
         $status = $this->params()->fromQuery('status');
-        if (is_null($status)) {
+        if ($status === null) {
             $status = 1;
         }
-        $filterAnd = ($status == "all") ? null : ['status' => (int) $status] ;
+
+        $filterAnd = $status === 'all' ? null : ['status' => (int) $status];
 
         $service = $this->getService();
 
@@ -75,4 +76,3 @@ class ApiAdminServersController extends AbstractController
         return new JsonModel(array('status' => 'ok'));
     }
 }
-

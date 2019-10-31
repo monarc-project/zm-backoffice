@@ -11,7 +11,7 @@ use Monarc\Core\Controller\AbstractController;
 use Monarc\Core\Service\ThemeService;
 
 /**
- * Api Themes Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiThemesController
  * @package Monarc\BackOffice\Controller

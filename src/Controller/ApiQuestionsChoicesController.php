@@ -14,7 +14,7 @@ use Monarc\Core\Service\QuestionChoiceService;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Questions Choices Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiQuestionsChoicesController
  * @package Monarc\BackOffice\Controller
@@ -32,7 +32,8 @@ class ApiQuestionsChoicesController extends AbstractController
     /**
      * @inheritdoc
      */
-    public function replaceList($data) {
+    public function replaceList($data)
+    {
         /** @var QuestionChoiceService $service */
         $service = $this->getService();
 
@@ -65,4 +66,3 @@ class ApiQuestionsChoicesController extends AbstractController
         return new JsonModel(['status' => 'ok']);
     }
 }
-

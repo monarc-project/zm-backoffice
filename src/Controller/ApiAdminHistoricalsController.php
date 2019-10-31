@@ -11,7 +11,7 @@ use Monarc\Core\Controller\AbstractController;
 use Monarc\Core\Service\HistoricalService;
 
 /**
- * Api Admin Historicals Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiAdminHistoricalsController
  * @package Monarc\BackOffice\Controller

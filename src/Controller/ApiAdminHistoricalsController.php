@@ -8,6 +8,7 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Service\HistoricalService;
 
 /**
  * Api Admin Historicals Controller
@@ -18,6 +19,11 @@ use Monarc\Core\Controller\AbstractController;
 class ApiAdminHistoricalsController extends AbstractController
 {
     protected $name = 'historical';
+
+    public function __construct(HistoricalService $historicalService)
+    {
+        parent::__construct($historicalService);
+    }
 
     /**
      * @inheritdoc

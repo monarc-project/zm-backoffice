@@ -7,6 +7,10 @@
 
 namespace Monarc\BackOffice\Service;
 
+use Monarc\BackOffice\Model\Entity\Client;
+use Monarc\BackOffice\Model\Entity\Server;
+use Monarc\BackOffice\Model\Table\ClientTable;
+use Monarc\BackOffice\Model\Table\ServerTable;
 use Monarc\Core\Service\AbstractServiceFactory;
 
 /**
@@ -16,10 +20,10 @@ use Monarc\Core\Service\AbstractServiceFactory;
 class ClientServiceFactory extends AbstractServiceFactory
 {
     protected $ressources = array(
-        'clientTable'=> '\Monarc\BackOffice\Model\Table\ClientTable',
-        'clientEntity'=> '\Monarc\BackOffice\Model\Entity\Client',
-        'serverTable'=> '\Monarc\BackOffice\Model\Table\ServerTable',
-        'serverEntity'=> '\Monarc\BackOffice\Model\Entity\Server',
+        'clientTable'=> ClientTable::class,
+        'clientEntity'=> Client::class,
+        'serverTable'=> ServerTable::class,
+        'serverEntity'=> Server::class,
         'config' => 'Config',
     );
 }

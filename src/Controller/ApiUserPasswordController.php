@@ -7,7 +7,9 @@
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
+use Exception;
+use Monarc\Core\Service\PasswordService;
+use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -16,30 +18,14 @@ use Zend\View\Model\JsonModel;
  * Class ApiUserPasswordController
  * @package Monarc\BackOffice\Controller
  */
-class ApiUserPasswordController extends AbstractController
+class ApiUserPasswordController extends AbstractRestfulController
 {
-    /**
-     * @inheritdoc
-     */
-    public function create($data)
-    {
-        return $this->methodNotAllowed();
-    }
+    /** @var PasswordService */
+    private $passwordService;
 
-    /**
-     * @inheritdoc
-     */
-    public function getList()
+    public function __construct(PasswordService $passwordService)
     {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function get($id)
-    {
-        return $this->methodNotAllowed();
+        $this->passwordService = $passwordService;
     }
 
     /**
@@ -47,29 +33,12 @@ class ApiUserPasswordController extends AbstractController
      */
     public function update($id, $data)
     {
-        if ($data['new'] == $data['confirm']) {
-            $this->getService()->changePassword($id, $data['old'], $data['new']);
-        } else {
-            throw  new \Exception('Password must be the same', 422);
+        if ($data['new'] !== $data['confirm']) {
+            throw new Exception('Passwords must be the same', 422);
         }
+
+        $this->passwordService->changePassword($id, $data['old'], $data['new']);
 
         return new JsonModel(array('status' => 'ok'));
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function patch($token, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function delete($id)
-    {
-        return $this->methodNotAllowed();
-    }
 }
-

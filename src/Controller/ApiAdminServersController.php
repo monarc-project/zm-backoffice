@@ -21,6 +21,11 @@ class ApiAdminServersController extends AbstractController
 {
     protected $name = 'servers';
 
+    public function __construct(ServerService $serverService)
+    {
+        parent::__construct($serverService);
+    }
+
     /**
      * @inheritdoc
      */

@@ -8,6 +8,7 @@
 namespace Monarc\BackOffice\Model\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Monarc\BackOffice\Validator\UniqueClientProxyAlias;
 use Monarc\Core\Model\Entity\AbstractEntity;
 
 /**
@@ -135,7 +136,7 @@ class Client extends AbstractEntity
             $validators = array();
             if (!$partial) {
                 $validators[] = array(
-                    'name' => '\Monarc\BackOffice\Validator\UniqueClientProxyAlias',
+                    'name' => UniqueClientProxyAlias::class,
                     'options' => array(
                         'adapter' => $this->getDbAdapter(),
                         'id' => $this->get('id'),

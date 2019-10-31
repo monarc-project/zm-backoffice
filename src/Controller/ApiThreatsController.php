@@ -8,6 +8,7 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Service\ThreatService;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -21,6 +22,11 @@ class ApiThreatsController extends AbstractController
     protected $dependencies = ['theme'];
     protected $name = 'threats';
 
+    public function __construct(ThreatService $threatService)
+    {
+        parent::__construct($threatService);
+    }
+
     /**
      * @inheritdoc
      */
@@ -31,19 +37,19 @@ class ApiThreatsController extends AbstractController
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
         $status = $this->params()->fromQuery('status');
-        if (is_null($status)) {
+        if ($status === null) {
             $status = 1;
         }
-        $filterAnd = ($status == "all") ? null : ['status' => (int) $status] ;
+        $filterAnd = $status === 'all' ? null : ['status' => (int)$status];
 
         $service = $this->getService();
 
         $threats = $service->getList($page, $limit, $order, $filter, $filterAnd);
-        foreach($threats as $key => $threat){
+        foreach ($threats as $key => $threat) {
             $threat['models']->initialize();
             $models = $threat['models']->getSnapshot();
             $threats[$key]['models'] = array();
-            foreach($models as $model){
+            foreach ($models as $model) {
                 $threats[$key]['models'][] = $model->getJsonArray();
             }
 
@@ -66,7 +72,7 @@ class ApiThreatsController extends AbstractController
         $threat['models']->initialize();
         $models = $threat['models']->getSnapshot();
         $threat['models'] = array();
-        foreach($models as $model){
+        foreach ($models as $model) {
             $threat['models'][] = $model->getJsonArray();
         }
 
@@ -75,4 +81,3 @@ class ApiThreatsController extends AbstractController
         return new JsonModel($threat);
     }
 }
-

@@ -24,6 +24,11 @@ class ApiQuestionsChoicesController extends AbstractController
     protected $dependencies = ['questions'];
     protected $name = 'choices';
 
+    public function __construct(QuestionChoiceService $questionChoiceService)
+    {
+        parent::__construct($questionChoiceService);
+    }
+
     /**
      * @inheritdoc
      */

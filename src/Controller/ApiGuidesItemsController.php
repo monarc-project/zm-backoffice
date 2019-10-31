@@ -8,6 +8,7 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Service\GuideItemService;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -20,6 +21,11 @@ class ApiGuidesItemsController extends AbstractController
 {
     protected $dependencies = ['guide'];
     protected $name = 'items';
+
+    public function __construct(GuideItemService $guideItemService)
+    {
+        parent::__construct($guideItemService);
+    }
 
     /**
      * @inheritdoc

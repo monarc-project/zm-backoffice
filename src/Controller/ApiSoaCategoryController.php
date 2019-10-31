@@ -8,6 +8,7 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Service\SoaCategoryService;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -21,6 +22,11 @@ class ApiSoaCategoryController extends AbstractController
     protected $name = 'categories';
     protected $dependencies = ['referential'];
 
+    public function __construct(SoaCategoryService $soaCategoryService)
+    {
+        parent::__construct($soaCategoryService);
+    }
+
     /**
      * @inheritdoc
      */
@@ -32,19 +38,19 @@ class ApiSoaCategoryController extends AbstractController
         $filter = $this->params()->fromQuery('filter');
         $status = $this->params()->fromQuery('status');
         $referential = $this->params()->fromQuery('referential');
-        $filterAnd = [];
+
         if (is_null($status)) {
             $status = 1;
         }
-        $filterAnd = ($status == "all") ? null : ['status' => (int) $status] ;
+        $filterAnd = ($status == "all") ? null : ['status' => (int)$status];
         if ($referential) {
-          $filterAnd['referential'] = (array)$referential;
+            $filterAnd['referential'] = (array)$referential;
         }
 
         $service = $this->getService();
 
         $entities = $service->getList($page, $limit, $order, $filter, $filterAnd);
-        if (count($this->dependencies)) {
+        if (\count($this->dependencies)) {
             foreach ($entities as $key => $entity) {
                 $this->formatDependencies($entities[$key], $this->dependencies);
             }

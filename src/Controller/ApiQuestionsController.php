@@ -8,7 +8,7 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
-use Zend\View\Model\JsonModel;
+use Monarc\Core\Service\QuestionService;
 
 /**
  * Api Questions Controller
@@ -19,5 +19,9 @@ use Zend\View\Model\JsonModel;
 class ApiQuestionsController extends AbstractController
 {
     protected $name = 'questions';
-}
 
+    public function __construct(QuestionService $questionService)
+    {
+        parent::__construct($questionService);
+    }
+}

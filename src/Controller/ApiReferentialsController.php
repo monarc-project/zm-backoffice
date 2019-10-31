@@ -8,6 +8,7 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Service\ReferentialService;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -20,6 +21,11 @@ class ApiReferentialsController extends AbstractController
 {
     protected $name = 'referentials';
     protected $dependencies = ['measures'];
+
+    public function __construct(ReferentialService $referentialService)
+    {
+        parent::__construct($referentialService);
+    }
 
     /**
      * @inheritdoc

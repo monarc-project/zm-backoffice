@@ -8,7 +8,7 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
-use Zend\View\Model\JsonModel;
+use Monarc\Core\Service\RolfTagService;
 
 /**
  * Api Rolf Tags Controller
@@ -19,5 +19,9 @@ use Zend\View\Model\JsonModel;
 class ApiRolfTagsController extends AbstractController
 {
     protected $name = 'tags';
-}
 
+    public function __construct(RolfTagService $rolfTagService)
+    {
+        parent::__construct($rolfTagService);
+    }
+}

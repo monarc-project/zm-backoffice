@@ -4,71 +4,38 @@
  * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
+
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Service\RoleService;
+use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
 /**
  * Api Admin Roles Controller
+ * TODO: seems it's not used.
  *
  * Class ApiAdminRolesController
  * @package Monarc\BackOffice\Controller
  */
-class ApiAdminRolesController extends AbstractController
+class ApiAdminRolesController extends AbstractRestfulController
 {
-    protected $name = 'roles';
+    /** @var RoleService */
+    private $roleService;
+
+    public function __construct(RoleService $roleService)
+    {
+        $this->roleService = $roleService;
+    }
 
     /**
      * @inheritdoc
      */
     public function getList()
     {
-        $service = $this->getService();
         return new JsonModel(array(
-            'count' => $service->getFilteredCount(),
-            $this->name => $service->getList()
+            'count' => $this->roleService->getFilteredCount(),
+            'roles' => $this->roleService->getList()
         ));
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function get($id)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function create($data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function update($id, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function patch($id, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function delete($id)
-    {
-        return $this->methodNotAllowed();
-    }
 }
-

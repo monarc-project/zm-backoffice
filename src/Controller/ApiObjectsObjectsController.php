@@ -19,6 +19,11 @@ use Zend\View\Model\JsonModel;
  */
 class ApiObjectsObjectsController extends AbstractController
 {
+    public function __construct(ObjectObjectService $objectObjectService)
+    {
+        parent::__construct($objectObjectService);
+    }
+
     /**
      * @inheritdoc
      */
@@ -59,4 +64,3 @@ class ApiObjectsObjectsController extends AbstractController
         return $this->methodNotAllowed();
     }
 }
-

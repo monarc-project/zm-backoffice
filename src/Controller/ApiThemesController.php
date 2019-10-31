@@ -8,7 +8,7 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
-use Zend\View\Model\JsonModel;
+use Monarc\Core\Service\ThemeService;
 
 /**
  * Api Themes Controller
@@ -20,5 +20,8 @@ class ApiThemesController extends AbstractController
 {
     protected $name = 'themes';
 
+    public function __construct(ThemeService $themeService)
+    {
+        parent::__construct($themeService);
+    }
 }
-

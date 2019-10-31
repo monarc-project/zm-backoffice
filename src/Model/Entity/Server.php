@@ -7,6 +7,7 @@
 
 namespace Monarc\BackOffice\Model\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Monarc\Core\Model\Entity\AbstractEntity;
 
@@ -19,7 +20,7 @@ use Monarc\Core\Model\Entity\AbstractEntity;
 class Server extends AbstractEntity
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
@@ -49,7 +50,7 @@ class Server extends AbstractEntity
     protected $fqdn;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="status", type="boolean", nullable=true)
      */
@@ -63,7 +64,7 @@ class Server extends AbstractEntity
     protected $creator;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
@@ -77,11 +78,9 @@ class Server extends AbstractEntity
     protected $updater;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     protected $updatedAt;
-
 }
-

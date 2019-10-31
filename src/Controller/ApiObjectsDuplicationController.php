@@ -7,8 +7,9 @@
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
 use Monarc\Core\Exception\Exception;
+use Monarc\Core\Service\ObjectService;
+use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -17,66 +18,38 @@ use Zend\View\Model\JsonModel;
  * Class ApiObjectsDuplicationController
  * @package Monarc\BackOffice\Controller
  */
-class ApiObjectsDuplicationController extends AbstractController
+class ApiObjectsDuplicationController extends AbstractRestfulController
 {
+    /** @var ObjectService */
+    private $objectService;
 
-    /**
-     * @inheritdoc
-     */
+    public function __construct(ObjectService $objectService)
+    {
+        $this->objectService = $objectService;
+    }
+
     public function create($data)
     {
-        if (isset($data['id'])) {
-            $id = $this->getService()->duplicate($data);
-
-            return new JsonModel(
-                array(
-                    'status' => 'ok',
-                    'id' => $id,
-                )
-            );
+        if (!isset($data['id'])) {
+            throw new Exception('Object ID parameter is required');
         }
 
-        throw new Exception('Object to duplicate is required');
+        $id = $this->objectService->duplicate($data);
+
+        return new JsonModel(
+            array(
+                'status' => 'ok',
+                'id' => $id,
+            )
+        );
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function get($id)
+    public function deleteList($data)
     {
-        return $this->methodNotAllowed();
-    }
+        if ($this->objectService->deleteList($data)) {
+            return new JsonModel(array('status' => 'ok'));
+        }
 
-    /**
-     * @inheritdoc
-     */
-    public function getList()
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function update($id, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function patch($id, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function delete($id)
-    {
-        return $this->methodNotAllowed();
+        return new JsonModel(array('status' => 'ko'));
     }
 }
-

@@ -8,6 +8,7 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Service\VulnerabilityService;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -19,6 +20,12 @@ use Zend\View\Model\JsonModel;
 class ApiVulnerabilitiesController extends AbstractController
 {
     protected $name = 'vulnerabilities';
+
+    public function __construct(VulnerabilityService $vulnerabilityService)
+    {
+        parent::__construct($vulnerabilityService);
+    }
+
     /**
      * @inheritdoc
      */
@@ -29,19 +36,19 @@ class ApiVulnerabilitiesController extends AbstractController
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
         $status = $this->params()->fromQuery('status');
-        if (is_null($status)) {
+        if ($status === null) {
             $status = 1;
         }
-        $filterAnd = ($status == "all") ? null : ['status' => (int) $status] ;
+        $filterAnd = $status === 'all' ? null : ['status' => (int)$status];
 
         $service = $this->getService();
 
         $vulnerabilities = $service->getList($page, $limit, $order, $filter, $filterAnd);
-        foreach($vulnerabilities as $key => $vulnerability){
+        foreach ($vulnerabilities as $key => $vulnerability) {
             $vulnerability['models']->initialize();
             $models = $vulnerability['models']->getSnapshot();
             $vulnerabilities[$key]['models'] = array();
-            foreach($models as $model){
+            foreach ($models as $model) {
                 $vulnerabilities[$key]['models'][] = $model->getJsonArray();
             }
         }
@@ -61,13 +68,10 @@ class ApiVulnerabilitiesController extends AbstractController
         $vulnerability['models']->initialize();
         $models = $vulnerability['models']->getSnapshot();
         $vulnerability['models'] = array();
-        foreach($models as $model){
+        foreach ($models as $model) {
             $vulnerability['models'][] = $model->getJsonArray();
         }
 
         return new JsonModel($vulnerability);
     }
-
-
 }
-

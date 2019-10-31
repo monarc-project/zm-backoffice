@@ -8,7 +8,7 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
-use Zend\View\Model\JsonModel;
+use Monarc\Core\Service\GuideService;
 
 /**
  * Api Guides Controller
@@ -19,5 +19,9 @@ use Zend\View\Model\JsonModel;
 class ApiGuidesController extends AbstractController
 {
     protected $name = 'guides';
-}
 
+    public function __construct(GuideService $guideService)
+    {
+        parent::__construct($guideService);
+    }
+}

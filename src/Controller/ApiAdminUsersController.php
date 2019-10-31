@@ -21,6 +21,11 @@ class ApiAdminUsersController extends AbstractController
 {
     protected $name = 'users';
 
+    public function __construct(UserService $userService)
+    {
+        parent::__construct($userService;
+    }
+
     /**
      * @inheritdoc
      */

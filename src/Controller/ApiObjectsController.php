@@ -23,6 +23,11 @@ class ApiObjectsController extends AbstractController
     protected $dependencies = ['category', 'asset', 'rolfTag'];
     protected $name = 'objects';
 
+    public function __construct(ObjectService $objectService)
+    {
+        parent::__construct($objectService);
+    }
+
     /**
      * @inheritdoc
      */

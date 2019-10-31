@@ -12,25 +12,13 @@ use Monarc\Core\Service\AbstractService;
 
 /**
  * This class is the service that handles servers.
- * @see \Monarc\BackOffice\Model\Entity\Server
- * @see \Monarc\BackOffice\Model\Table\ServerTable
+ *
  * @package Monarc\BackOffice\Service
  */
 class ServerService extends AbstractService
 {
     protected $serverTable;
     protected $serverEntity;
-
-    /**
-     * Counts and returns the number of servers in database
-     * @return int The number of servers
-     */
-    public function getTotalCount()
-    {
-        /** @var ServerTable $serverTable */
-        $serverTable = $this->get('serverTable');
-        return $serverTable->count();
-    }
 
     /**
      * @inheritdoc
@@ -40,7 +28,10 @@ class ServerService extends AbstractService
         /** @var ServerTable $serverTable */
         $serverTable = $this->get('serverTable');
 
-        return $serverTable->countFiltered($this->parseFrontendFilter($filter, array('label', 'ip_address', 'fqdn')), $filterAnd);
+        return $serverTable->countFiltered(
+            $this->parseFrontendFilter($filter, array('label', 'ip_address', 'fqdn')),
+            $filterAnd
+        );
     }
 
     /**
@@ -86,20 +77,22 @@ class ServerService extends AbstractService
     /**
      * @inheritdoc
      */
-    public function update($id, $data) {
+    public function update($id, $data)
+    {
         /** @var ServerTable $serverTable */
         $serverTable = $this->get('serverTable');
 
         /** @var Server $entity */
         $entity = $serverTable->getEntity($id);
 
-        if ($entity != null) {
+        if ($entity !== null) {
             $entity->exchangeArray($data);
             $serverTable->save($entity);
+
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**

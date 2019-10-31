@@ -7,6 +7,8 @@
 
 namespace Monarc\BackOffice\Service;
 
+use Monarc\BackOffice\Model\Entity\Server;
+use Monarc\BackOffice\Model\Table\ServerTable;
 use Monarc\Core\Service\AbstractServiceFactory;
 
 /**
@@ -16,7 +18,7 @@ use Monarc\Core\Service\AbstractServiceFactory;
 class ServerServiceFactory extends AbstractServiceFactory
 {
     protected $ressources = array(
-        'serverTable'=> '\Monarc\BackOffice\Model\Table\ServerTable',
-        'serverEntity'=> '\Monarc\BackOffice\Model\Entity\Server',
+        'serverTable'=> ServerTable::class,
+        'serverEntity'=> Server::class,
     );
 }

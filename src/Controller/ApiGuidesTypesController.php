@@ -7,7 +7,8 @@
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Service\GuideService;
+use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -16,9 +17,15 @@ use Zend\View\Model\JsonModel;
  * Class ApiGuidesTypesController
  * @package Monarc\BackOffice\Controller
  */
-class ApiGuidesTypesController extends AbstractController
+class ApiGuidesTypesController extends AbstractRestfulController
 {
-    protected $name = 'type';
+    /** @var GuideService */
+    private $guideService;
+
+    public function __construct(GuideService $guideService)
+    {
+        $this->guideService = $guideService;
+    }
 
     /**
      * @inheritdoc
@@ -26,48 +33,16 @@ class ApiGuidesTypesController extends AbstractController
     public function getList()
     {
         return new JsonModel(array(
-            $this->name => $this->getService()->getTypes()
+            'type' => $this->guideService->getTypes()
         ));
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function get($id)
+    public function deleteList($data)
     {
-        return $this->methodNotAllowed();
-    }
+        if ($this->guideService->deleteList($data)) {
+            return new JsonModel(array('status' => 'ok'));
+        }
 
-    /**
-     * @inheritdoc
-     */
-    public function create($data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function update($id, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function patch($id, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function delete($id)
-    {
-        return $this->methodNotAllowed();
+        return new JsonModel(array('status' => 'ko'));
     }
 }
-

@@ -7,8 +7,8 @@
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
-use Zend\View\Model\JsonModel;
+use Monarc\Core\Service\ObjectService;
+use Zend\Mvc\Controller\AbstractRestfulController;
 
 /**
  * Api Objects Export Controller
@@ -16,15 +16,19 @@ use Zend\View\Model\JsonModel;
  * Class ApiObjectsExportController
  * @package Monarc\BackOffice\Controller
  */
-class ApiObjectsExportController extends AbstractController
+class ApiObjectsExportController extends AbstractRestfulController
 {
+    /** @var ObjectService */
+    private $objectService;
 
-    /**
-     * @inheritdoc
-     */
+    public function __construct(ObjectService $objectService)
+    {
+        $this->objectService = $objectService;
+    }
+
     public function create($data)
     {
-        $output = $this->getService()->export($data);
+        $output = $this->objectService->export($data);
 
         if (empty($data['password'])) {
           $contentType = 'application/json; charset=utf-8';
@@ -45,45 +49,5 @@ class ApiObjectsExportController extends AbstractController
              ->setContent($output);
 
         return $this->getResponse();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function get($id)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getList()
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function update($id, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function patch($id, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function delete($id)
-    {
-        return $this->methodNotAllowed();
     }
 }

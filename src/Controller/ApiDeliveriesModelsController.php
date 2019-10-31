@@ -9,6 +9,7 @@ namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
 use Monarc\Core\Exception\Exception;
+use Monarc\Core\Service\DeliveriesModelsService;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -20,6 +21,11 @@ use Zend\View\Model\JsonModel;
 class ApiDeliveriesModelsController extends AbstractController
 {
     protected $name = "deliveriesmodels";
+
+    public function __construct(DeliveriesModelsService $deliveriesModelsService)
+    {
+        parent::__construct($deliveriesModelsService);
+    }
 
     /**
      * @inheritdoc

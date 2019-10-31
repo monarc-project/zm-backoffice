@@ -7,7 +7,8 @@
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Service\ConfigService;
+use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -16,54 +17,22 @@ use Zend\View\Model\JsonModel;
  * Class ApiConfigController
  * @package Monarc\BackOffice\Controller
  */
-class ApiConfigController extends AbstractController
+class ApiConfigController extends AbstractRestfulController
 {
-    /**
-     * @inheritdoc
-     */
-    public function getList()
+    /** @var ConfigService */
+    private $configService;
+
+    public function __construct(ConfigService $configService)
     {
-        return new JsonModel($this->getService()->getLanguage());
+        $this->configService = $configService;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function get($id)
+    public function deleteList($data)
     {
-        return $this->methodNotAllowed();
-    }
+        if ($this->configService->deleteList($data)) {
+            return new JsonModel(array('status' => 'ok'));
+        }
 
-    /**
-     * @inheritdoc
-     */
-    public function create($data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function update($id, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function patch($id, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function delete($id)
-    {
-        return $this->methodNotAllowed();
+        return new JsonModel(array('status' => 'ko'));
     }
 }
-

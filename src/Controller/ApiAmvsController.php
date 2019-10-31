@@ -8,6 +8,8 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Model\Entity\Measure;
+use Monarc\Core\Service\AmvService;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -21,6 +23,11 @@ class ApiAmvsController extends AbstractController
     protected $dependencies = ['asset', 'threat', 'vulnerability', 'measures'];
     protected $name = "amvs";
 
+    public function __construct(AmvService $amvService)
+    {
+        parent::__construct($amvService);
+    }
+
     /**
      * @inheritdoc
      */
@@ -33,19 +40,19 @@ class ApiAmvsController extends AbstractController
         $status = $this->params()->fromQuery('status');
         $asset = $this->params()->fromQuery('asset');
         $amvid = $this->params()->fromQuery('amvid');
-        if (is_null($status)) {
+        if ($status === null) {
             $status = 1;
         }
         $filterAnd = [];
 
-        if ($status != 'all') {
+        if ($status !== 'all') {
             $filterAnd['status'] = (int) $status;
         }
-        if ($asset != null) {
+        if ($asset !== null) {
             $filterAnd['a.uuid'] = $asset;
         }
 
-        if(!empty($amvid)){
+        if (!empty($amvid)) {
             $filterAnd['uuid'] = [
                 'op' => '!=',
                 'value' => $amvid,
@@ -57,7 +64,7 @@ class ApiAmvsController extends AbstractController
         $entities = $service->getList($page, $limit, $order, $filter, $filterAnd);
         if (count($this->dependencies)) {
             foreach ($entities as $key => $entity) {
-                $this->formatDependencies($entities[$key], $this->dependencies, '\Monarc\Core\Model\Entity\Measure', ['referential']);
+                $this->formatDependencies($entities[$key], $this->dependencies, Measure::class, ['referential']);
             }
         }
 
@@ -75,7 +82,7 @@ class ApiAmvsController extends AbstractController
         $entity = $this->getService()->getEntity($id);
 
         if (count($this->dependencies)) {
-            $this->formatDependencies($entity, $this->dependencies, '\Monarc\Core\Model\Entity\Measure', ['referential']);
+            $this->formatDependencies($entity, $this->dependencies, Measure::class, ['referential']);
         }
 
         // Find out the entity's implicitPosition and previous
@@ -112,13 +119,12 @@ class ApiAmvsController extends AbstractController
 
     public function patchList($data)
     {
-      $service = $this->getService();
+        $service = $this->getService();
 
-      $service->createLinkedAmvs($data['fromReferential'],$data['toReferential']);
+        $service->createLinkedAmvs($data['fromReferential'], $data['toReferential']);
 
-      return new JsonModel([
+        return new JsonModel([
           'status' =>  'ok',
-      ]);
-
+        ]);
     }
 }

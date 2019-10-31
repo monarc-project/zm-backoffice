@@ -8,10 +8,11 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Service\AssetService;
 use Zend\View\Model\JsonModel;
 
 /**
- * Api Assets Controller
+ * TODO: extend AbstractRestfulController and remove AbstractController.
  *
  * Class ApiAssetsController
  * @package Monarc\BackOffice\Controller
@@ -19,6 +20,11 @@ use Zend\View\Model\JsonModel;
 class ApiAssetsController extends AbstractController
 {
     protected $name = 'assets';
+
+    public function __construct(AssetService $assetService)
+    {
+        parent::__construct($assetService);
+    }
 
     /**
      * @inheritdoc

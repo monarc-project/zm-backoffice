@@ -4,11 +4,14 @@
  * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
+
 namespace Monarc\BackOffice\Service;
 
 use Monarc\BackOffice\Model\Entity\Client;
 use Monarc\BackOffice\Model\Table\ClientTable;
 use Monarc\Core\Service\AbstractService;
+use PDO;
+use RuntimeException;
 
 /**
  * This class is the service that handles clients.
@@ -26,17 +29,6 @@ class ClientService extends AbstractService
     protected $config;
 
     /**
-     * Counts and returns the number of clients in database
-     * @return int The number of clients
-     */
-    public function getTotalCount()
-    {
-        /** @var ClientTable $clientTable */
-        $clientTable = $this->get('clientTable');
-        return $clientTable->count();
-    }
-
-    /**
      * @inheritdoc
      */
     public function getFilteredCount($filter = null, $filterAnd = null)
@@ -45,7 +37,7 @@ class ClientService extends AbstractService
         $clientTable = $this->get('clientTable');
 
         return $clientTable->countFiltered($this->parseFrontendFilter($filter, array('name', 'first_user_email',
-                'proxyAlias', 'createdAt')));
+            'proxyAlias', 'createdAt')));
     }
 
     /**
@@ -70,8 +62,7 @@ class ClientService extends AbstractService
      */
     public function getEntity($id)
     {
-        $client = $this->get('clientTable')->get($id);
-        return $client;
+        return $this->get('clientTable')->get($id);
     }
 
     /**
@@ -87,14 +78,14 @@ class ClientService extends AbstractService
 
         $clientTable->save($entity);
 
-        $this->createJSON($entity);
+        $this->createJson($entity);
     }
 
     /**
      * @inheritdoc
      */
-    public function update($id, $data) {
-
+    public function update($id, $data)
+    {
         //security
         $this->filterPatchFields($data);
 
@@ -109,13 +100,13 @@ class ClientService extends AbstractService
             unset($data['proxy_alias']);
         }
 
-        if ($entity != null) {
-            $entity->exchangeArray($data,true);
+        if ($entity !== null) {
+            $entity->exchangeArray($data, true);
             $clientTable->save($entity);
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -130,95 +121,94 @@ class ClientService extends AbstractService
 
         $clientTable->delete($id);
 
-        if($this->deleteJSON($entity)){//supposed to return
+        if ($this->deleteJson($entity)) {
             return true;
         }
-        else{
-            return false;
-        }
+
+        return false;
     }
 
     /**
      * Created the JSON file to build the client environment on a server and stores it in data/json/.
      * Then returns the JSON file path.
      *
-     * @param \Monarc\BackOffice\Model\Entity\Client $client
      * @return string The JSON file path
      */
-    public function createJSON($client) {
+    private function createJson(Client $client)
+    {
         $serverTable = $this->get('serverTable');
         $server = $serverTable->getEntity($client->get('server_id'));
 
-        if (is_null($server)) {
+        if ($server === null) {
             return null;
         }
-        if ($server->get('fqdn') == '') {
+        if ($server->get('fqdn') === '') {
             return null;
         }
 
-        $pathLocal = getcwd()."/config/autoload/local.php";
+        $pathLocal = getcwd() . "/config/autoload/local.php";
         $localConf = array();
-        if(file_exists($pathLocal)){
+        if (file_exists($pathLocal)) {
             $localConf = require $pathLocal;
         }
-        $salt = "";
-        if(!empty($localConf['monarc']['salt'])){
+        $salt = '';
+        if (!empty($localConf['monarc']['salt'])) {
             $salt = $localConf['monarc']['salt'];
         }
 
         //users table database client
         $fieldsUser = array(
-            'id'            => 1,
-            'status'        => 1,
-            'firstname'     => $client->get('first_user_firstname'),
-            'lastname'      => $client->get('first_user_lastname'),
-            'email'         => $client->get('first_user_email'),
-            'password'      => password_hash($salt.$client->get('first_user_email'),PASSWORD_BCRYPT),
-            'creator'       => 'System',
-            'created_at'    => date('Y-m-d H:i:s')
+            'id' => 1,
+            'status' => 1,
+            'firstname' => $client->get('first_user_firstname'),
+            'lastname' => $client->get('first_user_lastname'),
+            'email' => $client->get('first_user_email'),
+            'password' => password_hash($salt . $client->get('first_user_email'), PASSWORD_BCRYPT),
+            'creator' => 'System',
+            'created_at' => date('Y-m-d H:i:s')
         );
 
         $sqlDumpUsers = '';
         $listValues = $this->getListValues($fieldsUser, $serverTable);
-        if ($listValues != '') {
+        if ($listValues !== '') {
             $sqlDumpUsers = 'INSERT INTO `users` SET ' . $listValues . ';';
         }
 
         //users_roles table database client
         $role1Values = [
-            'user_id'       => 1,
-            'role'          => 'superadminfo',
-            'creator'       => 'System',
-            'created_at'    => date('Y-m-d H:i:s')
+            'user_id' => 1,
+            'role' => 'superadminfo',
+            'creator' => 'System',
+            'created_at' => date('Y-m-d H:i:s')
         ];
         $role2Values = [
-            'user_id'       => 1,
-            'role'          => 'userfo',
-            'creator'       => 'System',
-            'created_at'    => date('Y-m-d H:i:s')
+            'user_id' => 1,
+            'role' => 'userfo',
+            'creator' => 'System',
+            'created_at' => date('Y-m-d H:i:s')
         ];
         $sqlDumpUsersRoles = '';
         $listValues = $this->getListValues($role1Values, $serverTable);
-        if ($listValues != '') {
+        if ($listValues !== '') {
             $sqlDumpUsersRoles = 'INSERT INTO `users_roles` SET ' . $listValues . ';';
         }
         $listValues = $this->getListValues($role2Values, $serverTable);
-        if ($listValues != '') {
+        if ($listValues !== '') {
             $sqlDumpUsersRoles .= ' INSERT INTO `users_roles` SET ' . $listValues . ';';
         }
 
         //clients table database client
         $fieldsClient = array(
-            'id'                    => $client->get('id'),
-            'model_id'              => $client->get('model_id'),
-            'logo_id'               => $client->get('logo_id'),
-            'name'                  => $client->get('name'),
-            'proxy_alias'           => $client->get('proxy_alias'),
-            'first_user_firstname'  => $client->get('first_user_firstname'),
-            'first_user_lastname'   => $client->get('first_user_lastname'),
-            'first_user_email'      => $client->get('first_user_email'),
-            'creator'               => 'System',
-            'created_at'            => date('Y-m-d H:i:s')
+            'id' => $client->get('id'),
+            'model_id' => $client->get('model_id'),
+            'logo_id' => $client->get('logo_id'),
+            'name' => $client->get('name'),
+            'proxy_alias' => $client->get('proxy_alias'),
+            'first_user_firstname' => $client->get('first_user_firstname'),
+            'first_user_lastname' => $client->get('first_user_lastname'),
+            'first_user_email' => $client->get('first_user_email'),
+            'creator' => 'System',
+            'created_at' => date('Y-m-d H:i:s')
         );
 
         $sqlDumpClients = '';
@@ -235,33 +225,24 @@ class ClientService extends AbstractService
 
         $path = $this->config['spool_path_create'];
 
-        if (!is_dir($path)) {
-            mkdir($path, 0750, true);
-        }
-
-        $now = date('YmdHis');
-        $filename = $path.$now.'.json';
-        file_put_contents($filename, json_encode($datas));
-
-        return $filename;
+        return $this->createJsonFile($path, $datas);
     }
 
     /**
      * Created the JSON file to delete the client environment on a server and stores it in data/json/.
      * Then returns the JSON file path.
      *
-     * @param \Monarc\BackOffice\Model\Entity\Client $client
      * @return string The JSON file path
      */
-    public function deleteJSON($client) {
-
+    private function deleteJson(Client $client)
+    {
         $serverTable = $this->get('serverTable');
         $server = $serverTable->getEntity($client->get('server_id'));
 
-        if (is_null($server)) {
+        if ($server === null) {
             return null;
         }
-        if ($server->get('fqdn') == '') {
+        if ($server->get('fqdn') === '') {
             return null;
         }
 
@@ -272,14 +253,7 @@ class ClientService extends AbstractService
 
         $path = $this->config['spool_path_delete'];
 
-        if (!is_dir($path)) {
-            mkdir($path, 0750, true);
-        }
-        $now = date('YmdHis');
-        $filename = $path.$now.'.json';
-        file_put_contents($filename, json_encode($datas));
-
-        return $filename;
+        return $this->createJsonFile($path, $datas);
     }
 
     /**
@@ -287,23 +261,38 @@ class ClientService extends AbstractService
      *
      * @param array $fieldsValues The list of data to be inserted
      * @param \Monarc\BackOffice\Model\Table\ServerTable $serverTable
+     *
      * @return string The formatted list of data to insert
      */
-    protected function getListValues($fieldsValues, $serverTable) {
+    private function getListValues($fieldsValues, $serverTable)
+    {
         $listValues = '';
         foreach ($fieldsValues as $key => $value) {
-            if ($key != '' && !is_null($value)) {
-                if ($listValues != '') $listValues .= ', ';
+            if ($key !== '' && $value !== null) {
+                if ($listValues !== '') {
+                    $listValues .= ', ';
+                }
 
                 if (is_numeric($value)) {
-                    $listValues .= "`$key` = ".$serverTable->getDb()->quote($value, \PDO::PARAM_INT);
-                }
-                else {
-                    $listValues .= "`$key` = ".$serverTable->getDb()->quote($value, \PDO::PARAM_STR);
+                    $listValues .= "`$key` = " . $serverTable->getDb()->quote($value, PDO::PARAM_INT);
+                } else {
+                    $listValues .= "`$key` = " . $serverTable->getDb()->quote($value, PDO::PARAM_STR);
                 }
             }
         }
 
         return $listValues;
+    }
+
+    private function createJsonFile($path, array $datas): string
+    {
+        if (!is_dir($path) && !mkdir($path, 0750, true) && !is_dir($path)) {
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
+        }
+        $now = date('YmdHis');
+        $filename = $path . $now . '.json';
+        file_put_contents($filename, json_encode($datas));
+
+        return $filename;
     }
 }

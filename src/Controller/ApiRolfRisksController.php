@@ -8,6 +8,7 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Model\Entity\Measure;
 use Monarc\Core\Service\RolfRiskService;
 use Zend\View\Model\JsonModel;
 
@@ -20,14 +21,19 @@ use Zend\View\Model\JsonModel;
 class ApiRolfRisksController extends AbstractController
 {
     protected $name = 'risks';
-    protected $dependencies = ['measures','tags'];
+    protected $dependencies = ['measures', 'tags'];
+
+    public function __construct(RolfRiskService $rolfRiskService)
+    {
+        parent::__construct($rolfRiskService);
+    }
 
     public function get($id)
     {
         $entity = $this->getService()->getEntity($id);
 
         if (count($this->dependencies)) {
-            $this->formatDependencies($entity, $this->dependencies, '\Monarc\Core\Model\Entity\Measure', ['referential']);
+            $this->formatDependencies($entity, $this->dependencies, Measure::class, ['referential']);
         }
 
         return new JsonModel($entity);
@@ -49,16 +55,16 @@ class ApiRolfRisksController extends AbstractController
         $service = $this->getService();
 
         $rolfRisks = $service->getListSpecific($page, $limit, $order, $filter, $category, $tag);
-        foreach($rolfRisks as $key => $rolfRisk){
 
+        foreach ($rolfRisks as $key => $rolfRisk) {
             if (count($this->dependencies)) {
-                    $this->formatDependencies($rolfRisks[$key], $this->dependencies, '\Monarc\Core\Model\Entity\Measure', ['referential']);
+                $this->formatDependencies($rolfRisks[$key], $this->dependencies, Measure::class, ['referential']);
             }
 
             $rolfRisk['tags']->initialize();
             $rolfTags = $rolfRisk['tags']->getSnapshot();
             $rolfRisks[$key]['tags'] = array();
-            foreach($rolfTags as $rolfTag){
+            foreach ($rolfTags as $rolfTag) {
                 $rolfRisks[$key]['tags'][] = $rolfTag->getJsonArray();
             }
         }
@@ -71,23 +77,23 @@ class ApiRolfRisksController extends AbstractController
 
     public function update($id, $data)
     {
-      $measures= array();
-      foreach ($data['measures'] as $measure) {
-        $measures[] = ['uuid' => $measure];
-      }
-      $data['measures'] = $measures;
-      return parent::update($id, $data);
+        $measures = array();
+        foreach ($data['measures'] as $measure) {
+            $measures[] = ['uuid' => $measure];
+        }
+        $data['measures'] = $measures;
+
+        return parent::update($id, $data);
     }
 
     public function patchList($data)
     {
-      $service = $this->getService();
+        $service = $this->getService();
 
-      $service->createLinkedRisks($data['fromReferential'],$data['toReferential']);
+        $service->createLinkedRisks($data['fromReferential'], $data['toReferential']);
 
-      return new JsonModel([
-          'status' =>  'ok',
-      ]);
+        return new JsonModel([
+            'status' => 'ok',
+        ]);
     }
-
 }

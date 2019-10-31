@@ -7,6 +7,7 @@
 
 namespace Monarc\BackOffice\Validator;
 
+use Monarc\BackOffice\Model\Entity\Client;
 use Zend\Validator\AbstractValidator;
 
 /**
@@ -30,16 +31,19 @@ class UniqueClientProxyAlias extends AbstractValidator
     /**
      * @inheritdoc
      */
-    public function isValid($value){
-        if(empty($this->options['adapter'])){
+    public function isValid($value)
+    {
+        if (empty($this->options['adapter'])) {
             return false;
-        }else{
-            $res = $this->options['adapter']->getRepository('\Monarc\BackOffice\Model\Entity\Client')->findOneByProxyAlias($value);
-            if(!empty($res) && $this->options['id'] != $res->get('id')){
-                $this->error(self::ALREADYUSED);
-                return false;
-            }
         }
+
+        $res = $this->options['adapter']->getRepository(Client::class)->findOneByProxyAlias($value);
+        if (!empty($res) && $this->options['id'] != $res->get('id')) {
+            $this->error(self::ALREADYUSED);
+
+            return false;
+        }
+
         return true;
     }
 }

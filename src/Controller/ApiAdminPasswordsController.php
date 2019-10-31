@@ -7,7 +7,9 @@
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
+use Exception;
+use Monarc\Core\Service\PasswordService;
+use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -16,8 +18,16 @@ use Zend\View\Model\JsonModel;
  * Class ApiAdminPasswordsController
  * @package Monarc\BackOffice\Controller
  */
-class ApiAdminPasswordsController extends AbstractController
+class ApiAdminPasswordsController extends AbstractRestfulController
 {
+    /** @var PasswordService */
+    private $historicalService;
+
+    public function __construct(PasswordService $historicalService)
+    {
+        $this->historicalService = $historicalService;
+    }
+
     /**
      * @inheritdoc
      */
@@ -26,69 +36,28 @@ class ApiAdminPasswordsController extends AbstractController
         //password forgotten
         if (!empty($data['email']) && empty($data['password'])) {
             try {
-                $this->getService()->passwordForgotten($data['email']);
-            } catch (\Exception $e) {
+                $this->historicalService->passwordForgotten($data['email']);
+            } catch (Exception $e) {
                 // Ignore the exception: We don't want to leak any data
             }
         }
 
         //verify token
         if (!empty($data['token']) && empty($data['password'])) {
-            $result =  $this->getService()->verifyToken($data['token']);
+            $result = $this->historicalService->verifyToken($data['token']);
 
             return new JsonModel(array('status' => $result));
         }
 
         //change password not logged
-        if (!empty($data['token']) && !empty($data['password']) && !empty($data['confirm'])){
-            if ($data['password'] == $data['confirm']) {
-                $this->getService()->newPasswordByToken($data['token'], $data['password']);
-            } else {
-                throw  new \Exception('Password must be the same', 422);
+        if (!empty($data['token']) && !empty($data['password']) && !empty($data['confirm'])) {
+            if ($data['password'] !== $data['confirm']) {
+                throw new Exception('Password must be the same', 422);
             }
+
+            throw new Exception('Password must be the same', 422);
         }
 
         return new JsonModel(array('status' => 'ok'));
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function getList()
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function get($id)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function update($id, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function patch($token, $data)
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function delete($id)
-    {
-        return $this->methodNotAllowed();
-    }
 }
-

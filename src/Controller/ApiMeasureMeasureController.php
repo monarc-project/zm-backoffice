@@ -8,6 +8,7 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Service\MeasureMeasureService;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -20,6 +21,11 @@ class ApiMeasureMeasureController extends AbstractController
 {
     protected $name = 'MeasureMeasure';
     protected $dependencies = ['father','child'];
+
+    public function __construct(MeasureMeasureService $measureMeasureService)
+    {
+        parent::__construct($measureMeasureService);
+    }
 
     /**
      * @inheritdoc

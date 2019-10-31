@@ -31,22 +31,22 @@ class ApiObjectsExportController extends AbstractRestfulController
         $output = $this->objectService->export($data);
 
         if (empty($data['password'])) {
-          $contentType = 'application/json; charset=utf-8';
-          $extension = '.json';
+            $contentType = 'application/json; charset=utf-8';
+            $extension = '.json';
         } else {
-          $contentType = 'text/plain; charset=utf-8';
-          $extension = '.bin';
+            $contentType = 'text/plain; charset=utf-8';
+            $extension = '.bin';
         }
 
         $this->getResponse()
-             ->getHeaders()
-             ->clearHeaders()
-             ->addHeaderLine('Content-Type', $contentType)
-             ->addHeaderLine('Content-Disposition', 'attachment; filename="' .
-                              (empty($data['filename']) ? $data['id'] : $data['filename']) . $extension . '"');
+            ->getHeaders()
+            ->clearHeaders()
+            ->addHeaderLine('Content-Type', $contentType)
+            ->addHeaderLine('Content-Disposition', 'attachment; filename="' .
+                (empty($data['filename']) ? $data['id'] : $data['filename']) . $extension . '"');
 
         $this->getResponse()
-             ->setContent($output);
+            ->setContent($output);
 
         return $this->getResponse();
     }

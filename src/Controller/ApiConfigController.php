@@ -27,6 +27,11 @@ class ApiConfigController extends AbstractRestfulController
         $this->configService = $configService;
     }
 
+    public function getList()
+    {
+        return new JsonModel($this->configService->getLanguage());
+    }
+
     public function deleteList($data)
     {
         if ($this->configService->deleteList($data)) {

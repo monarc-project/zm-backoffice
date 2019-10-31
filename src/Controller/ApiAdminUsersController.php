@@ -95,7 +95,7 @@ class ApiAdminUsersController extends AbstractRestfulController
      */
     public function update($id, $data)
     {
-        $data = $this->filterRequestData($data)
+        //TODO: add a request data filter.
 
         $this->userService->update($id, $data);
 
@@ -104,7 +104,7 @@ class ApiAdminUsersController extends AbstractRestfulController
 
     public function patch($id, $data)
     {
-        $data = $this->filterRequestData($data);
+        //TODO: add a request data filter.
 
         $this->userService->patch($id, $data);
 
@@ -119,43 +119,4 @@ class ApiAdminUsersController extends AbstractRestfulController
 
         return new JsonModel(array('status' => 'ko'));
     }
-
-    /**
-     * @param $data
-     *
-     * @return mixed
-     */
-    private function filterRequestData($data)
-    {
-        // TODO: replace with a Filter.
-        // Security: Don't allow changing role, password, status and history fields. To clean later.
-        if (isset($data['status'])) {
-            unset($data['status']);
-        }
-        if (isset($data['id'])) {
-            unset($data['id']);
-        }
-        if (isset($data['salt'])) {
-            unset($data['salt']);
-        }
-        if (isset($data['updatedAt'])) {
-            unset($data['updatedAt']);
-        }
-        if (isset($data['updater'])) {
-            unset($data['updater']);
-        }
-        if (isset($data['createdAt'])) {
-            unset($data['createdAt']);
-        }
-        if (isset($data['creator'])) {
-            unset($data['creator']);
-        }
-        if (isset($data['dateStart'])) {
-            unset($data['dateStart']);
-        }
-        if (isset($data['dateEnd'])) {
-            unset($data['dateEnd']);
-        }
-        return $data;
-}
 }

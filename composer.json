@@ -1,7 +1,6 @@
 {
     "name": "monarc/backoffice",
-    "type": "library",
-    "description": "Backoffice for Monarc project",
+    "description": "Backoffice for monarc/monarc-backoffice application",
     "authors": [
         {"name": "Cyril Rouyer", "email": "cyril@netlor.fr"},
         {"name": "Guillaume Lesniak", "email": "guillaume@netlor.fr"},
@@ -13,9 +12,22 @@
         {"name": "Cédric Bonhomme", "email": "cedric.bonhomme@cases.lu"}
     ],
     "require": {
-        "php": ">=5.5"
+        "php": "^7.1",
+        "ext-json": "*",
+        "ext-pdo": "*",
+        "doctrine/doctrine-orm-module": "^2.1",
+        "monarc/core": "^2.9",
+        "robmorgan/phinx": "^0.11.1",
+        "zendframework/zend-mvc": "^3.1",
+        "zendframework/zend-di": "^3.1",
+        "zendframework/zend-permissions-rbac": "^3.0",
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-master"
     },
     "autoload": {
-        "psr-0": {"MonarcBO\\":"/"}
+        "psr-4": {
+            "Monarc\\BackOffice\\": "/src"
+        }
     }
 }

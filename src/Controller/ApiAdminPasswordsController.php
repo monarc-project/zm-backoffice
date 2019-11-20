@@ -21,11 +21,11 @@ use Zend\View\Model\JsonModel;
 class ApiAdminPasswordsController extends AbstractRestfulController
 {
     /** @var PasswordService */
-    private $historicalService;
+    private $passwordService;
 
-    public function __construct(PasswordService $historicalService)
+    public function __construct(PasswordService $passwordService)
     {
-        $this->historicalService = $historicalService;
+        $this->passwordService = $passwordService;
     }
 
     /**
@@ -36,7 +36,7 @@ class ApiAdminPasswordsController extends AbstractRestfulController
         //password forgotten
         if (!empty($data['email']) && empty($data['password'])) {
             try {
-                $this->historicalService->passwordForgotten($data['email']);
+                $this->passwordService->passwordForgotten($data['email']);
             } catch (Exception $e) {
                 // Ignore the exception: We don't want to leak any data
             }
@@ -44,7 +44,7 @@ class ApiAdminPasswordsController extends AbstractRestfulController
 
         //verify token
         if (!empty($data['token']) && empty($data['password'])) {
-            $result = $this->historicalService->verifyToken($data['token']);
+            $result = $this->passwordService->verifyToken($data['token']);
 
             return new JsonModel(array('status' => $result));
         }

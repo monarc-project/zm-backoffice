@@ -9,6 +9,7 @@ namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Model\Table\UserTable;
 use Monarc\Core\Service\UserService;
+use Throwable;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 
@@ -113,10 +114,12 @@ class ApiAdminUsersController extends AbstractRestfulController
 
     public function delete($id)
     {
-        if ($this->userService->delete($id)) {
-            return new JsonModel(array('status' => 'ok'));
+        try {
+            $this->userService->delete($id);
+        } catch (Throwable $e) {
+            return new JsonModel(array('status' => 'ko'));
         }
 
-        return new JsonModel(array('status' => 'ko'));
+        return new JsonModel(array('status' => 'ok'));
     }
 }

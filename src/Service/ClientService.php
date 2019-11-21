@@ -163,6 +163,7 @@ class ClientService extends AbstractService
             'firstname' => $client->get('first_user_firstname'),
             'lastname' => $client->get('first_user_lastname'),
             'email' => $client->get('first_user_email'),
+            'language' => 1,
             'password' => password_hash($salt . $client->get('first_user_email'), PASSWORD_BCRYPT),
             'creator' => 'System',
             'created_at' => date('Y-m-d H:i:s')

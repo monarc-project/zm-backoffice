@@ -19,8 +19,8 @@
         "monarc/core": "^2.9",
         "robmorgan/phinx": "^0.11.1",
         "zendframework/zend-mvc": "^3.1",
-        "zendframework/zend-di": "^3.1",
-        "zendframework/zend-permissions-rbac": "^3.0"
+        "zendframework/zend-permissions-rbac": "^3.0",
+        "zendframework/zend-di": "^3.1"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master"

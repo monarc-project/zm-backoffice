@@ -73,12 +73,15 @@ class ClientService extends AbstractService
         /** @var ClientTable $clientTable */
         $clientTable = $this->get('clientTable');
 
-        $entity = $this->get('clientEntity');
-        $entity->exchangeArray($data);
+        /** @var Client $client */
+        $client = $this->get('clientEntity');
+        $client->exchangeArray($data);
 
-        $clientTable->save($entity);
+        $client->setCreator($this->getConnectedUser()->getFirstname() . ' ' . $this->getConnectedUser()->getLastname());
 
-        $this->createJson($entity);
+        $clientTable->save($client);
+
+        $this->createJson($client);
     }
 
     /**
@@ -102,7 +105,12 @@ class ClientService extends AbstractService
 
         if ($entity !== null) {
             $entity->exchangeArray($data, true);
+            $entity->setUpdater(
+                $this->getConnectedUser()->getFirstname() . ' ' . $this->getConnectedUser()->getLastname()
+            );
+
             $clientTable->save($entity);
+
             return true;
         }
 

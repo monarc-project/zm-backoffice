@@ -71,6 +71,8 @@ class ServerService extends AbstractService
         $entity = new Server();
         $entity->exchangeArray($data);
 
+        $entity->setCreator($this->getConnectedUser()->getFirstname() . ' ' . $this->getConnectedUser()->getLastname());
+
         $serverTable->save($entity);
     }
 
@@ -87,6 +89,10 @@ class ServerService extends AbstractService
 
         if ($entity !== null) {
             $entity->exchangeArray($data);
+            $entity->setUpdater(
+                $this->getConnectedUser()->getFirstname() . ' ' . $this->getConnectedUser()->getLastname()
+            );
+
             $serverTable->save($entity);
 
             return true;

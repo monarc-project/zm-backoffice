@@ -7,18 +7,23 @@
 
 namespace Monarc\BackOffice\Model\Entity;
 
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Monarc\Core\Model\Entity\AbstractEntity;
+use Monarc\Core\Model\Entity\Traits\CreateEntityTrait;
+use Monarc\Core\Model\Entity\Traits\UpdateEntityTrait;
 
 /**
  * Servers
  *
  * @ORM\Table(name="servers")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  */
 class Server extends AbstractEntity
 {
+    use CreateEntityTrait;
+    use UpdateEntityTrait;
+
     /**
      * @var int
      *
@@ -55,32 +60,4 @@ class Server extends AbstractEntity
      * @ORM\Column(name="status", type="boolean", nullable=true)
      */
     protected $status = '1';
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="creator", type="string", length=255, nullable=true)
-     */
-    protected $creator;
-
-    /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=true)
-     */
-    protected $createdAt;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="updater", type="string", length=255, nullable=true)
-     */
-    protected $updater;
-
-    /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
-     */
-    protected $updatedAt;
 }

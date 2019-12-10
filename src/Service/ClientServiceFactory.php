@@ -20,7 +20,7 @@ use Monarc\Core\Service\AbstractServiceFactory;
 class ClientServiceFactory extends AbstractServiceFactory
 {
     protected $ressources = array(
-        'clientTable'=> ClientTable::class,
+        'table'=> ClientTable::class,
         'clientEntity'=> Client::class,
         'serverTable'=> ServerTable::class,
         'serverEntity'=> Server::class,

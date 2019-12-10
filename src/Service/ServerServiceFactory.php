@@ -18,7 +18,7 @@ use Monarc\Core\Service\AbstractServiceFactory;
 class ServerServiceFactory extends AbstractServiceFactory
 {
     protected $ressources = array(
-        'serverTable'=> ServerTable::class,
+        'table'=> ServerTable::class,
         'serverEntity'=> Server::class,
     );
 }

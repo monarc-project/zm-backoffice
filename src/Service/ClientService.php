@@ -34,7 +34,7 @@ class ClientService extends AbstractService
     public function getFilteredCount($filter = null, $filterAnd = null)
     {
         /** @var ClientTable $clientTable */
-        $clientTable = $this->get('clientTable');
+        $clientTable = $this->get('table');
 
         return $clientTable->countFiltered($this->parseFrontendFilter($filter, array('name', 'first_user_email',
             'proxyAlias', 'createdAt')));
@@ -46,7 +46,7 @@ class ClientService extends AbstractService
     public function getList($page = 1, $limit = 25, $order = null, $filter = null, $filterAnd = null)
     {
         /** @var ClientTable $clientTable */
-        $clientTable = $this->get('clientTable');
+        $clientTable = $this->get('table');
 
         return $clientTable->fetchAllFiltered(
             array('id', 'name', 'first_user_email', 'proxyAlias', 'createdAt', 'model_id'),
@@ -62,7 +62,7 @@ class ClientService extends AbstractService
      */
     public function getEntity($id)
     {
-        return $this->get('clientTable')->get($id);
+        return $this->get('table')->get($id);
     }
 
     /**
@@ -71,7 +71,7 @@ class ClientService extends AbstractService
     public function create($data, $last = true)
     {
         /** @var ClientTable $clientTable */
-        $clientTable = $this->get('clientTable');
+        $clientTable = $this->get('table');
 
         /** @var Client $client */
         $client = $this->get('clientEntity');
@@ -93,7 +93,7 @@ class ClientService extends AbstractService
         $this->filterPatchFields($data);
 
         /** @var ClientTable $clientTable */
-        $clientTable = $this->get('clientTable');
+        $clientTable = $this->get('table');
 
         /** @var Client $entity */
         $entity = $clientTable->getEntity($id);
@@ -123,7 +123,7 @@ class ClientService extends AbstractService
     public function delete($id)
     {
         /** @var ClientTable $clientTable */
-        $clientTable = $this->get('clientTable');
+        $clientTable = $this->get('table');
 
         $entity = $clientTable->getEntity($id);
 

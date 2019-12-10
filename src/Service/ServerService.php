@@ -26,7 +26,7 @@ class ServerService extends AbstractService
     public function getFilteredCount($filter = null, $filterAnd = null)
     {
         /** @var ServerTable $serverTable */
-        $serverTable = $this->get('serverTable');
+        $serverTable = $this->get('table');
 
         return $serverTable->countFiltered(
             $this->parseFrontendFilter($filter, array('label', 'ip_address', 'fqdn')),
@@ -40,7 +40,7 @@ class ServerService extends AbstractService
     public function getList($page = 1, $limit = 25, $order = null, $filter = null, $filterAnd = null)
     {
         /** @var ServerTable $serverTable */
-        $serverTable = $this->get('serverTable');
+        $serverTable = $this->get('table');
 
         return $serverTable->fetchAllFiltered(
             array('id', 'label', 'ip_address', 'fqdn', 'status'),
@@ -57,7 +57,7 @@ class ServerService extends AbstractService
      */
     public function getEntity($id)
     {
-        return $this->get('serverTable')->get($id);
+        return $this->get('table')->get($id);
     }
 
     /**
@@ -66,7 +66,7 @@ class ServerService extends AbstractService
     public function create($data, $last = true)
     {
         /** @var ServerTable $serverTable */
-        $serverTable = $this->get('serverTable');
+        $serverTable = $this->get('table');
 
         $entity = new Server();
         $entity->exchangeArray($data);
@@ -82,7 +82,7 @@ class ServerService extends AbstractService
     public function update($id, $data)
     {
         /** @var ServerTable $serverTable */
-        $serverTable = $this->get('serverTable');
+        $serverTable = $this->get('table');
 
         /** @var Server $entity */
         $entity = $serverTable->getEntity($id);
@@ -107,7 +107,7 @@ class ServerService extends AbstractService
     public function delete($id)
     {
         /** @var ServerTable $serverTable */
-        $serverTable = $this->get('serverTable');
+        $serverTable = $this->get('table');
 
         $serverTable->delete($id);
     }

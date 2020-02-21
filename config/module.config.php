@@ -17,7 +17,7 @@ use Monarc\BackOffice\Service\ServerService;
 use Monarc\BackOffice\Service\ServerServiceFactory;
 use Monarc\BackOffice\Validator\UniqueClientProxyAlias;
 use Monarc\Core\Controller\ApiModelsController;
-use Zend\Di\Container\AutowireFactory;
+use Laminas\Di\Container\AutowireFactory;
 
 return [
     'router' => [

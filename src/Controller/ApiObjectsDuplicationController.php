@@ -9,8 +9,8 @@ namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Exception\Exception;
 use Monarc\Core\Service\ObjectService;
-use Zend\Mvc\Controller\AbstractRestfulController;
-use Zend\View\Model\JsonModel;
+use Laminas\Mvc\Controller\AbstractRestfulController;
+use Laminas\View\Model\JsonModel;
 
 /**
  * Api Objects Duplication Controller

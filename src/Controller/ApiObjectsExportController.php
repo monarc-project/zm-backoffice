@@ -8,7 +8,7 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Service\ObjectService;
-use Zend\Mvc\Controller\AbstractRestfulController;
+use Laminas\Mvc\Controller\AbstractRestfulController;
 
 /**
  * Api Objects Export Controller

@@ -9,7 +9,7 @@ namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
 use Monarc\Core\Service\MeasureMeasureService;
-use Zend\View\Model\JsonModel;
+use Laminas\View\Model\JsonModel;
 
 /**
  * TODO: extend AbstractRestfulController and remove AbstractController.

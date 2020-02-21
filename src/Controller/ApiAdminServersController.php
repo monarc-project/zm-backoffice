@@ -9,7 +9,7 @@ namespace Monarc\BackOffice\Controller;
 
 use Monarc\BackOffice\Service\ServerService;
 use Monarc\Core\Controller\AbstractController;
-use Zend\View\Model\JsonModel;
+use Laminas\View\Model\JsonModel;
 
 /**
  * TODO: extend AbstractRestfulController and remove AbstractController.

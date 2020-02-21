@@ -10,8 +10,8 @@ namespace Monarc\BackOffice\Controller;
 use Monarc\Core\Model\Table\UserTable;
 use Monarc\Core\Service\UserService;
 use Throwable;
-use Zend\Mvc\Controller\AbstractRestfulController;
-use Zend\View\Model\JsonModel;
+use Laminas\Mvc\Controller\AbstractRestfulController;
+use Laminas\View\Model\JsonModel;
 
 /**
  * Class ApiAdminUsersController

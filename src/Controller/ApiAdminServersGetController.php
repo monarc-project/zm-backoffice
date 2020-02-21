@@ -9,7 +9,7 @@ namespace Monarc\BackOffice\Controller;
 
 use Monarc\BackOffice\Service\ServerService;
 use Monarc\BackOffice\Controller\ApiAdminServersController;
-use Zend\View\Model\JsonModel;
+use Laminas\View\Model\JsonModel;
 
 /**
  * Api Admin Servers Get Controller

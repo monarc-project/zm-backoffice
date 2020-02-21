@@ -8,8 +8,8 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Service\RoleService;
-use Zend\Mvc\Controller\AbstractRestfulController;
-use Zend\View\Model\JsonModel;
+use Laminas\Mvc\Controller\AbstractRestfulController;
+use Laminas\View\Model\JsonModel;
 
 /**
  * TODO: seems it's not used.

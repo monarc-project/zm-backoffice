@@ -3,12 +3,12 @@
 namespace Monarc\BackOffice;
 
 use Monarc\Core\Service\ConnectedUserService;
-use Zend\Console\Request;
-use Zend\Mvc\ModuleRouteListener;
-use Zend\Mvc\MvcEvent;
-use Zend\Permissions\Rbac\Rbac;
-use Zend\Permissions\Rbac\Role;
-use Zend\View\Model\JsonModel;
+use Laminas\Console\Request;
+use Laminas\Mvc\ModuleRouteListener;
+use Laminas\Mvc\MvcEvent;
+use Laminas\Permissions\Rbac\Rbac;
+use Laminas\Permissions\Rbac\Role;
+use Laminas\View\Model\JsonModel;
 
 class Module
 {
@@ -132,7 +132,7 @@ class Module
      *
      * @param MvcEvent $e
      *
-     * @return \Zend\Stdlib\ResponseInterface
+     * @return \Laminas\Stdlib\ResponseInterface
      */
     public function checkRbac(MvcEvent $e)
     {

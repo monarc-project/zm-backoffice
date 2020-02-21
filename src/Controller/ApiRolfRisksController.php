@@ -10,7 +10,7 @@ namespace Monarc\BackOffice\Controller;
 use Monarc\Core\Controller\AbstractController;
 use Monarc\Core\Model\Entity\Measure;
 use Monarc\Core\Service\RolfRiskService;
-use Zend\View\Model\JsonModel;
+use Laminas\View\Model\JsonModel;
 
 /**
  * TODO: extend AbstractRestfulController and remove AbstractController.

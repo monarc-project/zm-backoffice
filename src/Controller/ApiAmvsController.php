@@ -137,6 +137,10 @@ class ApiAmvsController extends AbstractController
             /** @var AmvService $amvService */
             $amvService = $this->getService();
             $data = $amvService->createAmvsItems(null, $data);
+
+            if (empty($data)) {
+                throw new \Monarc\Core\Exception\Exception('No new information risks to be imported. Already exist in Knowledge Base', 412);
+            }
         }
 
         return parent::create($data);

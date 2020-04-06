@@ -55,7 +55,7 @@ class ApiAdminPasswordsController extends AbstractRestfulController
                 throw new Exception('Password must be the same', 422);
             }
 
-            throw new Exception('Password must be the same', 422);
+            $this->passwordService->newPasswordByToken($data['token'], $data['password']);
         }
 
         return new JsonModel(array('status' => 'ok'));

@@ -208,9 +208,10 @@ class ClientService extends AbstractService
         }
 
         //clients table database client
+        $api_key = \Ramsey\Uuid\Uuid::uuid4()
         $fieldsClient = array(
             'id' => $client->get('id'),
-            'api_key' => \Ramsey\Uuid\Uuid::uuid4(),
+            'api_key' => $api_key,
             'model_id' => $client->get('model_id'),
             'logo_id' => $client->get('logo_id'),
             'name' => $client->get('name'),
@@ -231,6 +232,7 @@ class ClientService extends AbstractService
         $datas = array(
             'server' => $server->get('fqdn'),
             'proxy_alias' => $client->get('proxyAlias'),
+            'api_key' => $api_key,
             'sql_bootstrap' => $sqlDumpUsers . ' ' . $sqlDumpUsersRoles . ' ' . $sqlDumpClients
         );
 

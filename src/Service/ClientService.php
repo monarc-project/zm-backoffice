@@ -10,6 +10,7 @@ namespace Monarc\BackOffice\Service;
 use Monarc\BackOffice\Model\Entity\Client;
 use Monarc\BackOffice\Model\Table\ClientTable;
 use Monarc\Core\Service\AbstractService;
+use Ramsey\Uuid\Uuid;
 use PDO;
 use RuntimeException;
 
@@ -209,6 +210,7 @@ class ClientService extends AbstractService
         //clients table database client
         $fieldsClient = array(
             'id' => $client->get('id'),
+            'uuid' => \Ramsey\Uuid\Uuid::uuid4(),
             'model_id' => $client->get('model_id'),
             'logo_id' => $client->get('logo_id'),
             'name' => $client->get('name'),

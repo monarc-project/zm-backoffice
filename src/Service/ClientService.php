@@ -208,7 +208,7 @@ class ClientService extends AbstractService
         }
 
         //clients table database client
-        $api_key = \Ramsey\Uuid\Uuid::uuid4()
+        $api_key = \Ramsey\Uuid\Uuid::uuid4();
         $fieldsClient = array(
             'id' => $client->get('id'),
             'api_key' => $api_key,

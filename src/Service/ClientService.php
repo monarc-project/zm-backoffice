@@ -232,7 +232,7 @@ class ClientService extends AbstractService
         $datas = array(
             'server' => $server->get('fqdn'),
             'proxy_alias' => $client->get('proxyAlias'),
-            'api_key' => $api_key,
+            'statsToken' => $api_key,
             'sql_bootstrap' => $sqlDumpUsers . ' ' . $sqlDumpUsersRoles . ' ' . $sqlDumpClients
         );
 

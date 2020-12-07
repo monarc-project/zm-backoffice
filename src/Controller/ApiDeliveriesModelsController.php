@@ -32,10 +32,10 @@ class ApiDeliveriesModelsController extends AbstractController
      */
     public function create($data)
     {
-        unset($data['path']);
         $service = $this->getService();
         $file = $this->request->getFiles()->toArray();
         for ($i = 1; $i <= 4; ++$i) {
+            unset($data['path' . $i]);
             if (!empty($file['file'][$i])) {
                 $file['file'][$i]['name'] = $data['category'] . ".docx";
                 $data['path' . $i] = $file['file'][$i];

@@ -157,7 +157,7 @@ class Module
 
         if (!$isGranted) {
             $response = $e->getResponse();
-            $response->setStatusCode(401);
+            $response->setStatusCode(403);
 
             return $response;
         }

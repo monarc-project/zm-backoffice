@@ -1,6 +1,7 @@
 {
     "name": "monarc/backoffice",
     "description": "Backoffice for monarc/monarc-backoffice application",
+    "license": "AGPL-3.0-or-later",
     "authors": [
         {
             "name": "Cyril Rouyer",

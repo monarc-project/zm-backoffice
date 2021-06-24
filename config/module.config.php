@@ -17,6 +17,7 @@ use Monarc\BackOffice\Service\ServerService;
 use Monarc\BackOffice\Service\ServerServiceFactory;
 use Monarc\BackOffice\Validator\UniqueClientProxyAlias;
 use Monarc\Core\Controller\ApiModelsController;
+use Monarc\Core\Controller\ApiOperationalRisksScalesController;
 use Laminas\Di\Container\AutowireFactory;
 
 return [
@@ -450,6 +451,19 @@ return [
                     ],
                 ],
             ],
+
+            'monarc_api_delete_operational_scales' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/delete-operational-scales[/:id]',
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => ApiOperationalRisksScalesController::class,
+                    ],
+                ],
+            ],
         ],
     ],
 
@@ -594,6 +608,7 @@ return [
             'monarc_api_rolf_tags',
             'monarc_api_scales',
             'monarc_api_operational_scales',
+            'monarc_api_delete_operational_scales',
             'monarc_api_scales_comments',
             'monarc_api_scales_types',
             'monarc_api_threats',

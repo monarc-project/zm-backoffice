@@ -609,6 +609,7 @@ return [
             'monarc_api_scales',
             'monarc_api_operational_scales',
             'monarc_api_delete_operational_scales',
+            'monarc_api_operational_scales_comment',
             'monarc_api_scales_comments',
             'monarc_api_scales_types',
             'monarc_api_threats',

@@ -585,6 +585,7 @@ return [
             'monarc_api_anr_export',
             'monarc_api_anr_instances',
             'monarc_api_anr_instances_export',
+            'monarc_api_anr_risk_owners',
             'monarc_api_anr_instances_risks',
             'monarc_api_anr_instances_risksop',
             'monarc_api_anr_instances_consequences',

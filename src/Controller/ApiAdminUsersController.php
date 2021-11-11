@@ -7,7 +7,7 @@
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Model\Table\UserTable;
+use Monarc\Core\Table\UserTable;
 use Monarc\Core\Service\UserService;
 use Throwable;
 use Laminas\Mvc\Controller\AbstractRestfulController;
@@ -19,6 +19,8 @@ use Laminas\View\Model\JsonModel;
  */
 class ApiAdminUsersController extends AbstractRestfulController
 {
+    private const DEFAULT_LIMIT = 25;
+
     protected $name = 'users';
 
     /** @var UserService */
@@ -38,19 +40,18 @@ class ApiAdminUsersController extends AbstractRestfulController
      */
     public function getList()
     {
-        $page = $this->params()->fromQuery('page');
-        $limit = $this->params()->fromQuery('limit');
-        $order = $this->params()->fromQuery('order');
-        $filter = $this->params()->fromQuery('filter');
+        $searchString = $this->params()->fromQuery('filter', '');
         $status = $this->params()->fromQuery('status', 1);
+        $filter = $status === 'all' ? null : ['status' => (int)$status];
+        $page = $this->params()->fromQuery('page', 1);
+        $limit = $this->params()->fromQuery('limit', static::DEFAULT_LIMIT);
+        $order = $this->params()->fromQuery('order', '');
 
-        $filterAnd = $status === 'all' ? null : ['status' => (int)$status];
-
-        $entities = $this->userService->getList($page, $limit, $order, $filter, $filterAnd);
+        $users = $this->userService->getUsersList($searchString, $filter, $order);
 
         return new JsonModel(array(
-            'count' => $this->userService->getFilteredCount($filter, $filterAnd),
-            'users' => $entities
+            'count' => \count($users),
+            'users' => \array_slice($users, $page - 1, $limit),
         ));
     }
 
@@ -66,7 +67,7 @@ class ApiAdminUsersController extends AbstractRestfulController
             'lastname' => $user->getLastname(),
             'email' => $user->getEmail(),
             'language' => $user->getLanguage(),
-            'role' => $user->getRoles(),
+            'role' => $user->getRolesArray(),
         ]);
     }
 
@@ -75,17 +76,6 @@ class ApiAdminUsersController extends AbstractRestfulController
      */
     public function create($data)
     {
-        // Security: Don't allow changing role, password, status and history fields. To clean later.
-        if (isset($data['salt'])) {
-            unset($data['salt']);
-        }
-        if (isset($data['dateStart'])) {
-            unset($data['dateStart']);
-        }
-        if (isset($data['dateEnd'])) {
-            unset($data['dateEnd']);
-        }
-
         $this->userService->create($data);
 
         return new JsonModel(array('status' => 'ok'));
@@ -96,7 +86,7 @@ class ApiAdminUsersController extends AbstractRestfulController
      */
     public function update($id, $data)
     {
-        //TODO: add a request data filter.
+        // TODO: add a request data filter.
 
         $this->userService->update($id, $data);
 
@@ -105,7 +95,7 @@ class ApiAdminUsersController extends AbstractRestfulController
 
     public function patch($id, $data)
     {
-        //TODO: add a request data filter.
+        // TODO: add a request data filter.
 
         $this->userService->patch($id, $data);
 

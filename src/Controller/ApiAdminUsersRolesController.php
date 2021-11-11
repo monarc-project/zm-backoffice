@@ -1,12 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2021  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
+use Monarc\Core\Exception;
 use Monarc\Core\Service\UserRoleService;
 use Laminas\Mvc\Controller\AbstractRestfulController;
 use Laminas\View\Model\JsonModel;
@@ -27,14 +28,14 @@ class ApiAdminUsersRolesController extends AbstractRestfulController
         $this->userRoleService = $userRoleService;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getList()
     {
         $token = $this->getRequest()->getHeader('token');
+        if ($token === false) {
+            throw new UserNotLoggedInException('The user token is not defined. Please login', 403);
+        }
 
-        $currentUserRoles = $this->userRoleService->getByUserToken($token);
+        $currentUserRoles = $this->userRoleService->getUserRolesByToken($token->getFieldValue());
 
         return new JsonModel([
             'count' => \count($currentUserRoles),
@@ -42,12 +43,9 @@ class ApiAdminUsersRolesController extends AbstractRestfulController
         ]);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function get($id)
     {
-        $userRoles = $this->userRoleService->getByUserId($id);
+        $userRoles = $this->userRoleService->getUserRolesByUserId((int)$id);
 
         return new JsonModel([
             'count' => \count($userRoles),

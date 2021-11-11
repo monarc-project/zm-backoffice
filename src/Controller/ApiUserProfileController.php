@@ -1,7 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2021  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
@@ -13,12 +13,6 @@ use Monarc\Core\Service\UserProfileService;
 use Laminas\Mvc\Controller\AbstractRestfulController;
 use Laminas\View\Model\JsonModel;
 
-/**
- * Api User Profile Controller
- *
- * Class ApiUserProfileController
- * @package Monarc\BackOffice\Controller
- */
 class ApiUserProfileController extends AbstractRestfulController
 {
     /** @var ConnectedUserService */
@@ -36,49 +30,35 @@ class ApiUserProfileController extends AbstractRestfulController
     public function getList()
     {
         $connectedUser = $this->connectedUserService->getConnectedUser();
-        if ($connectedUser === null) {
-            throw new Exception('You are not authorized to do this action', 412);
-        }
 
-        // TODO: We need to use normalizer for the response fields filtering out.
+        // TODO: We need to use normalizer for the response data.
         return new JsonModel([
             'id' => $connectedUser->getId(),
             'firstname' => $connectedUser->getFirstname(),
             'lastname' => $connectedUser->getLastname(),
             'email' => $connectedUser->getEmail(),
             'status' => $connectedUser->getStatus(),
-            'role' => $connectedUser->getRoles(),
+            'role' => $connectedUser->getRolesArray(),
         ]);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function patchList($data)
     {
-        $this->userProfileService->update($this->connectedUserService->getConnectedUser(), $data);
+        $this->userProfileService->updateMyData($data);
 
-        // Replace to return the updated object.
         return new JsonModel(['status' => 'ok']);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function replaceList($data)
     {
-        $this->userProfileService->update($this->connectedUserService->getConnectedUser(), $data);
+        $this->userProfileService->updateMyData($data);
 
-        // Replace to return the updated object.
         return new JsonModel(['status' => 'ok']);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function deleteList($id)
     {
-        $this->userProfileService->delete($this->connectedUserService->getConnectedUser());
+        $this->userProfileService->deleteMe();
 
         $this->getResponse()->setStatusCode(204);
 

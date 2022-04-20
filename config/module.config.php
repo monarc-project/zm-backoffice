@@ -613,6 +613,7 @@ return [
             'monarc_api_operational_scales_comment',
             'monarc_api_scales_comments',
             'monarc_api_scales_types',
+            'monarc_api_anr_metadatas_on_instances',
             'monarc_api_threats',
             'monarc_api_vulnerabilities',
             'monarc_api_admin_users_roles',

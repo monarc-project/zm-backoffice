@@ -629,6 +629,7 @@ return [
             'monarc_api_user_profile',
             'monarc_api_anr_objects_parents',
             'monarc_api_soa_scale',
+            'monarc_api_soa_scale_comment',
         ],
         // Admin système : Gestion des logs et tout ce qui est non applicatif (Administration)
         'sysadmin' => [

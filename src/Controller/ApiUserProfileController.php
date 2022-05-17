@@ -40,7 +40,7 @@ class ApiUserProfileController extends AbstractRestfulController
             throw new Exception('You are not authorized to do this action', 412);
         }
 
-        // TODO: We need to use normalizer for the response fields filtering out.
+        // TODO: We need to use normalize for the response fields filtering out.
         return new JsonModel([
             'id' => $connectedUser->getId(),
             'firstname' => $connectedUser->getFirstname(),
@@ -48,6 +48,8 @@ class ApiUserProfileController extends AbstractRestfulController
             'email' => $connectedUser->getEmail(),
             'status' => $connectedUser->getStatus(),
             'role' => $connectedUser->getRoles(),
+            'isTwoFactorAuthEnabled' => $connectedUser->isTwoFactorAuthEnabled(),
+            'remainingRecoveryCodes' => count($connectedUser->getRecoveryCodes()),
         ]);
     }
 

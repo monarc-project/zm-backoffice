@@ -17,14 +17,19 @@ use Laminas\View\Model\JsonModel;
  * Api User Profile Controller
  *
  * Class ApiUserProfileController
+ *
  * @package Monarc\BackOffice\Controller
  */
 class ApiUserProfileController extends AbstractRestfulController
 {
-    /** @var ConnectedUserService */
+    /**
+     * @var ConnectedUserService
+     */
     private $connectedUserService;
 
-    /** @var UserProfileService */
+    /**
+     * @var UserProfileService
+     */
     private $userProfileService;
 
     public function __construct(UserProfileService $userProfileService, ConnectedUserService $connectedUserService)
@@ -41,7 +46,8 @@ class ApiUserProfileController extends AbstractRestfulController
         }
 
         // TODO: We need to use normalize for the response fields filtering out.
-        return new JsonModel([
+        return new JsonModel(
+            [
             'id' => $connectedUser->getId(),
             'firstname' => $connectedUser->getFirstname(),
             'lastname' => $connectedUser->getLastname(),
@@ -50,7 +56,8 @@ class ApiUserProfileController extends AbstractRestfulController
             'role' => $connectedUser->getRoles(),
             'isTwoFactorAuthEnabled' => $connectedUser->isTwoFactorAuthEnabled(),
             'remainingRecoveryCodes' => count($connectedUser->getRecoveryCodes()),
-        ]);
+            ]
+        );
     }
 
     /**

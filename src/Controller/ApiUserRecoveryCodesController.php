@@ -18,17 +18,24 @@ use Laminas\View\Model\JsonModel;
  * Api User RecoveryCodes Controller
  *
  * Class ApiUserRecoveryCodesController
+ *
  * @package Monarc\FrontOffice\Controller
  */
 class ApiUserRecoveryCodesController extends AbstractRestfulController
 {
-    /** @var ConnectedUserService */
+    /**
+     * @var ConnectedUserService
+     */
     private $connectedUserService;
 
-    /** @var UserService */
+    /**
+     * @var UserService
+     */
     private $userService;
 
-    /** @var UserTable */
+    /**
+     * @var UserTable
+     */
     private $userTable;
 
 
@@ -62,9 +69,11 @@ class ApiUserRecoveryCodesController extends AbstractRestfulController
             $this->userTable->saveEntity($connectedUser);
         }
 
-        return new JsonModel([
+        return new JsonModel(
+            [
             'status' => $status,
             'recoveryCodes' => $recoveryCodes,
-        ]);
+            ]
+        );
     }
 }

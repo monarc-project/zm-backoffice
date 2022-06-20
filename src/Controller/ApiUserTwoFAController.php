@@ -20,23 +20,34 @@ use Laminas\View\Model\JsonModel;
  * Api User TwoFA Controller
  *
  * Class ApiUserTwoFAController
+ *
  * @package Monarc\FrontOffice\Controller
  */
 class ApiUserTwoFAController extends AbstractRestfulController
 {
-    /** @var ConnectedUserService */
+    /**
+     * @var ConnectedUserService 
+     */
     private $connectedUserService;
 
-    /** @var UserService */
+    /**
+     * @var UserService 
+     */
     private $userService;
 
-    /** @var ConfigService */
+    /**
+     * @var ConfigService 
+     */
     private $configService;
 
-    /** @var UserTable */
+    /**
+     * @var UserTable 
+     */
     private $userTable;
 
-    /** @var TwoFactorAuth */
+    /**
+     * @var TwoFactorAuth 
+     */
     private $tfa;
 
     public function __construct(
@@ -77,11 +88,13 @@ class ApiUserTwoFAController extends AbstractRestfulController
         $secret = $this->tfa->createSecret();
         $qrcode = $this->tfa->getQRCodeImageAsDataUri($label, $secret);
 
-        return new JsonModel([
+        return new JsonModel(
+            [
             'id' => $connectedUser->getId(),
             'secret' => $secret,
             'qrcode' => $qrcode,
-        ]);
+            ]
+        );
     }
 
     /**
@@ -99,9 +112,11 @@ class ApiUserTwoFAController extends AbstractRestfulController
             $this->userTable->saveEntity($connectedUser);
         }
 
-        return new JsonModel([
+        return new JsonModel(
+            [
             'status' => $res,
-        ]);
+            ]
+        );
     }
 
     /**

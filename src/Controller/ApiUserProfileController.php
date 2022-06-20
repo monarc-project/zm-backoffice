@@ -17,14 +17,19 @@ use Laminas\View\Model\JsonModel;
  * Api User Profile Controller
  *
  * Class ApiUserProfileController
+ *
  * @package Monarc\BackOffice\Controller
  */
 class ApiUserProfileController extends AbstractRestfulController
 {
-    /** @var ConnectedUserService */
+    /**
+     * @var ConnectedUserService
+     */
     private $connectedUserService;
 
-    /** @var UserProfileService */
+    /**
+     * @var UserProfileService
+     */
     private $userProfileService;
 
     public function __construct(UserProfileService $userProfileService, ConnectedUserService $connectedUserService)
@@ -40,15 +45,19 @@ class ApiUserProfileController extends AbstractRestfulController
             throw new Exception('You are not authorized to do this action', 412);
         }
 
-        // TODO: We need to use normalizer for the response fields filtering out.
-        return new JsonModel([
+        // TODO: We need to use normalize for the response fields filtering out.
+        return new JsonModel(
+            [
             'id' => $connectedUser->getId(),
             'firstname' => $connectedUser->getFirstname(),
             'lastname' => $connectedUser->getLastname(),
             'email' => $connectedUser->getEmail(),
             'status' => $connectedUser->getStatus(),
             'role' => $connectedUser->getRoles(),
-        ]);
+            'isTwoFactorAuthEnabled' => $connectedUser->isTwoFactorAuthEnabled(),
+            'remainingRecoveryCodes' => count($connectedUser->getRecoveryCodes()),
+            ]
+        );
     }
 
     /**

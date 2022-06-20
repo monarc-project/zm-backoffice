@@ -429,6 +429,32 @@ return [
                 ],
             ],
 
+            'monarc_api_user_activate_2fa' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/user/activate2FA/:id',
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiUserTwoFAController::class,
+                    ],
+                ],
+            ],
+
+            'monarc_api_user_recovery_codes' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/user/recoveryCodes/:id',
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiUserRecoveryCodesController::class,
+                    ],
+                ],
+            ],
+
             'monarc_api_user_profile' => [
                 'type' => 'literal',
                 'options' => [
@@ -472,6 +498,8 @@ return [
         'factories' => [
             Controller\ApiAdminHistoricalsController::class => AutowireFactory::class,
             Controller\ApiUserPasswordController::class => AutowireFactory::class,
+            Controller\ApiUserTwoFAController::class => AutowireFactory::class,
+            Controller\ApiUserRecoveryCodesController::class => AutowireFactory::class,
             Controller\ApiAdminPasswordsController::class => AutowireFactory::class,
             Controller\ApiAdminRolesController::class => AutowireFactory::class,
             Controller\ApiAdminServersController::class => AutowireFactory::class,
@@ -574,6 +602,8 @@ return [
             'monarc_api_admin_users',
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
+            'monarc_api_user_activate_2fa',
+            'monarc_api_user_recovery_codes',
         ],
         // Admin DB : Gestion des bases de connaissances (paramètres généraux)
         'dbadmin' => [
@@ -613,6 +643,7 @@ return [
             'monarc_api_operational_scales_comment',
             'monarc_api_scales_comments',
             'monarc_api_scales_types',
+            'monarc_api_anr_metadatas_on_instances',
             'monarc_api_threats',
             'monarc_api_vulnerabilities',
             'monarc_api_admin_users_roles',
@@ -627,6 +658,9 @@ return [
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
             'monarc_api_anr_objects_parents',
+            'monarc_api_soa_scale_comment',
+            'monarc_api_user_activate_2fa',
+            'monarc_api_user_recovery_codes',
         ],
         // Admin système : Gestion des logs et tout ce qui est non applicatif (Administration)
         'sysadmin' => [
@@ -641,9 +675,13 @@ return [
             'monarc_api_models_duplication',
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
+            'monarc_api_user_activate_2fa',
+            'monarc_api_user_recovery_codes',
         ],
         // Admin comptes : Création des comptes et authentification client
         'accadmin' => [
+            'monarc_api_user_activate_2fa',
+            'monarc_api_user_recovery_codes',
             'monarc_api_user_password',
             'monarc_api_clients',
             'monarc_api_admin_servers_get',

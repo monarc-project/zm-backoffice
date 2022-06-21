@@ -22,10 +22,10 @@ class UniqueClientProxyAlias extends AbstractValidator
         'id' => 0,
     );
 
-    const ALREADYUSED = "ALREADYUSED";
+    const ALREADY_USED = "ALREADY_USED";
 
     protected $messageTemplates = array(
-        self::ALREADYUSED => 'This proxy alias is already used',
+        self::ALREADY_USED => 'This proxy alias is already used',
     );
 
     /**
@@ -39,7 +39,7 @@ class UniqueClientProxyAlias extends AbstractValidator
 
         $res = $this->options['adapter']->getRepository(Client::class)->findOneByProxyAlias($value);
         if (!empty($res) && $this->options['id'] != $res->get('id')) {
-            $this->error(self::ALREADYUSED);
+            $this->error(self::ALREADY_USED);
 
             return false;
         }

@@ -1,77 +1,99 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2022  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
+use Laminas\Mvc\Controller\AbstractRestfulController;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
+use Monarc\Core\InputFormatter\Vulnerability\GetVulnerabilitiesInputFormatter;
 use Monarc\Core\Service\VulnerabilityService;
-use Laminas\View\Model\JsonModel;
+use Monarc\Core\Validator\InputValidator\Vulnerability\PostVulnerabilityDataInputValidator;
 
-/**
- * TODO: extend AbstractRestfulController and remove AbstractController.
- *
- * Class ApiAssetsController
- * @package Monarc\BackOffice\Controller
- */
-class ApiVulnerabilitiesController extends AbstractController
+class ApiVulnerabilitiesController extends AbstractRestfulController
 {
-    protected $name = 'vulnerabilities';
+    use ControllerRequestResponseHandlerTrait;
 
-    public function __construct(VulnerabilityService $vulnerabilityService)
-    {
-        parent::__construct($vulnerabilityService);
+    private GetVulnerabilitiesInputFormatter $getVulnerabilitiesInputFormatter;
+
+    private PostVulnerabilityDataInputValidator $postVulnerabilityDataInputValidator;
+
+    private VulnerabilityService $vulnerabilityService;
+
+    public function __construct(
+        GetVulnerabilitiesInputFormatter $getVulnerabilitiesInputFormatter,
+        PostVulnerabilityDataInputValidator $postVulnerabilityDataInputValidator,
+        VulnerabilityService $vulnerabilityService
+    ) {
+        $this->getVulnerabilitiesInputFormatter = $getVulnerabilitiesInputFormatter;
+        $this->postVulnerabilityDataInputValidator = $postVulnerabilityDataInputValidator;
+        $this->vulnerabilityService = $vulnerabilityService;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getList()
     {
-        $page = $this->params()->fromQuery('page');
-        $limit = $this->params()->fromQuery('limit');
-        $order = $this->params()->fromQuery('order');
-        $filter = $this->params()->fromQuery('filter');
-        $status = $this->params()->fromQuery('status');
-        if ($status === null) {
-            $status = 1;
-        }
-        $filterAnd = $status === 'all' ? null : ['status' => (int)$status];
+        $formattedParams = $this->getFormattedInputParams($this->getVulnerabilitiesInputFormatter);
 
-        $service = $this->getService();
-
-        $vulnerabilities = $service->getList($page, $limit, $order, $filter, $filterAnd);
-        foreach ($vulnerabilities as $key => $vulnerability) {
-            $vulnerability['models']->initialize();
-            $models = $vulnerability['models']->getSnapshot();
-            $vulnerabilities[$key]['models'] = array();
-            foreach ($models as $model) {
-                $vulnerabilities[$key]['models'][] = $model->getJsonArray();
-            }
-        }
-
-        return new JsonModel(array(
-            'count' => $service->getFilteredCount($filter, $filterAnd),
-            $this->name => $vulnerabilities
-        ));
+        return $this->getPreparedJsonResponse([
+            'count' => $this->vulnerabilityService->getCount($formattedParams),
+            'vulnerabilities' => $this->vulnerabilityService->getList($formattedParams),
+        ]);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function get($id)
     {
-        $vulnerability = $this->getService()->getEntity($id);
-        $vulnerability['models']->initialize();
-        $models = $vulnerability['models']->getSnapshot();
-        $vulnerability['models'] = array();
-        foreach ($models as $model) {
-            $vulnerability['models'][] = $model->getJsonArray();
+        return $this->getPreparedJsonResponse($this->vulnerabilityService->getVulnerabilityData($id));
+    }
+
+    public function create($data)
+    {
+        if (!$this->isBatchDataRequest($data)) {
+            $data = [$data];
+        }
+        foreach ($data as $requestParams) {
+            $this->validatePostParams($this->postVulnerabilityDataInputValidator, $requestParams);
+        }
+        $vulnerability = null;
+        foreach ($data as $requestParams) {
+            $vulnerability = $this->vulnerabilityService->create($requestParams);
         }
 
-        return new JsonModel($vulnerability);
+        return $this->getPreparedJsonResponse([
+            'status' => 'ok',
+            'id' => $vulnerability ? $vulnerability->getUuid() : '',
+        ]);
+    }
+
+    public function update($id, $data)
+    {
+        $this->validatePostParams($this->postVulnerabilityDataInputValidator, $data);
+
+        $this->vulnerabilityService->update($id, $data);
+
+        return $this->getPreparedJsonResponse(['status' => 'ok']);
+    }
+
+    public function patch($id, $data)
+    {
+        $this->vulnerabilityService->patch($id, $data);
+
+        return $this->getPreparedJsonResponse(['status' => 'ok']);
+    }
+
+    public function delete($id)
+    {
+        $this->vulnerabilityService->delete($id);
+
+        return $this->getPreparedJsonResponse(['status' => 'ok']);
+    }
+
+    public function deleteList($data)
+    {
+        $this->vulnerabilityService->deleteList($data);
+
+        return $this->getPreparedJsonResponse(['status' => 'ok']);
     }
 }

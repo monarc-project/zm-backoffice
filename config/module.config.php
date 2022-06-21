@@ -19,6 +19,7 @@ use Monarc\BackOffice\Validator\UniqueClientProxyAlias;
 use Monarc\Core\Controller\ApiModelsController;
 use Monarc\Core\Controller\ApiOperationalRisksScalesController;
 use Laminas\Di\Container\AutowireFactory;
+use Monarc\Core\Table\Factory\ClientEntityManagerFactory;
 
 return [
     'router' => [
@@ -513,8 +514,8 @@ return [
         'factories' => [
             DbCli::class => DbCliFactory::class,
 
-            ServerTable::class => AutowireFactory::class,
-            ClientTable::class => AutowireFactory::class,
+            ServerTable::class => ClientEntityManagerFactory::class,
+            ClientTable::class => ClientEntityManagerFactory::class,
 
             // TODO: remove the factories and refactor the services, instantiate entities from the services directly.
             ServerService::class => ServerServiceFactory::class,

@@ -4,11 +4,9 @@ MONARC Core project
 See example repository for create:
 
 * Entity
-* Entity Table
-* Controller
-* Controller Factory
+* Table
 * Service
-* Service Factory
+* Controller
 * and configure Module.php & module.config.php
 
 Entity

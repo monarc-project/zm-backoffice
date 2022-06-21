@@ -37,7 +37,7 @@
         }
     ],
     "require": {
-        "php": "^7.2",
+        "php": "^7.4",
         "ext-json": "*",
         "ext-pdo": "*",
         "doctrine/doctrine-orm-module": "^2.1",

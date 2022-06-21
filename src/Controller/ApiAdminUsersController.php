@@ -1,115 +1,76 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2022  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Table\UserTable;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
+use Monarc\Core\InputFormatter\User\GetUsersInputFormatter;
 use Monarc\Core\Service\UserService;
-use Throwable;
 use Laminas\Mvc\Controller\AbstractRestfulController;
-use Laminas\View\Model\JsonModel;
 
-/**
- * Class ApiAdminUsersController
- * @package Monarc\BackOffice\Controller
- */
 class ApiAdminUsersController extends AbstractRestfulController
 {
-    private const DEFAULT_LIMIT = 25;
+    use ControllerRequestResponseHandlerTrait;
 
-    protected $name = 'users';
+    private UserService $userService;
 
-    /** @var UserService */
-    private $userService;
+    private GetUsersInputFormatter $getUsersInputFormatter;
 
-    /** @var UserTable */
-    private $userTable;
-
-    public function __construct(UserService $userService, UserTable $userTable)
-    {
+    public function __construct(
+        GetUsersInputFormatter $getUsersInputFormatter,
+        UserService $userService
+    ) {
+        $this->getUsersInputFormatter = $getUsersInputFormatter;
         $this->userService = $userService;
-        $this->userTable = $userTable;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getList()
     {
-        $searchString = $this->params()->fromQuery('filter', '');
-        $status = $this->params()->fromQuery('status', 1);
-        $filter = $status === 'all' ? null : ['status' => (int)$status];
-        $page = $this->params()->fromQuery('page', 1);
-        $limit = $this->params()->fromQuery('limit', static::DEFAULT_LIMIT);
-        $order = $this->params()->fromQuery('order', '');
+        $formattedParams = $this->getFormattedInputParams($this->getUsersInputFormatter);
 
-        $users = $this->userService->getUsersList($searchString, $filter, $order);
-
-        return new JsonModel(array(
-            'count' => \count($users),
-            'users' => \array_slice($users, $page - 1, $limit),
-        ));
+        return $this->getPreparedJsonResponse([
+            'count' => $this->userService->getCount($formattedParams),
+            'users' => $this->userService->getList($formattedParams),
+        ]);
     }
 
     public function get($id)
     {
-        $user = $this->userTable->findById($id);
-
-        // TODO: use a normalizer instead.
-        return new JsonModel([
-            'id' => $user->getId(),
-            'status' => $user->getStatus(),
-            'firstname' => $user->getFirstname(),
-            'lastname' => $user->getLastname(),
-            'email' => $user->getEmail(),
-            'language' => $user->getLanguage(),
-            'role' => $user->getRolesArray(),
-        ]);
+        return $this->getPreparedJsonResponse($this->userService->getData((int)$id));
     }
 
-    /**
-     * @inheritdoc
+    /*
+     * TODO: implement the validators for create and patch the BO side similar to FO CreateUserInputValidator
      */
     public function create($data)
     {
         $this->userService->create($data);
 
-        return new JsonModel(array('status' => 'ok'));
+        return $this->getPreparedJsonResponse(['status' => 'ok']);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function update($id, $data)
     {
-        // TODO: add a request data filter.
-
         $this->userService->update($id, $data);
 
-        return new JsonModel(array('status' => 'ok'));
+        return $this->getPreparedJsonResponse(['status' => 'ok']);
     }
 
     public function patch($id, $data)
     {
-        // TODO: add a request data filter.
-
         $this->userService->patch($id, $data);
 
-        return new JsonModel(array('status' => 'ok'));
+        return $this->getPreparedJsonResponse(['status' => 'ok']);
     }
 
     public function delete($id)
     {
-        try {
-            $this->userService->delete($id);
-        } catch (Throwable $e) {
-            return new JsonModel(array('status' => 'ko'));
-        }
+        $this->userService->delete($id);
 
-        return new JsonModel(array('status' => 'ok'));
+        return $this->getPreparedJsonResponse(['status' => 'ok']);
     }
 }

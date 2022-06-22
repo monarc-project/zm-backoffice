@@ -8,6 +8,7 @@
 namespace Monarc\BackOffice\Controller;
 
 use RobThree\Auth\TwoFactorAuth;
+use RobThree\Auth\Providers\Qr\EndroidQrCodeProvider;
 use Monarc\Core\Exception\Exception;
 use Monarc\Core\Service\ConnectedUserService;
 use Monarc\Core\Service\UserService;
@@ -60,13 +61,8 @@ class ApiUserTwoFAController extends AbstractRestfulController
         $this->userService = $userService;
         $this->connectedUserService = $connectedUserService;
         $this->userTable = $userTable;
-        $this->tfa = new TwoFactorAuth();
-
-        try {
-            $this->tfa->ensureCorrectTime();
-        } catch (RobThree\Auth\TwoFactorAuthException $ex) {
-            file_put_contents('php://stderr', print_r('[2FA] Incorrect time', true).PHP_EOL);
-        }
+        $qr = new EndroidQrCodeProvider();
+        $this->tfa = new TwoFactorAuth('MONARC', 6, 30, 'sha1', $qr);
     }
 
     /**

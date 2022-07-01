@@ -50,20 +50,20 @@ class ApiVulnerabilitiesController extends AbstractRestfulController
 
     public function create($data)
     {
-        if (!$this->isBatchDataRequest($data)) {
-            $data = [$data];
-        }
-        foreach ($data as $requestParams) {
-            $this->validatePostParams($this->postVulnerabilityDataInputValidator, $requestParams);
-        }
-        $vulnerability = null;
-        foreach ($data as $requestParams) {
-            $vulnerability = $this->vulnerabilityService->create($requestParams);
+        $isBatchData = $this->isBatchData($data);
+        $this->validatePostParams($this->postVulnerabilityDataInputValidator, $data, $isBatchData);
+
+        $vulnerabilitiesUuids = [];
+        $validatedData = $isBatchData
+            ? $this->postVulnerabilityDataInputValidator->getValidDataSets()
+            : [$this->postVulnerabilityDataInputValidator->getValidData()];
+        foreach ($validatedData as $validatedDataRow) {
+            $vulnerabilitiesUuids[] = $this->vulnerabilityService->create($validatedDataRow)->getUuid();
         }
 
         return $this->getPreparedJsonResponse([
             'status' => 'ok',
-            'id' => $vulnerability ? $vulnerability->getUuid() : '',
+            'id' => implode(', ', $vulnerabilitiesUuids),
         ]);
     }
 
@@ -71,7 +71,7 @@ class ApiVulnerabilitiesController extends AbstractRestfulController
     {
         $this->validatePostParams($this->postVulnerabilityDataInputValidator, $data);
 
-        $this->vulnerabilityService->update($id, $data);
+        $this->vulnerabilityService->update($id, $this->postVulnerabilityDataInputValidator->getValidData());
 
         return $this->getPreparedJsonResponse(['status' => 'ok']);
     }

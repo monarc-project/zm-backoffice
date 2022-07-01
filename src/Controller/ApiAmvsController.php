@@ -50,7 +50,7 @@ class ApiAmvsController extends AbstractRestfulController
 
     public function create($data)
     {
-        if ($this->isBatchDataRequest($data)) {
+        if ($this->isBatchData($data)) {
             return $this->getPreparedJsonResponse([
                 'status' => 'ok',
                 'id' => current($this->amvService->createAmvItems($data))

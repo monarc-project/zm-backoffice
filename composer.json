@@ -40,7 +40,7 @@
         "php": "^7.4",
         "ext-json": "*",
         "ext-pdo": "*",
-        "doctrine/doctrine-orm-module": "^2.1",
+        "doctrine/doctrine-orm-module": "^5.1",
         "monarc/core": "^2.9.15",
         "robmorgan/phinx": "^0.11.1",
         "laminas/laminas-mvc": "^3.1",

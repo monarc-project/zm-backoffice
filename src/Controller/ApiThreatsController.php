@@ -50,20 +50,20 @@ class ApiThreatsController extends AbstractRestfulController
 
     public function create($data)
     {
-        if (!$this->isBatchDataRequest($data)) {
-            $data = [$data];
-        }
-        foreach ($data as $requestParams) {
-            $this->validatePostParams($this->postThreatDataInputValidator, $requestParams);
-        }
-        $threat = null;
-        foreach ($data as $requestParams) {
-            $threat = $this->threatService->create($requestParams);
+        $isBatchData = $this->isBatchData($data);
+        $this->validatePostParams($this->postThreatDataInputValidator, $data, $isBatchData);
+
+        $threatsUuids = [];
+        $validatedData = $isBatchData
+            ? $this->postThreatDataInputValidator->getValidDataSets()
+            : [$this->postThreatDataInputValidator->getValidData()];
+        foreach ($validatedData as $validatedDataSet) {
+            $threatsUuids[] = $this->threatService->create($validatedDataSet)->getUuid();
         }
 
         return $this->getPreparedJsonResponse([
             'status' => 'ok',
-            'id' => $threat ? $threat->getUuid() : '',
+            'id' => implode(', ', $threatsUuids),
         ]);
     }
 
@@ -71,7 +71,7 @@ class ApiThreatsController extends AbstractRestfulController
     {
         $this->validatePostParams($this->postThreatDataInputValidator, $data);
 
-        $this->threatService->update($id, $data);
+        $this->threatService->update($id, $this->postThreatDataInputValidator->getValidData());
 
         return $this->getPreparedJsonResponse(['status' => 'ok']);
     }

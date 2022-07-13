@@ -8,10 +8,10 @@
 namespace Monarc\BackOffice\Controller;
 
 use Laminas\Mvc\Controller\AbstractRestfulController;
+use Monarc\BackOffice\Validator\InputValidator\Asset\PostAssetDataInputValidator;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\InputFormatter\Asset\GetAssetsInputFormatter;
 use Monarc\Core\Service\AssetService;
-use Monarc\Core\Validator\InputValidator\Asset\PostAssetDataInputValidator;
 
 class ApiAssetsController extends AbstractRestfulController
 {

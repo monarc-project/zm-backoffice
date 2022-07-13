@@ -8,10 +8,10 @@
 namespace Monarc\BackOffice\Controller;
 
 use Laminas\Mvc\Controller\AbstractRestfulController;
+use Monarc\BackOffice\Validator\InputValidator\Vulnerability\PostVulnerabilityDataInputValidator;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\InputFormatter\Vulnerability\GetVulnerabilitiesInputFormatter;
 use Monarc\Core\Service\VulnerabilityService;
-use Monarc\Core\Validator\InputValidator\Vulnerability\PostVulnerabilityDataInputValidator;
 
 class ApiVulnerabilitiesController extends AbstractRestfulController
 {

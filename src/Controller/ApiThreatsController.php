@@ -8,10 +8,10 @@
 namespace Monarc\BackOffice\Controller;
 
 use Laminas\Mvc\Controller\AbstractRestfulController;
+use Monarc\BackOffice\Validator\InputValidator\Threat\PostThreatDataInputValidator;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\InputFormatter\Threat\GetThreatsInputFormatter;
 use Monarc\Core\Service\ThreatService;
-use Monarc\Core\Validator\InputValidator\Threat\PostThreatDataInputValidator;
 
 class ApiThreatsController extends AbstractRestfulController
 {

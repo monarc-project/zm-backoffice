@@ -15,7 +15,7 @@ use Monarc\BackOffice\Service\Model\Entity\ClientServiceModelEntity;
 use Monarc\BackOffice\Service\Model\Entity\ServerServiceModelEntity;
 use Monarc\BackOffice\Service\ServerService;
 use Monarc\BackOffice\Service\ServerServiceFactory;
-use Monarc\BackOffice\Validator\UniqueClientProxyAlias;
+use Monarc\BackOffice\Validator\FieldValidator\UniqueClientProxyAlias;
 use Monarc\Core\Controller\ApiModelsController;
 use Monarc\Core\Controller\ApiOperationalRisksScalesController;
 use Laminas\Di\Container\AutowireFactory;

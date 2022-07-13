@@ -8,7 +8,8 @@
 namespace Monarc\BackOffice\Model\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Monarc\BackOffice\Validator\UniqueClientProxyAlias;
+use Monarc\BackOffice\Model\Table\ClientTable;
+use Monarc\BackOffice\Validator\FieldValidator\UniqueClientProxyAlias;
 use Monarc\Core\Model\Entity\AbstractEntity;
 use Monarc\Core\Model\Entity\Traits\CreateEntityTrait;
 use Monarc\Core\Model\Entity\Traits\UpdateEntityTrait;
@@ -97,39 +98,45 @@ class Client extends AbstractEntity
      */
     protected $first_user_email;
 
-    public function getInputFilter($partial = false){
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
+    public function getInputFilter($partial = false)
+    {
         if (!$this->inputFilter) {
             parent::getInputFilter($partial);
 
-            $this->inputFilter->add(array(
+            $this->inputFilter->add([
                 'name' => 'name',
-                'required' => ($partial) ? false : true,
-                'filters' => array(
-                    array('name' => 'StringTrim',),
-                ),
-                'validators' => array(),
-            ));
+                'required' => !$partial,
+                'filters' => [
+                    ['name' => 'StringTrim'],
+                ],
+                'validators' => [],
+            ]);
 
-            $validators = array();
+            $validators = [];
             if (!$partial) {
-                $validators[] = array(
+                $validators[] = [
                     'name' => UniqueClientProxyAlias::class,
-                    'options' => array(
-                        'adapter' => $this->getDbAdapter(),
-                        'id' => $this->get('id'),
-                    ),
-                );
+                    'options' => [
+                        'clintRepository' => $this->getDbAdapter()->getRepository(ClientTable::class),
+                        'id' => $this->id,
+                    ],
+                ];
             }
-            $this->inputFilter->add(array(
+            $this->inputFilter->add([
                 'name' => 'proxyAlias',
-                'required' => ($partial) ? false : true,
-                'filters' => array(
-                    array('name' => 'StringTrim',),
-                ),
-                'validators' => $validators
-            ));
+                'required' => !$partial,
+                'filters' => [
+                    ['name' => 'StringTrim'],
+                ],
+                'validators' => $validators,
+            ]);
         }
+
         return $this->inputFilter;
     }
 }

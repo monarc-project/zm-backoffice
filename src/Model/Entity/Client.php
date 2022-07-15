@@ -1,13 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2021 SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Model\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Monarc\BackOffice\Validator\UniqueClientProxyAlias;
 use Monarc\Core\Model\Entity\AbstractEntity;
 use Monarc\Core\Model\Entity\Traits\CreateEntityTrait;
@@ -35,11 +36,11 @@ class Client extends AbstractEntity
     protected $id;
 
     /**
-     * @var integer
+     * @var ArrayCollection|ClientModel[]
      *
-     * @ORM\Column(name="model_id", type="integer", nullable=true)
+     * @ORM\OneToMany(targetEntity="Monarc\BackOffice\Model\Entity\ClientModel", mappedBy="client")
      */
-    protected $model_id;
+    protected $models;
 
     /**
      * @var integer
@@ -70,10 +71,10 @@ class Client extends AbstractEntity
     protected $proxyAlias;
 
     /**
-    * @var string
-    *
-    * @ORM\Column(name="contact_email", type="string", length=255, nullable=true)
-    */
+     * @var string
+     *
+     * @ORM\Column(name="contact_email", type="string", length=255, nullable=true)
+     */
     protected $contact_email;
 
     /**
@@ -97,19 +98,31 @@ class Client extends AbstractEntity
      */
     protected $first_user_email;
 
-    public function getInputFilter($partial = false){
+    public function __construct()
+    {
+        $this->models = new ArrayCollection();
+    }
 
+    public function getModels()
+    {
+        return $this->models;
+    }
+
+    public function getInputFilter($partial = false)
+    {
         if (!$this->inputFilter) {
             parent::getInputFilter($partial);
 
-            $this->inputFilter->add(array(
-                'name' => 'name',
-                'required' => ($partial) ? false : true,
-                'filters' => array(
-                    array('name' => 'StringTrim',),
-                ),
-                'validators' => array(),
-            ));
+            $this->inputFilter->add(
+                array(
+                    'name' => 'name',
+                    'required' => ($partial) ? false : true,
+                    'filters' => array(
+                        array('name' => 'StringTrim',),
+                    ),
+                    'validators' => array(),
+                )
+            );
 
             $validators = array();
             if (!$partial) {
@@ -121,14 +134,16 @@ class Client extends AbstractEntity
                     ),
                 );
             }
-            $this->inputFilter->add(array(
-                'name' => 'proxyAlias',
-                'required' => ($partial) ? false : true,
-                'filters' => array(
-                    array('name' => 'StringTrim',),
-                ),
-                'validators' => $validators
-            ));
+            $this->inputFilter->add(
+                array(
+                    'name' => 'proxyAlias',
+                    'required' => ($partial) ? false : true,
+                    'filters' => array(
+                        array('name' => 'StringTrim',),
+                    ),
+                    'validators' => $validators
+                )
+            );
         }
         return $this->inputFilter;
     }

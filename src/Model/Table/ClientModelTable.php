@@ -8,31 +8,21 @@
 namespace Monarc\BackOffice\Model\Table;
 
 use Monarc\BackOffice\Model\DbCli;
-use Monarc\BackOffice\Model\Entity\Client;
+use Monarc\BackOffice\Model\Entity\ClientModel;
 use Monarc\Core\Model\Table\AbstractEntityTable;
 use Monarc\Core\Service\ConnectedUserService;
 
 /**
- * Class ClientTable
+ * Class ClientModelTable
  *
  * @package Monarc\BackOffice\Model\Table
  */
-class ClientTable extends AbstractEntityTable
+class ClientModelTable extends AbstractEntityTable
 {
     public function __construct(
         DbCli $dbService,
         ConnectedUserService $connectedUserService
     ) {
-        parent::__construct($dbService, Client::class, $connectedUserService);
-    }
-
-    public function findById(int $id): ?Client
-    {
-        return $this->getRepository()
-            ->createQueryBuilder('s')
-            ->where('s.id = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getOneOrNullResult();
+        parent::__construct($dbService, ClientModel::class, $connectedUserService);
     }
 }

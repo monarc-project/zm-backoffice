@@ -543,6 +543,7 @@ return [
 
             ServerTable::class => AutowireFactory::class,
             ClientTable::class => AutowireFactory::class,
+            ClientModelTable::class => AutowireFactory::class,
 
             // TODO: remove the factories and refactor the services, instantiate entities from the services directly.
             ServerService::class => ServerServiceFactory::class,

@@ -15,8 +15,9 @@ use RuntimeException;
 
 /**
  * This class is the service that handles clients.
- * @see \Monarc\BackOffice\Model\Entity\Client
- * @see \Monarc\BackOffice\Model\Table\ClientTable
+ *
+ * @see     \Monarc\BackOffice\Model\Entity\Client
+ * @see     \Monarc\BackOffice\Model\Table\ClientTable
  * @package Monarc\BackOffice\Service
  */
 class ClientService extends AbstractService
@@ -25,7 +26,8 @@ class ClientService extends AbstractService
     protected $clientEntity;
     protected $serverEntity;
     protected $serverTable;
-    protected $forbiddenFields = ['model_id'];
+    protected $clientModelEntity;
+    protected $clientModelTable;
     protected $config;
 
     /**
@@ -33,27 +35,47 @@ class ClientService extends AbstractService
      */
     public function getFilteredCount($filter = null, $filterAnd = null)
     {
-        /** @var ClientTable $clientTable */
+        /**
+         *   @var ClientTable $clientTable
+         */
         $clientTable = $this->get('table');
 
-        return $clientTable->countFiltered($this->parseFrontendFilter($filter, array('name', 'first_user_email',
-            'proxyAlias', 'createdAt')));
+        return $clientTable->countFiltered(
+            $this->parseFrontendFilter(
+                $filter, array('name', 'first_user_email',
+                'proxyAlias', 'createdAt')
+            )
+        );
     }
 
     /**
      * @inheritdoc
      */
-    public function getList($page = 1, $limit = 25, $order = null, $filter = null, $filterAnd = null)
-    {
-        /** @var ClientTable $clientTable */
+    public function getList(
+        $page = 1,
+        $limit = 25,
+        $order = null,
+        $filter = null,
+        $filterAnd = null
+    ) {
+        /**
+         * @var ClientTable $clientTable
+         */
         $clientTable = $this->get('table');
 
         return $clientTable->fetchAllFiltered(
-            array('id', 'name', 'first_user_email', 'proxyAlias', 'createdAt', 'model_id'),
+            array('id', 'name', 'first_user_email', 'proxyAlias', 'createdAt'),
             $page,
             $limit,
             $this->parseFrontendOrder($order),
-            $this->parseFrontendFilter($filter, array('name', 'first_user_email', 'proxyAlias', 'createdAt', 'model_id'))
+            $this->parseFrontendFilter(
+                $filter,
+                array('name',
+                    'first_user_email',
+                    'proxyAlias',
+                    'createdAt',
+                    'models')
+            )
         );
     }
 
@@ -62,7 +84,13 @@ class ClientService extends AbstractService
      */
     public function getEntity($id)
     {
-        return $this->get('table')->get($id);
+        $entity = $this->get('table')->findById($id);
+        $return = $entity->getJsonArray();
+        unset($return['models']); //need to unset to avoid circular issue
+        foreach ($entity->getModels() as $model) {
+            $return['models'][] = $model->getModelId();
+        }
+        return $return;
     }
 
     /**
@@ -70,14 +98,21 @@ class ClientService extends AbstractService
      */
     public function create($data, $last = true)
     {
-        /** @var ClientTable $clientTable */
+        /**
+         * @var ClientTable $clientTable
+         */
         $clientTable = $this->get('table');
 
-        /** @var Client $client */
+        /**
+         * @var Client $client
+         */
         $client = $this->get('clientEntity');
         $client->exchangeArray($data);
 
-        $client->setCreator($this->getConnectedUser()->getFirstname() . ' ' . $this->getConnectedUser()->getLastname());
+        $client->setCreator(
+            $this->getConnectedUser()->getFirstname() . ' ' .
+            $this->getConnectedUser()->getLastname()
+        );
 
         $clientTable->save($client);
 
@@ -92,10 +127,14 @@ class ClientService extends AbstractService
         //security
         $this->filterPatchFields($data);
 
-        /** @var ClientTable $clientTable */
+        /**
+         * @var ClientTable $clientTable
+         */
         $clientTable = $this->get('table');
 
-        /** @var Client $entity */
+        /**
+         * @var Client $entity
+         */
         $entity = $clientTable->getEntity($id);
 
         if (isset($data['proxy_alias'])) {
@@ -106,7 +145,8 @@ class ClientService extends AbstractService
         if ($entity !== null) {
             $entity->exchangeArray($data, true);
             $entity->setUpdater(
-                $this->getConnectedUser()->getFirstname() . ' ' . $this->getConnectedUser()->getLastname()
+                $this->getConnectedUser()->getFirstname() . ' ' .
+                $this->getConnectedUser()->getLastname()
             );
 
             $clientTable->save($entity);
@@ -122,7 +162,9 @@ class ClientService extends AbstractService
      */
     public function delete($id)
     {
-        /** @var ClientTable $clientTable */
+        /**
+         * @var ClientTable $clientTable
+         */
         $clientTable = $this->get('table');
 
         $entity = $clientTable->getEntity($id);
@@ -137,7 +179,8 @@ class ClientService extends AbstractService
     }
 
     /**
-     * Created the JSON file to build the client environment on a server and stores it in data/json/.
+     * Created the JSON file to build the client environment
+     * on a server and stores it in data/json/.
      * Then returns the JSON file path.
      *
      * @return string The JSON file path
@@ -172,7 +215,9 @@ class ClientService extends AbstractService
             'lastname' => $client->get('first_user_lastname'),
             'email' => $client->get('first_user_email'),
             'language' => 1,
-            'password' => password_hash($salt . $client->get('first_user_email'), PASSWORD_BCRYPT),
+            'password' => password_hash(
+                $salt . $client->get('first_user_email'), PASSWORD_BCRYPT
+            ),
             'creator' => 'System',
             'created_at' => date('Y-m-d H:i:s')
         );
@@ -199,11 +244,13 @@ class ClientService extends AbstractService
         $sqlDumpUsersRoles = '';
         $listValues = $this->getListValues($role1Values, $serverTable);
         if ($listValues !== '') {
-            $sqlDumpUsersRoles = 'INSERT INTO `users_roles` SET ' . $listValues . ';';
+            $sqlDumpUsersRoles
+                = 'INSERT INTO `users_roles` SET ' . $listValues . ';';
         }
         $listValues = $this->getListValues($role2Values, $serverTable);
         if ($listValues !== '') {
-            $sqlDumpUsersRoles .= ' INSERT INTO `users_roles` SET ' . $listValues . ';';
+            $sqlDumpUsersRoles .=
+                ' INSERT INTO `users_roles` SET ' . $listValues . ';';
         }
 
         //clients table database client
@@ -229,7 +276,8 @@ class ClientService extends AbstractService
         $datas = array(
             'server' => $server->get('fqdn'),
             'proxy_alias' => $client->get('proxyAlias'),
-            'sql_bootstrap' => $sqlDumpUsers . ' ' . $sqlDumpUsersRoles . ' ' . $sqlDumpClients
+            'sql_bootstrap' => $sqlDumpUsers . ' ' .
+                $sqlDumpUsersRoles . ' ' . $sqlDumpClients
         );
 
         $path = $this->config['spool_path_create'];
@@ -238,7 +286,8 @@ class ClientService extends AbstractService
     }
 
     /**
-     * Created the JSON file to delete the client environment on a server and stores it in data/json/.
+     * Created the JSON file to delete the client environment
+     * on a server and stores it in data/json/.
      * Then returns the JSON file path.
      *
      * @return string The JSON file path
@@ -283,9 +332,11 @@ class ClientService extends AbstractService
                 }
 
                 if (is_numeric($value)) {
-                    $listValues .= "`$key` = " . $serverTable->getDb()->quote($value, PDO::PARAM_INT);
+                    $listValues .= "`$key` = " .
+                        $serverTable->getDb()->quote($value, PDO::PARAM_INT);
                 } else {
-                    $listValues .= "`$key` = " . $serverTable->getDb()->quote($value, PDO::PARAM_STR);
+                    $listValues .= "`$key` = " .
+                        $serverTable->getDb()->quote($value, PDO::PARAM_STR);
                 }
             }
         }
@@ -296,7 +347,9 @@ class ClientService extends AbstractService
     private function createJsonFile($path, array $datas): string
     {
         if (!is_dir($path) && !mkdir($path, 0750, true) && !is_dir($path)) {
-            throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
+            throw new RuntimeException(
+                sprintf('Directory "%s" was not created', $path)
+            );
         }
         $now = date('YmdHis');
         $filename = $path . $now . '.json';

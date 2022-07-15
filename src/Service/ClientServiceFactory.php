@@ -8,13 +8,17 @@
 namespace Monarc\BackOffice\Service;
 
 use Monarc\BackOffice\Model\Entity\Client;
+use Monarc\BackOffice\Model\Entity\ClientModel;
 use Monarc\BackOffice\Model\Entity\Server;
 use Monarc\BackOffice\Model\Table\ClientTable;
 use Monarc\BackOffice\Model\Table\ServerTable;
+use Monarc\BackOffice\Model\Table\ClientModelTable;
 use Monarc\Core\Service\AbstractServiceFactory;
+
 
 /**
  * Factory class attached to ClientService
+ *
  * @package Monarc\BackOffice\Service
  */
 class ClientServiceFactory extends AbstractServiceFactory
@@ -24,6 +28,8 @@ class ClientServiceFactory extends AbstractServiceFactory
         'clientEntity'=> Client::class,
         'serverTable'=> ServerTable::class,
         'serverEntity'=> Server::class,
+        'clientModelEntity' => ClientModel::class,
+        'clientModelTable' => ClientModelTable::class,
         'config' => 'Config',
     );
 }

@@ -2,6 +2,7 @@
 
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Monarc\BackOffice\Controller;
 use Monarc\BackOffice\Model\DbCli;
 use Monarc\BackOffice\Model\Entity\Client;
@@ -16,6 +17,9 @@ use Monarc\BackOffice\Service\Model\Entity\ServerServiceModelEntity;
 use Monarc\BackOffice\Service\ServerService;
 use Monarc\BackOffice\Service\ServerServiceFactory;
 use Monarc\BackOffice\Validator\FieldValidator\UniqueClientProxyAlias;
+use Monarc\BackOffice\Validator\InputValidator\Asset\PostAssetDataInputValidator;
+use Monarc\BackOffice\Validator\InputValidator\Threat\PostThreatDataInputValidator;
+use Monarc\BackOffice\Validator\InputValidator\Vulnerability\PostVulnerabilityDataInputValidator;
 use Monarc\Core\Controller\ApiModelsController;
 use Monarc\Core\Controller\ApiOperationalRisksScalesController;
 use Laminas\Di\Container\AutowireFactory;
@@ -522,6 +526,11 @@ return [
             ClientService::class => ClientServiceFactory::class,
             Server::class => ServerServiceModelEntity::class,
             Client::class => ClientServiceModelEntity::class,
+
+            /* Validators */
+            PostAssetDataInputValidator::class => ReflectionBasedAbstractFactory::class,
+            PostThreatDataInputValidator::class => ReflectionBasedAbstractFactory::class,
+            PostVulnerabilityDataInputValidator::class => ReflectionBasedAbstractFactory::class,
         ],
     ],
 

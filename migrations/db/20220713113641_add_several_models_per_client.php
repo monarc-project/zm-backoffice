@@ -36,6 +36,10 @@ class AddSeveralModelsPerClient extends AbstractMigration
         $table
             ->addColumn('model_id', 'integer', array('null' => true, 'signed' => false))
             ->addColumn('client_id', 'integer', array('null' => true, 'signed' => false))
+            ->addColumn('creator', 'string', array('null' => true, 'limit' => 255))
+            ->addColumn('created_at', 'datetime', array('null' => true))
+            ->addColumn('updater', 'string', array('null' => true, 'limit' => 255))
+            ->addColumn('updated_at', 'datetime', array('null' => true))
             ->addIndex(array('model_id'))
             ->addIndex(array('client_id'))
             ->create();

@@ -8,6 +8,7 @@
 namespace Monarc\BackOffice\Service;
 
 use Monarc\BackOffice\Model\Entity\Client;
+use Monarc\BackOffice\Model\Entity\ClientModel;
 use Monarc\BackOffice\Model\Table\ClientTable;
 use Monarc\Core\Service\AbstractService;
 use PDO;
@@ -88,7 +89,8 @@ class ClientService extends AbstractService
         $return = $entity->getJsonArray();
         unset($return['models']); //need to unset to avoid circular issue
         foreach ($entity->getModels() as $model) {
-            $return['models'][] = $model->getModelId();
+            //model_id is asked by FE
+            $return['model_id'][] = $model->getModelId();
         }
         return $return;
     }
@@ -143,11 +145,29 @@ class ClientService extends AbstractService
         }
 
         if ($entity !== null) {
+            $dataModels = null;
+            if (isset($data['model_id'])) {
+                $dataModels = $data['model_id'];
+                unset($data['model_id']);
+            }
             $entity->exchangeArray($data, true);
             $entity->setUpdater(
                 $this->getConnectedUser()->getFirstname() . ' ' .
                 $this->getConnectedUser()->getLastname()
             );
+            if ($dataModels !== null) {
+                $clientModelTable = $this->get('clientModelTable');
+                $entity->getModels()->clear();
+                //link model
+                foreach ($dataModels as $newModel) {
+                        $clientModel = (new ClientModel())
+                            ->setClient($entity)
+                            ->setModelId($newModel)
+                            ->setCreator($this->getConnectedUser()->getEmail());
+                        $clientModelTable->save($clientModel);
+                        $entity->getModels()->add($clientModel);
+                }
+            }
 
             $clientTable->save($entity);
 

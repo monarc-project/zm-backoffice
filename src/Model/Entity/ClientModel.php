@@ -14,7 +14,7 @@ use Monarc\Core\Model\Entity\Traits\CreateEntityTrait;
 use Monarc\Core\Model\Entity\Traits\UpdateEntityTrait;
 
 /**
- * ClientModel
+ * ClientModel link between clients and models
  *
  * @ORM\Table(name="clients_models")
  * @ORM\Entity
@@ -43,14 +43,32 @@ class ClientModel extends AbstractEntity
     /**
      * @ORM\ManyToOne(targetEntity="Monarc\BackOffice\Model\Entity\Client")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="client_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="client_id", referencedColumnName="id")
      * })
      */
     protected $client;
 
-    public function getModelId()
+    public function getModelId(): int
     {
         return $this->modelId;
     }
+
+    public function setModelId(int $modelId): self
+    {
+        $this->modelId = $modelId;
+        return $this;
+    }
+
+    public function getClient(): Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(Client $client): self
+    {
+        $this->client = $client;
+        return $this;
+    }
+
 
 }

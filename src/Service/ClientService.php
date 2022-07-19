@@ -112,10 +112,28 @@ class ClientService extends AbstractService
         $client->exchangeArray($data);
 
         $client->setCreator(
-            $this->getConnectedUser()->getFirstname() . ' ' .
-            $this->getConnectedUser()->getLastname()
+            $this->getConnectedUser()->getEmail()
         );
 
+        $clientTable->save($client,false);
+        $dataModels = null;
+
+        if (isset($data['model_id'])) {
+            $dataModels = $data['model_id'];
+            unset($data['model_id']);
+        }
+        if ($dataModels !== null) {
+            $clientModelTable = $this->get('clientModelTable');
+            //link model
+            foreach ($dataModels as $newModel) {
+                    $clientModel = (new ClientModel())
+                        ->setClient($client)
+                        ->setModelId($newModel)
+                        ->setCreator($this->getConnectedUser()->getEmail());
+                    $clientModelTable->save($clientModel);
+                    $client->getModels()->add($clientModel);
+            }
+        }
         $clientTable->save($client);
 
         $this->createJson($client);
@@ -152,8 +170,7 @@ class ClientService extends AbstractService
             }
             $entity->exchangeArray($data, true);
             $entity->setUpdater(
-                $this->getConnectedUser()->getFirstname() . ' ' .
-                $this->getConnectedUser()->getLastname()
+                $this->getConnectedUser()->getEmail()
             );
             if ($dataModels !== null) {
                 $clientModelTable = $this->get('clientModelTable');

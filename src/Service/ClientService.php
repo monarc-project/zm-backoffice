@@ -115,7 +115,7 @@ class ClientService extends AbstractService
             $this->getConnectedUser()->getEmail()
         );
 
-        $clientTable->save($client,false);
+        $clientTable->save($client, false);
         $dataModels = null;
 
         if (isset($data['model_id'])) {
@@ -293,7 +293,7 @@ class ClientService extends AbstractService
         //clients table database client
         $fieldsClient = array(
             'id' => $client->get('id'),
-            'model_id' => $client->get('model_id'),
+           // 'models' => $client->getModels(),
             'logo_id' => $client->get('logo_id'),
             'name' => $client->get('name'),
             'proxy_alias' => $client->get('proxy_alias'),
@@ -310,11 +310,36 @@ class ClientService extends AbstractService
             $sqlDumpClients = 'INSERT INTO `clients` SET ' . $listValues . ';';
         }
 
+        //clients_models table DB client
+        $fieldsClientsModels = [];
+        foreach ($client->getModels() as $model) {
+            $fieldsClientsModels[] = [
+                'client_id' => $client->get('id'),
+                'model_id' => $model->getModelId(),
+                'creator' => 'System',
+                'created_at' => date('Y-m-d H:i:s'),
+            ];
+        }
+
+        $sqlDumpClientsModels = '';
+        $listValuesModels = $this->getListValues($fieldsClientsModels, $serverTable);
+        if (is_array($listValuesModels)) {
+            foreach ($listValuesModels as $listValuesModel) {
+                $sqlDumpClientsModels
+                    .= 'INSERT INTO `clients_models` SET ' . $listValuesModel . ';';
+            }
+        } else if (!in_array($listValuesModels) && $listValues != '') {
+            $sqlDumpClientsModels
+                = 'INSERT INTO `clients_models` SET ' . $listValuesModels . ';';
+        }
+
         $datas = array(
             'server' => $server->get('fqdn'),
             'proxy_alias' => $client->get('proxyAlias'),
             'sql_bootstrap' => $sqlDumpUsers . ' ' .
-                $sqlDumpUsersRoles . ' ' . $sqlDumpClients
+                $sqlDumpUsersRoles . ' ' .
+                $sqlDumpClients . ' ' .
+                $sqlDumpClientsModels
         );
 
         $path = $this->config['spool_path_create'];
@@ -363,7 +388,13 @@ class ClientService extends AbstractService
     {
         $listValues = '';
         foreach ($fieldsValues as $key => $value) {
-            if ($key !== '' && $value !== null) {
+            if (is_array($value)) {
+                if (!is_array($listValues)) {
+                    $listValues = [];
+                }
+                $listValues[]= $this->getListValues($value, $serverTable);
+            }
+            if (!is_array($value) && $key !== '' && $value !== null) {
                 if ($listValues !== '') {
                     $listValues .= ', ';
                 }

@@ -1,9 +1,16 @@
 <?php
+/**
+ * @link      https://github.com/monarc-project for the canonical source repository
+ * @copyright Copyright (c) 2016-2022 SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @license   MONARC is licensed under GNU Affero General Public License version 3
+ */
 
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Laminas\Mvc\Middleware\PipeSpec;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Monarc\BackOffice\Controller;
+use Monarc\BackOffice\Middleware\AnrValidationMiddleware;
 use Monarc\BackOffice\Model\DbCli;
 use Monarc\BackOffice\Model\Entity\Client;
 use Monarc\BackOffice\Model\Entity\Server;
@@ -20,7 +27,6 @@ use Monarc\BackOffice\Validator\FieldValidator\UniqueClientProxyAlias;
 use Monarc\BackOffice\Validator\InputValidator\Asset\PostAssetDataInputValidator;
 use Monarc\BackOffice\Validator\InputValidator\Threat\PostThreatDataInputValidator;
 use Monarc\BackOffice\Validator\InputValidator\Vulnerability\PostVulnerabilityDataInputValidator;
-use Monarc\Core\Controller\ApiModelsController;
 use Monarc\Core\Controller\ApiOperationalRisksScalesController;
 use Laminas\Di\Container\AutowireFactory;
 use Monarc\Core\Table\Factory\ClientEntityManagerFactory;
@@ -283,19 +289,6 @@ return [
                 ],
             ],
 
-            'monarc_api_objects_categories' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/objects-categories[/:id]',
-                    'constraints' => [
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\ApiObjectsCategoriesController::class,
-                    ],
-                ],
-            ],
-
             'monarc_api_models' => [
                 'type' => 'segment',
                 'options' => [
@@ -304,7 +297,24 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => ApiModelsController::class,
+                        'controller' => Controller\ApiModelsController::class,
+                    ],
+                ],
+            ],
+
+            'monarc_api_objects_categories' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/objects-categories[/:id]',
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(
+                            AnrValidationMiddleware::class,
+                            Controller\ApiObjectsCategoriesController::class,
+                        ),
                     ],
                 ],
             ],
@@ -317,7 +327,67 @@ return [
                         'id' => '[a-f0-9-]*',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiObjectsController::class,
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(
+                            AnrValidationMiddleware::class,
+                            Controller\ApiObjectsController::class,
+                        ),
+                    ],
+                ],
+            ],
+
+            'monarc_api_anr_library_category' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/anr/:anrid/library-category[/:id]',
+                    'constraints' => [
+                        'anrid' => '[0-9]+',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(
+                            AnrValidationMiddleware::class,
+                            Controller\ApiAnrLibraryCategoryController::class,
+                        ),
+                    ],
+                ],
+            ],
+
+            'monarc_api_anr_library' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/anr/:anrid/library[/:id]',
+                    'constraints' => [
+                        'anrid' => '[0-9]+',
+                        'id' => '[a-f0-9-]*',
+                    ],
+                    'defaults' => [
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(
+                            AnrValidationMiddleware::class,
+                            Controller\ApiAnrLibraryController::class,
+                        ),
+                    ],
+                ],
+            ],
+
+            'monarc_api_anr_objects_parents' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/anr/:anrid/objects/:id/parents',
+                    'constraints' => [
+                        'anrid' => '[0-9]+',
+                        'id' => '[a-f0-9-]*',
+                    ],
+                    'defaults' => [
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(
+                            AnrValidationMiddleware::class,
+                            Controller\ApiObjectsController::class,
+                        ),
+                        // TODO: check if the action call works, modify the handler if not.
+                        'action' => 'parents'
                     ],
                 ],
             ],
@@ -483,8 +553,6 @@ return [
             Controller\ApiAdminServersGetController::class => AutowireFactory::class,
             Controller\ApiAdminUsersController::class => AutowireFactory::class,
             Controller\ApiAdminUsersRolesController::class => AutowireFactory::class,
-            Controller\ApiAmvsController::class => AutowireFactory::class,
-            Controller\ApiAssetsController::class => AutowireFactory::class,
             Controller\ApiClientsController::class => AutowireFactory::class,
             Controller\ApiConfigController::class => AutowireFactory::class,
             Controller\ApiQuestionsController::class => AutowireFactory::class,
@@ -502,12 +570,17 @@ return [
             Controller\ApiObjectsCategoriesController::class => AutowireFactory::class,
             Controller\ApiRolfRisksController::class => AutowireFactory::class,
             Controller\ApiRolfTagsController::class => AutowireFactory::class,
-            Controller\ApiThemesController::class => AutowireFactory::class,
             Controller\ApiSoaCategoryController::class => AutowireFactory::class,
+            Controller\ApiAmvsController::class => AutowireFactory::class,
+            Controller\ApiAssetsController::class => AutowireFactory::class,
+            Controller\ApiDeliveriesModelsController::class => AutowireFactory::class,
+            Controller\ApiThemesController::class => AutowireFactory::class,
             Controller\ApiThreatsController::class => AutowireFactory::class,
             Controller\ApiVulnerabilitiesController::class => AutowireFactory::class,
-            Controller\ApiDeliveriesModelsController::class => AutowireFactory::class,
             Controller\ApiUserProfileController::class => AutowireFactory::class,
+            Controller\ApiAnrLibraryCategoryController::class => AutowireFactory::class,
+            Controller\ApiAnrLibraryController::class => AutowireFactory::class,
+            Controller\ApiModelsController::class => AutowireFactory::class,
         ],
     ],
 

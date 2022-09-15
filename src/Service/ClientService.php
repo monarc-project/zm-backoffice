@@ -328,7 +328,7 @@ class ClientService extends AbstractService
                 $sqlDumpClientsModels
                     .= 'INSERT INTO `clients_models` SET ' . $listValuesModel . ';';
             }
-        } else if (!in_array($listValuesModels) && $listValues != '') {
+        } else if (!in_array($listValuesModels) && $listValuesModels !== '') {
             $sqlDumpClientsModels
                 = 'INSERT INTO `clients_models` SET ' . $listValuesModels . ';';
         }

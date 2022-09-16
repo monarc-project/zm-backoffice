@@ -65,18 +65,11 @@ class ClientService extends AbstractService
         $clientTable = $this->get('table');
 
         return $clientTable->fetchAllFiltered(
-            array('id', 'name', 'first_user_email', 'proxyAlias', 'createdAt'),
+            ['id', 'name', 'first_user_email', 'proxyAlias', 'createdAt'],
             $page,
             $limit,
             $this->parseFrontendOrder($order),
-            $this->parseFrontendFilter(
-                $filter,
-                array('name',
-                    'first_user_email',
-                    'proxyAlias',
-                    'createdAt',
-                    'models')
-            )
+            $this->parseFrontendFilter($filter, ['name', 'first_user_email', 'proxyAlias', 'createdAt'])
         );
     }
 

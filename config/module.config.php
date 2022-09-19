@@ -395,10 +395,16 @@ return [
             'monarc_api_objects_duplication' => [
                 'type' => 'segment',
                 'options' => [
-                    'route' => '/api/objects-duplication',
-                    'constraints' => [],
+                    'route' => '/api/anr/:anrid/objects-duplication',
+                    'constraints' => [
+                        'anrid' => '[0-9]+',
+                    ],
                     'defaults' => [
-                        'controller' => Controller\ApiObjectsDuplicationController::class,
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(
+                            AnrValidationMiddleware::class,
+                            Controller\ApiObjectsDuplicationController::class,
+                        ),
                     ],
                 ],
             ],

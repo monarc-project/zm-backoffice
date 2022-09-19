@@ -60,15 +60,26 @@ class ApiObjectsController extends AbstractRestfulControllerRequestHandler
     {
         $this->validatePostParams($this->postObjectDataInputValidator, $data);
 
-        $object = $this->objectService->create($data);
+        $object = $this->objectService->create($this->postObjectDataInputValidator->getValidData());
 
-        return $this->getPreparedJsonResponse([
-            'status' => 'ok',
-            'id' => $object->getUuid(),
-        ]);
+        return $this->getSuccessfulJsonResponse(['id' => $object->getUuid()]);
     }
 
-    // TODO: update, patch, delete, deleteAll.
+    public function update($id, $data)
+    {
+        $this->validatePostParams($this->postObjectDataInputValidator, $data);
+
+        $this->objectService->update($id, $this->postObjectDataInputValidator->getValidData());
+
+        return $this->getSuccessfulJsonResponse();
+    }
+
+    public function delete($id)
+    {
+        $this->objectService->delete($id);
+
+        return $this->getSuccessfulJsonResponse();
+    }
 
     public function getParents()
     {

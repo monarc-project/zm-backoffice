@@ -65,7 +65,9 @@ class ApiObjectsCategoriesController extends AbstractController
             $filterAnd['parent'] = null;
         }
 
-        $objectCategories = $service->getListSpecific($page, $limit, $order, $filter, $filterAnd);
+        $modelId = $this->params()->fromQuery('model');
+
+        $objectCategories = $service->getListSpecific($page, $limit, $order, $filter, $filterAnd, $modelId);
 
         $fields = ['id', 'label1', 'label2', 'label3', 'label4', 'position', 'objects'];
 

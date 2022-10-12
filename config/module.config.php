@@ -336,24 +336,6 @@ return [
                 ],
             ],
 
-            'monarc_api_anr_library_category' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrid/library-category[/:id]',
-                    'constraints' => [
-                        'anrid' => '[0-9]+',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiAnrLibraryCategoryController::class,
-                        ),
-                    ],
-                ],
-            ],
-
             'monarc_api_anr_library' => [
                 'type' => 'segment',
                 'options' => [
@@ -386,7 +368,6 @@ return [
                             AnrValidationMiddleware::class,
                             Controller\ApiObjectsController::class,
                         ),
-                        // TODO: check if the action call works, modify the handler if not.
                         'action' => 'parents'
                     ],
                 ],
@@ -584,7 +565,6 @@ return [
             Controller\ApiThreatsController::class => AutowireFactory::class,
             Controller\ApiVulnerabilitiesController::class => AutowireFactory::class,
             Controller\ApiUserProfileController::class => AutowireFactory::class,
-            Controller\ApiAnrLibraryCategoryController::class => AutowireFactory::class,
             Controller\ApiAnrLibraryController::class => AutowireFactory::class,
             Controller\ApiModelsController::class => AutowireFactory::class,
         ],

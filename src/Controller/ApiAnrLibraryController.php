@@ -9,7 +9,8 @@ namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
-use Monarc\Core\Model\Entity\AnrSuperClass;
+use Monarc\Core\Exception\Exception;
+use Monarc\Core\Model\Entity\Anr;
 use Monarc\Core\Service\ObjectService;
 
 class ApiAnrLibraryController extends AbstractRestfulControllerRequestHandler
@@ -25,7 +26,7 @@ class ApiAnrLibraryController extends AbstractRestfulControllerRequestHandler
 
     public function getList()
     {
-        /** @var AnrSuperClass|null $anr */
+        /** @var Anr|null $anr */
         $anr = $this->getRequest()->getAttribute('anr');
 
         $libraryCategories = $this->objectService->getLibraryTreeStructure($anr);
@@ -37,23 +38,31 @@ class ApiAnrLibraryController extends AbstractRestfulControllerRequestHandler
 
     public function create($data)
     {
-        $anrId = $this->params()->fromRoute('anrid');
+        /** @var Anr|null $anr */
+        $anr = $this->getRequest()->getAttribute('anr');
 
-        // TODO: add to validate.
-        if (!isset($data['objectId'])) {
-            throw new \Monarc\Core\Exception\Exception('objectId is missing');
+        if (!isset($data['objectId'], $data['categoryId'])) {
+            throw new Exception('One of "objectId" or "categoryId" parameter is mandatory.');
         }
 
-        $id = $this->objectService->attachObjectToAnr($data['objectId'], $anrId);
+        $object = null;
+        if (isset($data['objectId'])) {
+            $object = $this->objectService->attachObjectToAnr($data['objectId'], $anr);
+        } else {
+            $this->objectService->attachCategoryObjectsToAnr((int)$data['categoryId'], $anr);
+        }
 
         return $this->getSuccessfulJsonResponse([
-            'id' => $id,
+            'id' => $object !== null ? $object->getUuid() : $data['categoryId'],
         ]);
     }
 
     public function delete($id)
     {
-        $this->objectService->detachObjectFromAnr($id, (int)$this->params()->fromRoute('anrid'));
+        /** @var Anr|null $anr */
+        $anr = $this->getRequest()->getAttribute('anr');
+
+        $this->objectService->detachObjectFromAnr($id, $anr);
 
         return $this->getSuccessfulJsonResponse();
     }

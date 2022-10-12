@@ -81,7 +81,7 @@ class ApiObjectsController extends AbstractRestfulControllerRequestHandler
         return $this->getSuccessfulJsonResponse();
     }
 
-    public function getParents()
+    public function parentsAction()
     {
         /** @var AnrSuperClass|null $anr */
         $anr = $this->getRequest()->getAttribute('anr');

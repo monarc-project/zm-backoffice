@@ -336,6 +336,25 @@ return [
                 ],
             ],
 
+            'monarc_api_anr_objects' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/anr/:anrid/objects',
+                    'constraints' => [
+                        'anrid' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'defaults' => [
+                            'controller' => PipeSpec::class,
+                            'middleware' => new PipeSpec(
+                                AnrValidationMiddleware::class,
+                                Controller\ApiObjectsController::class,
+                            ),
+                        ],
+                    ],
+                ],
+            ],
+
             'monarc_api_anr_library' => [
                 'type' => 'segment',
                 'options' => [

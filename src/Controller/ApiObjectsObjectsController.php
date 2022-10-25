@@ -7,13 +7,13 @@
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
+use Laminas\Mvc\Controller\AbstractRestfulController;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Service\ObjectObjectService;
 use Monarc\Core\Validator\InputValidator\ObjectComposition\CreateDataInputValidator;
 use Monarc\Core\Validator\InputValidator\ObjectComposition\MovePositionDataInputValidator;
 
-class ApiObjectsObjectsController extends AbstractRestfulControllerRequestHandler
+class ApiObjectsObjectsController extends AbstractRestfulController
 {
     use ControllerRequestResponseHandlerTrait;
 
@@ -47,7 +47,7 @@ class ApiObjectsObjectsController extends AbstractRestfulControllerRequestHandle
         $this->validatePostParams($this->movePositionDataInputValidator, $data);
 
         $this->objectObjectService->shiftPositionInComposition(
-            $id,
+            (int)$id,
             $this->movePositionDataInputValidator->getValidData()
         );
 

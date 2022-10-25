@@ -52,9 +52,13 @@ class ApiObjectsCategoriesController extends AbstractRestfulControllerRequestHan
     {
         $this->validatePostParams($this->postObjectCategoryDataInputValidator, $data);
 
-        $obj = $this->objectCategoryService->create($data);
+        $objectCategory = $this->objectCategoryService->create($data);
 
-        return $this->getSuccessfulJsonResponse(['categ' => $obj->getId()]);
+        return $this->getSuccessfulJsonResponse([
+            'categ' => [
+                'id' => $objectCategory->getId(),
+            ],
+        ]);
     }
 
     public function update($id, $data)

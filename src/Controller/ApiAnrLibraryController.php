@@ -41,7 +41,7 @@ class ApiAnrLibraryController extends AbstractRestfulControllerRequestHandler
         /** @var Anr|null $anr */
         $anr = $this->getRequest()->getAttribute('anr');
 
-        if (!isset($data['objectId'], $data['categoryId'])) {
+        if (!isset($data['objectId']) && !isset($data['categoryId'])) {
             throw new Exception('One of "objectId" or "categoryId" parameter is mandatory.');
         }
 

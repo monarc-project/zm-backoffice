@@ -12,12 +12,6 @@ use Monarc\Core\Service\PasswordService;
 use Laminas\Mvc\Controller\AbstractRestfulController;
 use Laminas\View\Model\JsonModel;
 
-/**
- * Api Admin Passwords Controller
- *
- * Class ApiAdminPasswordsController
- * @package Monarc\BackOffice\Controller
- */
 class ApiAdminPasswordsController extends AbstractRestfulController
 {
     /** @var PasswordService */
@@ -28,9 +22,6 @@ class ApiAdminPasswordsController extends AbstractRestfulController
         $this->passwordService = $passwordService;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function create($data)
     {
         //password forgotten

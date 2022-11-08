@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2021  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2022  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Exception\Exception;
+use Monarc\Core\Model\Entity\UserSuperClass;
 use Monarc\Core\Service\ConnectedUserService;
 use Monarc\Core\Service\UserProfileService;
 use Laminas\Mvc\Controller\AbstractRestfulController;
@@ -15,30 +15,28 @@ use Laminas\View\Model\JsonModel;
 
 class ApiUserProfileController extends AbstractRestfulController
 {
-    /** @var ConnectedUserService */
-    private $connectedUserService;
+    private UserProfileService $userProfileService;
 
-    /** @var UserProfileService */
-    private $userProfileService;
+    private UserSuperClass $connectedUser;
 
     public function __construct(UserProfileService $userProfileService, ConnectedUserService $connectedUserService)
     {
         $this->userProfileService = $userProfileService;
-        $this->connectedUserService = $connectedUserService;
+        $this->connectedUser = $connectedUserService->getConnectedUser();
     }
 
     public function getList()
     {
-        $connectedUser = $this->connectedUserService->getConnectedUser();
-
         // TODO: We need to use normalizer for the response data.
         return new JsonModel([
-            'id' => $connectedUser->getId(),
-            'firstname' => $connectedUser->getFirstname(),
-            'lastname' => $connectedUser->getLastname(),
-            'email' => $connectedUser->getEmail(),
-            'status' => $connectedUser->getStatus(),
-            'role' => $connectedUser->getRolesArray(),
+            'id' => $this->connectedUser->getId(),
+            'firstname' => $this->connectedUser->getFirstname(),
+            'lastname' => $this->connectedUser->getLastname(),
+            'email' => $this->connectedUser->getEmail(),
+            'status' => $this->connectedUser->getStatus(),
+            'role' => $this->connectedUser->getRolesArray(),
+            'isTwoFactorAuthEnabled' => $this->connectedUser->isTwoFactorAuthEnabled(),
+            'remainingRecoveryCodes' => \count($this->connectedUser->getRecoveryCodes()),
         ]);
     }
 

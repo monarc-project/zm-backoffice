@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
  * @copyright Copyright (c) 2016-2022 SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
@@ -11,20 +11,13 @@ use Laminas\Mvc\Middleware\PipeSpec;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Monarc\BackOffice\Controller;
 use Monarc\BackOffice\Middleware\AnrValidationMiddleware;
-use Monarc\BackOffice\Model\DbCli;
-use Monarc\BackOffice\Model\Entity\Client;
-use Monarc\BackOffice\Model\Entity\Server;
-use Monarc\BackOffice\Model\Table\ClientTable;
-use Monarc\BackOffice\Model\Table\ServerTable;
+use Monarc\BackOffice\Table\ClientTable;
+use Monarc\BackOffice\Table\ServerTable;
 use Monarc\BackOffice\Service\ClientService;
-use Monarc\BackOffice\Service\ClientServiceFactory;
-use Monarc\BackOffice\Service\Model\DbCliFactory;
-use Monarc\BackOffice\Service\Model\Entity\ClientServiceModelEntity;
-use Monarc\BackOffice\Service\Model\Entity\ServerServiceModelEntity;
 use Monarc\BackOffice\Service\ServerService;
-use Monarc\BackOffice\Service\ServerServiceFactory;
-use Monarc\BackOffice\Validator\FieldValidator\UniqueClientProxyAlias;
 use Monarc\BackOffice\Validator\InputValidator\Asset\PostAssetDataInputValidator;
+use Monarc\BackOffice\Validator\InputValidator\Client\PostClientInputValidator;
+use Monarc\BackOffice\Validator\InputValidator\Server\PostServerDataInputValidator;
 use Monarc\BackOffice\Validator\InputValidator\Threat\PostThreatDataInputValidator;
 use Monarc\BackOffice\Validator\InputValidator\Vulnerability\PostVulnerabilityDataInputValidator;
 use Monarc\Core\Controller\ApiOperationalRisksScalesController;
@@ -58,19 +51,6 @@ return [
                 ],
             ],
 
-            'monarc_api_admin_roles' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/admin/roles[/:id]',
-                    'constraints' => [
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\ApiAdminRolesController::class,
-                    ],
-                ],
-            ],
-
             'monarc_api_admin_servers' => [
                 'type' => 'segment',
                 'options' => [
@@ -80,19 +60,6 @@ return [
                     ],
                     'defaults' => [
                         'controller' => Controller\ApiAdminServersController::class,
-                    ],
-                ],
-            ],
-
-            'monarc_api_admin_servers_get' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/admin/serversget[/:id]',
-                    'constraints' => [
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\ApiAdminServersGetController::class,
                     ],
                 ],
             ],
@@ -510,6 +477,32 @@ return [
                 ],
             ],
 
+            'monarc_api_user_activate_2fa' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/user/activate2FA/:id',
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiUserTwoFAController::class,
+                    ],
+                ],
+            ],
+
+            'monarc_api_user_recovery_codes' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/user/recoveryCodes/:id',
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiUserRecoveryCodesController::class,
+                    ],
+                ],
+            ],
+
             'monarc_api_user_profile' => [
                 'type' => 'literal',
                 'options' => [
@@ -545,6 +538,42 @@ return [
                     ],
                 ],
             ],
+
+            'monarc_api_soa_scale_comment' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/anr/:anrId/soa-scale-comment[/:id]',
+                    'constraints' => [
+                        'anrid' => '[0-9]+',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(
+                            AnrValidationMiddleware::class,
+                            Controller\ApiSoaScaleCommentController::class,
+                        ),
+                    ],
+                ],
+            ],
+
+            'monarc_api_anr_instances_metadata' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/anr/:anrid/instances-metadata[/:id]',
+                    'constraints' => [
+                        'anrid' => '[0-9]+',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(
+                            AnrValidationMiddleware::class,
+                            Controller\ApiAnrInstancesMetadataController::class,
+                        ),
+                    ],
+                ],
+            ],
         ],
     ],
 
@@ -553,10 +582,10 @@ return [
         'factories' => [
             Controller\ApiAdminHistoricalsController::class => AutowireFactory::class,
             Controller\ApiUserPasswordController::class => AutowireFactory::class,
+            Controller\ApiUserTwoFAController::class => AutowireFactory::class,
+            Controller\ApiUserRecoveryCodesController::class => AutowireFactory::class,
             Controller\ApiAdminPasswordsController::class => AutowireFactory::class,
-            Controller\ApiAdminRolesController::class => AutowireFactory::class,
             Controller\ApiAdminServersController::class => AutowireFactory::class,
-            Controller\ApiAdminServersGetController::class => AutowireFactory::class,
             Controller\ApiAdminUsersController::class => AutowireFactory::class,
             Controller\ApiAdminUsersRolesController::class => AutowireFactory::class,
             Controller\ApiClientsController::class => AutowireFactory::class,
@@ -586,29 +615,26 @@ return [
             Controller\ApiUserProfileController::class => AutowireFactory::class,
             Controller\ApiAnrLibraryController::class => AutowireFactory::class,
             Controller\ApiModelsController::class => AutowireFactory::class,
+            Controller\ApiAnrInstancesMetadataController::class => AutowireFactory::class,
+            Controller\ApiSoaScaleCommentController::class => AutowireFactory::class,
         ],
     ],
 
     'service_manager' => [
-        'invokables' => [
-            UniqueClientProxyAlias::class => UniqueClientProxyAlias::class,
-        ],
+        'invokables' => [],
         'factories' => [
-            DbCli::class => DbCliFactory::class,
-
             ServerTable::class => ClientEntityManagerFactory::class,
             ClientTable::class => ClientEntityManagerFactory::class,
 
-            // TODO: remove the factories and refactor the services, instantiate entities from the services directly.
-            ServerService::class => ServerServiceFactory::class,
-            ClientService::class => ClientServiceFactory::class,
-            Server::class => ServerServiceModelEntity::class,
-            Client::class => ClientServiceModelEntity::class,
+            ServerService::class => AutowireFactory::class,
+            ClientService::class => ReflectionBasedAbstractFactory::class,
 
             /* Validators */
             PostAssetDataInputValidator::class => ReflectionBasedAbstractFactory::class,
             PostThreatDataInputValidator::class => ReflectionBasedAbstractFactory::class,
             PostVulnerabilityDataInputValidator::class => ReflectionBasedAbstractFactory::class,
+            PostServerDataInputValidator::class => ReflectionBasedAbstractFactory::class,
+            PostClientInputValidator::class => ReflectionBasedAbstractFactory::class,
         ],
     ],
 
@@ -638,13 +664,13 @@ return [
                 'paths' => [
                     __DIR__ . '/../src/Model/Entity',
                     __DIR__ . '/../../core/src/Model/Entity',
-                    __DIR__ . '/../../backoffice/src/Model/Entity',
+                    __DIR__ . '/../../backoffice/src/Entity',
                 ],
             ],
             'orm_cli' => [
                 'class' => MappingDriverChain::class,
                 'drivers' => [
-                    'Monarc\BackOffice\Model\Entity' => 'Monarc_cli_driver',
+                    'Monarc\BackOffice\Entity' => 'Monarc_cli_driver',
                 ],
             ],
         ],
@@ -662,6 +688,8 @@ return [
             'monarc_api_admin_users',
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
+            'monarc_api_user_activate_2fa',
+            'monarc_api_user_recovery_codes',
         ],
         // Admin DB : Gestion des bases de connaissances (paramètres généraux)
         'dbadmin' => [
@@ -701,6 +729,7 @@ return [
             'monarc_api_operational_scales_comment',
             'monarc_api_scales_comments',
             'monarc_api_scales_types',
+            'monarc_api_anr_metadatas_on_instances',
             'monarc_api_threats',
             'monarc_api_vulnerabilities',
             'monarc_api_admin_users_roles',
@@ -715,6 +744,9 @@ return [
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
             'monarc_api_anr_objects_parents',
+            'monarc_api_soa_scale_comment',
+            'monarc_api_user_activate_2fa',
+            'monarc_api_user_recovery_codes',
         ],
         // Admin système : Gestion des logs et tout ce qui est non applicatif (Administration)
         'sysadmin' => [
@@ -729,12 +761,17 @@ return [
             'monarc_api_models_duplication',
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
+            'monarc_api_user_activate_2fa',
+            'monarc_api_user_recovery_codes',
         ],
         // Admin comptes : Création des comptes et authentification client
         'accadmin' => [
+            'monarc_api_user_activate_2fa',
+            'monarc_api_user_recovery_codes',
             'monarc_api_user_password',
             'monarc_api_clients',
-            'monarc_api_admin_servers_get',
+            // There are additional validations of the role in the controller.
+            'monarc_api_admin_servers',
             'monarc_api_guides',
             'monarc_api_guides_items',
             'monarc_api_guides_types',

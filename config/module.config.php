@@ -542,7 +542,7 @@ return [
             'monarc_api_soa_scale_comment' => [
                 'type' => 'segment',
                 'options' => [
-                    'route' => '/api/anr/:anrId/soa-scale-comment[/:id]',
+                    'route' => '/api/anr/:anrid/soa-scale-comment[/:id]',
                     'constraints' => [
                         'anrid' => '[0-9]+',
                         'id' => '[0-9]+',

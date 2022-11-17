@@ -557,10 +557,10 @@ return [
                 ],
             ],
 
-            'monarc_api_anr_instances_metadata' => [
+            'monarc_api_anr_instances_metadata_fields' => [
                 'type' => 'segment',
                 'options' => [
-                    'route' => '/api/anr/:anrid/instances-metadata[/:id]',
+                    'route' => '/api/anr/:anrid/instances-metadata-fields[/:id]',
                     'constraints' => [
                         'anrid' => '[0-9]+',
                         'id' => '[0-9]+',
@@ -569,7 +569,7 @@ return [
                         'controller' => PipeSpec::class,
                         'middleware' => new PipeSpec(
                             AnrValidationMiddleware::class,
-                            Controller\ApiAnrInstancesMetadataController::class,
+                            Controller\ApiAnrInstancesMetadataFieldsController::class,
                         ),
                     ],
                 ],
@@ -615,7 +615,7 @@ return [
             Controller\ApiUserProfileController::class => AutowireFactory::class,
             Controller\ApiAnrLibraryController::class => AutowireFactory::class,
             Controller\ApiModelsController::class => AutowireFactory::class,
-            Controller\ApiAnrInstancesMetadataController::class => AutowireFactory::class,
+            Controller\ApiAnrInstancesMetadataFieldsController::class => AutowireFactory::class,
             Controller\ApiSoaScaleCommentController::class => AutowireFactory::class,
         ],
     ],
@@ -705,6 +705,7 @@ return [
             'monarc_api_anr_instances_risks',
             'monarc_api_anr_instances_risksop',
             'monarc_api_anr_instances_consequences',
+            'monarc_api_anr_instances_metadata_fields',
             'monarc_api_anr_library',
             'monarc_api_anr_library_category',
             'monarc_api_anr_objects',

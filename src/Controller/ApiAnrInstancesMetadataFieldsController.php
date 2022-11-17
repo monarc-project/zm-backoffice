@@ -10,17 +10,17 @@ namespace Monarc\BackOffice\Controller;
 use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Model\Entity\Anr;
-use Monarc\Core\Service\AnrInstanceMetadataService;
+use Monarc\Core\Service\InstanceMetadataFieldService;
 
-class ApiAnrInstancesMetadataController extends AbstractRestfulControllerRequestHandler
+class ApiAnrInstancesMetadataFieldsController extends AbstractRestfulControllerRequestHandler
 {
     use ControllerRequestResponseHandlerTrait;
 
-    private AnrInstanceMetadataService $anrInstanceMetadataService;
+    private InstanceMetadataFieldService $instanceMetadataFieldService;
 
-    public function __construct(AnrInstanceMetadataService $anrInstanceMetadataService)
+    public function __construct(InstanceMetadataFieldService $instanceMetadataFieldService)
     {
-        $this->anrInstanceMetadataService = $anrInstanceMetadataService;
+        $this->instanceMetadataFieldService = $instanceMetadataFieldService;
     }
 
     public function getList()
@@ -30,7 +30,7 @@ class ApiAnrInstancesMetadataController extends AbstractRestfulControllerRequest
         $language = $this->params()->fromQuery("language");
 
         return $this->getPreparedJsonResponse([
-            'data' => $this->anrInstanceMetadataService->getList($anr, $language),
+            'data' => $this->instanceMetadataFieldService->getList($anr, $language),
         ]);
     }
 
@@ -41,7 +41,7 @@ class ApiAnrInstancesMetadataController extends AbstractRestfulControllerRequest
         $language = $this->params()->fromQuery("language");
 
         return $this->getPreparedJsonResponse([
-            'data' => $this->anrInstanceMetadataService->getInstanceMetadata($anr, $id, $language),
+            'data' => $this->instanceMetadataFieldService->getInstanceMetadata($anr, $id, $language),
         ]);
     }
 
@@ -51,20 +51,20 @@ class ApiAnrInstancesMetadataController extends AbstractRestfulControllerRequest
         $anr = $this->getRequest()->getAttribute('anr');
 
         return $this->getSuccessfulJsonResponse([
-            'id' => $this->anrInstanceMetadataService->create($anr, $data),
+            'id' => $this->instanceMetadataFieldService->create($anr, $data),
         ]);
     }
 
     public function delete($id)
     {
-        $this->anrInstanceMetadataService->delete((int)$id);
+        $this->instanceMetadataFieldService->delete((int)$id);
 
         return $this->getSuccessfulJsonResponse();
     }
 
     public function update($id, $data)
     {
-        $this->anrInstanceMetadataService->update((int)$id, $data);
+        $this->instanceMetadataFieldService->update((int)$id, $data);
 
         return $this->getSuccessfulJsonResponse();
     }

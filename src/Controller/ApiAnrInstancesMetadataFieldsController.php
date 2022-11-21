@@ -41,7 +41,7 @@ class ApiAnrInstancesMetadataFieldsController extends AbstractRestfulControllerR
         $language = $this->params()->fromQuery("language");
 
         return $this->getPreparedJsonResponse([
-            'data' => $this->instanceMetadataFieldService->getInstanceMetadata($anr, $id, $language),
+            'data' => $this->instanceMetadataFieldService->getInstanceMetadataField($anr, (int)$id, $language),
         ]);
     }
 

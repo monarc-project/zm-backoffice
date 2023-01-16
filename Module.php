@@ -20,9 +20,9 @@ class Module
             $moduleRouteListener->attach($eventManager);
             $this->initRbac($e);
 
-            $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'checkRbac'), 0);
-            $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'onDispatchError'), 0);
-            $eventManager->attach(MvcEvent::EVENT_RENDER_ERROR, array($this, 'onRenderError'), 0);
+            $eventManager->attach(MvcEvent::EVENT_ROUTE, [$this, 'checkRbac'], 0);
+            $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, [$this, 'onDispatchError'], 0);
+            $eventManager->attach(MvcEvent::EVENT_RENDER_ERROR, [$this, 'onRenderError'], 0);
         }
     }
 
@@ -49,29 +49,30 @@ class Module
         }
 
         $exception = $e->getParam('exception');
-        $exceptionJson = array();
+        $exceptionJson = [];
         if ($exception) {
-            $exceptionJson = array(
+            $exceptionJson = [
                 'class' => get_class($exception),
                 'file' => $exception->getFile(),
                 'line' => $exception->getLine(),
                 'message' => $exception->getMessage(),
-                'stacktrace' => $exception->getTraceAsString()
-            );
+                'stacktrace' => $exception->getTraceAsString(),
+            ];
 
             if ($exception->getCode() >= 400 && $exception->getCode() < 600) {
                 $e->getResponse()->setStatusCode($exception->getCode());
             }
         }
-        $errorJson = array(
-            'message' => $exception ? $exception->getMessage() : 'An error occurred during execution; please try again later.',
+        $errorJson = [
+            'message' => $exception ? $exception->getMessage(
+            ) : 'An error occurred during execution; please try again later.',
             'error' => $error,
             'exception' => $exceptionJson,
-        );
+        ];
         if ($error == 'error-router-no-match') {
             $errorJson['message'] = 'Resource not found.';
         }
-        $model = new JsonModel(array('errors' => array($errorJson)));
+        $model = new JsonModel(['errors' => [$errorJson]]);
         $e->setResult($model);
 
         return $model;
@@ -87,13 +88,12 @@ class Module
         $sm = $e->getApplication()->getServiceManager();
         $config = $sm->get('Config');
 
-        $globalPermissions = isset($config['permissions']) ? $config['permissions'] : array();
+        $globalPermissions = isset($config['permissions']) ? $config['permissions'] : [];
 
-        $rolesPermissions = isset($config['roles']) ? $config['roles'] : array();
+        $rolesPermissions = isset($config['roles']) ? $config['roles'] : [];
 
         $rbac = new Rbac();
         foreach ($rolesPermissions as $role => $permissions) {
-
             $role = new Role($role);
 
             //global permissions
@@ -124,7 +124,6 @@ class Module
 
         //setting to view
         $e->getViewModel()->rbac = $rbac;
-
     }
 
     /**
@@ -152,6 +151,7 @@ class Module
         foreach ($roles as $role) {
             if ($e->getViewModel()->rbac->isGranted($role, $route)) {
                 $isGranted = true;
+                break;
             }
         }
 

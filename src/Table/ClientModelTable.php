@@ -8,23 +8,25 @@
 namespace Monarc\BackOffice\Table;
 
 use Doctrine\ORM\EntityManager;
-use Monarc\BackOffice\Entity\Client;
+use Monarc\BackOffice\Entity\ClientModel;
 use Monarc\Core\Table\AbstractTable;
 
-class ClientTable extends AbstractTable
+class ClientModelTable extends AbstractTable
 {
-    public function __construct(EntityManager $entityManager, string $entityName = Client::class)
+    public function __construct(EntityManager $entityManager, string $entityName = ClientModel::class)
     {
         parent::__construct($entityManager, $entityName);
     }
 
-    public function findOneByProxyAlias(string $proxyAlias): ?Client
+    /**
+     * @return ClientModel[]
+     */
+    public function findByModelId(int $modelId): array
     {
-        return $this->getRepository()->createQueryBuilder('c')
-            ->where('c.proxyAlias = :proxyAlias')
-            ->setParameter('proxyAlias', $proxyAlias)
-            ->setMaxResults(1)
+        return $this->getRepository()->createQueryBuilder('cm')
+            ->where('cm.modelId = :modelId')
+            ->setParameter('modelId', $modelId)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
     }
 }

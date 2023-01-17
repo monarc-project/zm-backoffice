@@ -71,7 +71,7 @@ class Server
     public function __construct(array $data)
     {
         $this->setLabel($data['label'])
-            ->setIpAddress($data['ip_address'])
+            ->setIpAddress($data['ipAddress'])
             ->setFqdn($data['fqdn']);
 
         $this->clients = new ArrayCollection();

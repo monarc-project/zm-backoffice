@@ -40,6 +40,30 @@ class PostServerDataInputValidator extends AbstractInputValidator
             [
                 'name' => 'status',
                 'required' => false,
+                'allow_empty' => true,
+                'filters' => [
+                    [
+                        'name' => 'boolean'
+                    ],
+                ],
+                'validators' => [],
+            ],
+            [
+                'name' => 'port',
+                'required' => false,
+                'filters' => [],
+                'validators' => [],
+            ],
+            [
+                'name' => 'login',
+                'required' => false,
+                'filters' => [],
+                'validators' => [],
+            ],
+            [
+                'name' => 'ssh',
+                'required' => false,
+                'allow_empty' => true,
                 'filters' => [
                     [
                         'name' => 'boolean'

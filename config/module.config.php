@@ -11,6 +11,7 @@ use Laminas\Mvc\Middleware\PipeSpec;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Monarc\BackOffice\Controller;
 use Monarc\BackOffice\Middleware\AnrValidationMiddleware;
+use Monarc\BackOffice\Table\ClientModelTable;
 use Monarc\BackOffice\Table\ClientTable;
 use Monarc\BackOffice\Table\ServerTable;
 use Monarc\BackOffice\Service\ClientService;
@@ -623,6 +624,7 @@ return [
         'factories' => [
             ServerTable::class => ClientEntityManagerFactory::class,
             ClientTable::class => ClientEntityManagerFactory::class,
+            ClientModelTable::class => ClientEntityManagerFactory::class,
 
             ServerService::class => AutowireFactory::class,
             ClientService::class => ReflectionBasedAbstractFactory::class,

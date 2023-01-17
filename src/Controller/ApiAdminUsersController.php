@@ -55,21 +55,21 @@ class ApiAdminUsersController extends AbstractRestfulController
 
     public function update($id, $data)
     {
-        $this->userService->update($id, $data);
+        $this->userService->update((int)$id, $data);
 
         return $this->getPreparedJsonResponse(['status' => 'ok']);
     }
 
     public function patch($id, $data)
     {
-        $this->userService->patch($id, $data);
+        $this->userService->patch((int)$id, $data);
 
         return $this->getPreparedJsonResponse(['status' => 'ok']);
     }
 
     public function delete($id)
     {
-        $this->userService->delete($id);
+        $this->userService->delete((int)$id);
 
         return $this->getPreparedJsonResponse(['status' => 'ok']);
     }

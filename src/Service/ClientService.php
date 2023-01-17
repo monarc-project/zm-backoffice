@@ -10,7 +10,9 @@ namespace Monarc\BackOffice\Service;
 use Doctrine\DBAL\ParameterType;
 use JsonException;
 use Monarc\BackOffice\Entity\Client;
+use Monarc\BackOffice\Entity\ClientModel;
 use Monarc\BackOffice\Entity\Server;
+use Monarc\BackOffice\Table\ClientModelTable;
 use Monarc\BackOffice\Table\ClientTable;
 use Monarc\BackOffice\Table\ServerTable;
 use Monarc\Core\Exception\Exception;
@@ -29,6 +31,8 @@ class ClientService
 
     private ModelTable $modelTable;
 
+    private ClientModelTable $clientModelTable;
+
     private User $connectedUser;
 
     private array $config;
@@ -37,12 +41,14 @@ class ClientService
         ClientTable $clientTable,
         ServerTable $serverTable,
         ModelTable $modelTable,
+        ClientModelTable $clientModelTable,
         ConnectedUserService $connectedUserService,
         array $config
     ) {
         $this->clientTable = $clientTable;
         $this->serverTable = $serverTable;
         $this->modelTable = $modelTable;
+        $this->clientModelTable = $clientModelTable;
         $this->connectedUser = $connectedUserService->getConnectedUser();
         $this->config = $config;
     }
@@ -90,12 +96,22 @@ class ClientService
             ->setCreator($this->connectedUser->getEmail());
 
         $models = [];
-        if (!empty($data['modelIds'])) {
+        if (!empty($data['modelId'])) {
             /** @var Model[] $models */
-            $models = $this->modelTable->findByIds($data['modelIds']);
+            $models = $this->modelTable->findByIds($data['modelId']);
         }
         foreach ($models as $model) {
-            $client->addModel($model);
+            if (!$model->isActive()) {
+                throw new Exception(sprintf(
+                    'Model ID "%s" is inactive and can\'t be linked',
+                    $model->getLabel($this->connectedUser->getLanguage())
+                ));
+            }
+            $clientModel = (new ClientModel())
+                ->setClient($client)
+                ->setModelId($model->getId())
+                ->setCreator($this->connectedUser->getEmail());
+            $this->clientModelTable->save($clientModel, false);
         }
 
         $this->clientTable->save($client);
@@ -120,13 +136,34 @@ class ClientService
             $client->setContactEmail($data['contactEmail']);
         }
 
+        $linkedModelIds = [];
+        foreach ($client->getClientModels() as $clientModel) {
+            if (!\in_array($clientModel->getModelId(), $data['modelId'], true)) {
+                $client->removeClientModel($clientModel);
+                $this->clientTable->save($client, false);
+            } else {
+                $linkedModelIds[] = $clientModel->getModelId();
+            }
+        }
         $models = [];
-        if (!empty($data['modelIds'])) {
+        if (!empty($data['modelId'])) {
             /** @var Model[] $models */
-            $models = $this->modelTable->findByIds($data['modelIds']);
+            $models = $this->modelTable->findByIds($data['modelId']);
         }
         foreach ($models as $model) {
-            $client->addModel($model);
+            if (!$model->isActive()) {
+                throw new Exception(sprintf(
+                    'Model ID "%s" is inactive and can\'t be linked',
+                    $model->getLabel($this->connectedUser->getLanguage())
+                ));
+            }
+            if (!\in_array($model->getId(), $linkedModelIds, true)) {
+                $clientModel = (new ClientModel())
+                    ->setClient($client)
+                    ->setModelId($model->getId())
+                    ->setCreator($this->connectedUser->getEmail());
+                $this->clientModelTable->save($clientModel, false);
+            }
         }
 
         $this->clientTable->save($client);
@@ -142,6 +179,16 @@ class ClientService
         $this->clientTable->remove($client);
 
         $this->deleteJson($client);
+    }
+
+    public function unlinkModel(int $modelId): void
+    {
+        foreach ($this->clientModelTable->findByModelId($modelId) as $clientModel) {
+            $client = $clientModel->getClient();
+            $client->removeClientModel($clientModel);
+            $this->clientTable->save($client, false);
+            $this->clientModelTable->remove($clientModel);
+        }
     }
 
     /**
@@ -215,10 +262,10 @@ class ClientService
         }
 
         /* Generates the clients_models table inserts. */
-        foreach ($client->getModels() as $model) {
+        foreach ($client->getClientModels() as $clientModel) {
             $listValues = $this->listFieldsAndValuesAsString([
                 'client_id' => $client->getId(),
-                'model_id' => $model->getId(),
+                'model_id' => $clientModel->getModelId(),
                 'creator' => 'System',
                 'created_at' => date('Y-m-d H:i:s'),
             ]);
@@ -296,8 +343,8 @@ class ClientService
     private function getPreparedClientData(Client $client): array
     {
         $modelIds = [];
-        foreach ($client->getModels() as $model) {
-            $modelIds[] = $model->getId();
+        foreach ($client->getClientModels() as $clientModel) {
+            $modelIds[] = $clientModel->getModelId();
         }
 
         return [
@@ -310,8 +357,10 @@ class ClientService
             'firstUserEmail' => $client->getFirstUserEmail(),
             'logoId' => $client->getLogoId(),
             'serverId' => $client->getServer()->getId(),
-            'modelIds' => $modelIds,
-            'createdAt' => $client->getCreatedAt()->format('Y-m-d H:i'),
+            'modelId' => $modelIds,
+            'createdAt' => [
+                'date' => $client->getCreatedAt()->format('Y-m-d H:i'),
+            ],
         ];
     }
 }

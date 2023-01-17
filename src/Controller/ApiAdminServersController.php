@@ -8,10 +8,10 @@
 namespace Monarc\BackOffice\Controller;
 
 use Laminas\Mvc\Controller\AbstractRestfulController;
+use Monarc\BackOffice\InputFormatter\Server\GetServersInputFormatter;
 use Monarc\BackOffice\Service\ServerService;
 use Monarc\BackOffice\Validator\InputValidator\Server\PostServerDataInputValidator;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
-use Monarc\Core\InputFormatter\Server\GetServersInputFormatter;
 use Monarc\Core\Model\Entity\User;
 use Monarc\Core\Model\Entity\UserRole;
 use Monarc\Core\Service\ConnectedUserService;

@@ -21,9 +21,9 @@ class UniqueClientProxyAlias extends AbstractValidator
     public function isValid($value)
     {
         /** @var ClientTable $clientTable */
-        $clientTable = $this->getOption('clintTable');
+        $clientTable = $this->getOption('clientTable');
         $client = $clientTable->findOneByProxyAlias($value);
-        if ($client === null || (int)$this->getOption('currentClintId') === $client->getId()) {
+        if ($client === null || $this->getOption('getCurrentClientId')() === $client->getId()) {
             return true;
         }
 

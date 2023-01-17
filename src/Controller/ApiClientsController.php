@@ -8,10 +8,10 @@
 namespace Monarc\BackOffice\Controller;
 
 use Laminas\Mvc\Controller\AbstractRestfulController;
+use Monarc\BackOffice\InputFormatter\Client\GetClientsInputFormatter;
 use Monarc\BackOffice\Service\ClientService;
 use Monarc\BackOffice\Validator\InputValidator\Client\PostClientInputValidator;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
-use Monarc\Core\InputFormatter\Client\GetClientsInputFormatter;
 
 class ApiClientsController extends AbstractRestfulController
 {

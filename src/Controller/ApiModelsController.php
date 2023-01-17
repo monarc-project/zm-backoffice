@@ -8,6 +8,7 @@
 namespace Monarc\BackOffice\Controller;
 
 use Laminas\Mvc\Controller\AbstractRestfulController;
+use Monarc\BackOffice\Service\ClientService;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\InputFormatter\Model\GetModelsInputFormatter;
 use Monarc\Core\Service\ModelService;
@@ -23,14 +24,18 @@ class ApiModelsController extends AbstractRestfulController
 
     private ModelService $modelService;
 
+    private ClientService $clientService;
+
     public function __construct(
         GetModelsInputFormatter $getModelsInputFormatter,
         PostModelDataInputValidator $postModelDataInputValidator,
-        ModelService $modelService
+        ModelService $modelService,
+        ClientService $clientService
     ) {
         $this->getModelsInputFormatter = $getModelsInputFormatter;
         $this->postModelDataInputValidator = $postModelDataInputValidator;
         $this->modelService = $modelService;
+        $this->clientService = $clientService;
     }
 
     public function getList()
@@ -80,12 +85,8 @@ class ApiModelsController extends AbstractRestfulController
     {
         $this->modelService->delete((int)$id);
 
-        return $this->getPreparedJsonResponse(['status' => 'ok']);
-    }
-
-    public function deleteList($data)
-    {
-        $this->modelService->deleteList($data);
+        /* Unlink the model for all the clients where it is linked. */
+        $this->clientService->unlinkModel((int)$id);
 
         return $this->getPreparedJsonResponse(['status' => 'ok']);
     }

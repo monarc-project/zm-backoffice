@@ -9,7 +9,6 @@ namespace Monarc\BackOffice\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use Monarc\Core\Model\Entity\Model;
 use Monarc\Core\Model\Entity\Traits\CreateEntityTrait;
 use Monarc\Core\Model\Entity\Traits\UpdateEntityTrait;
 
@@ -33,15 +32,11 @@ class Client
     protected $id;
 
     /**
-     * @var Model[]|ArrayCollection
+     * @var ArrayCollection|ClientModel[]
      *
-     * @ORM\ManyToMany(targetEntity="Model", cascade={"persist"})
-     * @ORM\JoinTable(name="clients_models",
-     *  joinColumns={@ORM\JoinColumn(name="client_id", referencedColumnName="id")},
-     *  inverseJoinColumns={@ORM\JoinColumn(name="model_id", referencedColumnName="id")}
-     * )
+     * @ORM\OneToMany(targetEntity="ClientModel", mappedBy="client")
      */
-    protected $models;
+    protected $clientModels;
 
     /**
      * @var Server
@@ -104,7 +99,7 @@ class Client
 
     public function __construct()
     {
-        $this->models = new ArrayCollection();
+        $this->clientModels = new ArrayCollection();
     }
 
     public function getId(): int
@@ -112,15 +107,25 @@ class Client
         return $this->id;
     }
 
-    public function getModels()
+    public function getClientModels()
     {
-        return $this->models;
+        return $this->clientModels;
     }
 
-    public function addModel(Model $model): self
+    public function addClientModel(ClientModel $clientModel): self
     {
-        if (!$this->models->contains($model)) {
-            $this->models->add($model);
+        if (!$this->clientModels->contains($clientModel)) {
+            $this->clientModels->add($clientModel);
+            $clientModel->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClientModel(ClientModel $clientModel): self
+    {
+        if ($this->clientModels->contains($clientModel)) {
+            $this->clientModels->remove($clientModel);
         }
 
         return $this;

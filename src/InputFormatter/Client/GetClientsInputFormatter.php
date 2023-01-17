@@ -5,7 +5,7 @@
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
-namespace Monarc\Core\InputFormatter\Client;
+namespace Monarc\BackOffice\InputFormatter\Client;
 
 use Monarc\Core\InputFormatter\AbstractInputFormatter;
 

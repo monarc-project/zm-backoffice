@@ -2,6 +2,7 @@
 
 namespace Monarc\BackOffice;
 
+use Laminas\Stdlib\ResponseInterface;
 use Monarc\Core\Service\ConnectedUserService;
 use Laminas\Console\Request;
 use Laminas\Mvc\ModuleRouteListener;
@@ -131,7 +132,7 @@ class Module
      *
      * @param MvcEvent $e
      *
-     * @return \Laminas\Stdlib\ResponseInterface
+     * @return ResponseInterface|void
      */
     public function checkRbac(MvcEvent $e)
     {
@@ -162,5 +163,4 @@ class Module
             return $response;
         }
     }
-
 }

@@ -53,7 +53,9 @@ class PostClientInputValidator extends AbstractInputValidator
                         'name' => UniqueClientProxyAlias::class,
                         'options' => [
                             'clientTable' => $this->clientTable,
-                            'currentClientId' => $this->currentClientId,
+                            'getCurrentClientId' => function () {
+                                return $this->currentClientId;
+                            },
                         ],
                     ],
                 ],
@@ -91,7 +93,7 @@ class PostClientInputValidator extends AbstractInputValidator
                 'validators' => [],
             ],
             [
-                'name' => 'modelIds',
+                'name' => 'modelId',
                 'required' => false,
                 'filters' => [],
                 'validators' => [

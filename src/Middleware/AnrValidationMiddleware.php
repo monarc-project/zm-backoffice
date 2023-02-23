@@ -40,9 +40,13 @@ class AnrValidationMiddleware implements MiddlewareInterface
     {
         /** @var RouteMatch $routeMatch */
         $routeMatch = $request->getAttribute(RouteMatch::class);
+        /* The anrId param can be passed as inside of URL, as a query param or inside the post data. */
         $anrId = (int)$routeMatch->getParam('anrid');
         if ($anrId === 0) {
             $anrId = (int)($request->getQueryParams()['anr'] ?? 0);
+        }
+        if ($anrId === 0) {
+            $anrId = (int)($request->getParsedBody()['anrId'] ?? 0);
         }
 
         if ($anrId !== 0) {

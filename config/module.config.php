@@ -375,6 +375,57 @@ return [
                 ],
             ],
 
+            'monarc_api_anr_instances' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/anr/:anrid/instances[/:id]',
+                    'constraints' => [
+                        'anrid' => '[0-9]+',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(
+                            AnrValidationMiddleware::class,
+                            Controller\ApiAnrInstancesController::class,
+                        ),
+                    ],
+                ],
+            ],
+
+            'monarc_api_anr_instances_consequences' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/anr/:anrid/instances-consequences[/:id]',
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(
+                            AnrValidationMiddleware::class,
+                            Controller\ApiAnrInstancesConsequencesController::class,
+                        ),
+                    ],
+                ],
+            ],
+
+            'monarc_api_anr_instances_export' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/anr/:anrid/instances/:id/export',
+                    'constraints' => [
+                        'anrid' => '[0-9]+',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        // TODO: add a separate ApiAnrInstancesExportController and InstanceExportService.
+                        'controller' => Controller\ApiAnrInstancesController::class,
+                        'action' => 'export'
+                    ],
+                ],
+            ],
+
             'monarc_api_objects_export' => [
                 'type' => 'segment',
                 'options' => [
@@ -419,6 +470,24 @@ return [
                     ],
                     'defaults' => [
                         'controller' => Controller\ApiRolfTagsController::class,
+                    ],
+                ],
+            ],
+
+            'monarc_api_anr_risks' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/anr/:anrid/risks[/:id]',
+                    'constraints' => [
+                        'anrid' => '[0-9]+',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(
+                            AnrValidationMiddleware::class,
+                            Controller\ApiAnrRisksController::class,
+                        ),
                     ],
                 ],
             ],
@@ -580,42 +649,45 @@ return [
         'invokables' => [],
         'factories' => [
             Controller\ApiAdminHistoricalsController::class => AutowireFactory::class,
-            Controller\ApiUserPasswordController::class => AutowireFactory::class,
-            Controller\ApiUserTwoFAController::class => AutowireFactory::class,
-            Controller\ApiUserRecoveryCodesController::class => AutowireFactory::class,
             Controller\ApiAdminPasswordsController::class => AutowireFactory::class,
             Controller\ApiAdminServersController::class => AutowireFactory::class,
             Controller\ApiAdminUsersController::class => AutowireFactory::class,
             Controller\ApiAdminUsersRolesController::class => AutowireFactory::class,
+            Controller\ApiAnrLibraryController::class => AutowireFactory::class,
+            Controller\ApiAnrInstancesMetadataFieldsController::class => AutowireFactory::class,
+            Controller\ApiAmvsController::class => AutowireFactory::class,
+            Controller\ApiAssetsController::class => AutowireFactory::class,
             Controller\ApiClientsController::class => AutowireFactory::class,
             Controller\ApiConfigController::class => AutowireFactory::class,
-            Controller\ApiQuestionsController::class => AutowireFactory::class,
-            Controller\ApiQuestionsChoicesController::class => AutowireFactory::class,
+            Controller\ApiDeliveriesModelsController::class => AutowireFactory::class,
             Controller\ApiGuidesController::class => AutowireFactory::class,
             Controller\ApiGuidesItemsController::class => AutowireFactory::class,
             Controller\ApiGuidesTypesController::class => AutowireFactory::class,
-            Controller\ApiReferentialsController::class => AutowireFactory::class,
+            Controller\ApiAnrInstancesController::class => AutowireFactory::class,
+            Controller\ApiAnrInstancesConsequencesController::class => AutowireFactory::class,
             Controller\ApiMeasuresController::class => AutowireFactory::class,
             Controller\ApiMeasureMeasureController::class => AutowireFactory::class,
+            Controller\ApiModelsController::class => AutowireFactory::class,
             Controller\ApiObjectsController::class => AutowireFactory::class,
             Controller\ApiObjectsDuplicationController::class => AutowireFactory::class,
             Controller\ApiObjectsExportController::class => AutowireFactory::class,
             Controller\ApiObjectsObjectsController::class => AutowireFactory::class,
             Controller\ApiObjectsCategoriesController::class => AutowireFactory::class,
+            Controller\ApiQuestionsController::class => AutowireFactory::class,
+            Controller\ApiQuestionsChoicesController::class => AutowireFactory::class,
+            Controller\ApiReferentialsController::class => AutowireFactory::class,
             Controller\ApiRolfRisksController::class => AutowireFactory::class,
             Controller\ApiRolfTagsController::class => AutowireFactory::class,
+            Controller\ApiAnrRisksController::class => AutowireFactory::class,
             Controller\ApiSoaCategoryController::class => AutowireFactory::class,
-            Controller\ApiAmvsController::class => AutowireFactory::class,
-            Controller\ApiAssetsController::class => AutowireFactory::class,
-            Controller\ApiDeliveriesModelsController::class => AutowireFactory::class,
+            Controller\ApiSoaScaleCommentController::class => AutowireFactory::class,
             Controller\ApiThemesController::class => AutowireFactory::class,
             Controller\ApiThreatsController::class => AutowireFactory::class,
-            Controller\ApiVulnerabilitiesController::class => AutowireFactory::class,
+            Controller\ApiUserPasswordController::class => AutowireFactory::class,
+            Controller\ApiUserTwoFAController::class => AutowireFactory::class,
+            Controller\ApiUserRecoveryCodesController::class => AutowireFactory::class,
             Controller\ApiUserProfileController::class => AutowireFactory::class,
-            Controller\ApiAnrLibraryController::class => AutowireFactory::class,
-            Controller\ApiModelsController::class => AutowireFactory::class,
-            Controller\ApiAnrInstancesMetadataFieldsController::class => AutowireFactory::class,
-            Controller\ApiSoaScaleCommentController::class => AutowireFactory::class,
+            Controller\ApiVulnerabilitiesController::class => AutowireFactory::class,
         ],
     ],
 
@@ -695,7 +767,6 @@ return [
         'dbadmin' => [
             'monarc_api_amvs',
             'monarc_api_assets',
-            'monarc_api_anr',
             'monarc_api_anr_risks',
             'monarc_api_anr_risks_op',
             'monarc_api_anr_export',

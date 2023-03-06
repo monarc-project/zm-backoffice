@@ -10,6 +10,7 @@ namespace Monarc\BackOffice\Controller;
 use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Model\Entity\Anr;
+use Monarc\Core\Service\InstanceExportService;
 use Monarc\Core\Service\InstanceService;
 use Monarc\Core\Validator\InputValidator\Instance\CreateInstanceDataInputValidator;
 use Monarc\Core\Validator\InputValidator\Instance\PatchInstanceDataInputValidator;
@@ -21,6 +22,8 @@ class ApiAnrInstancesController extends AbstractRestfulControllerRequestHandler
 
     private InstanceService $instanceService;
 
+    private InstanceExportService $instanceExportService;
+
     private CreateInstanceDataInputValidator $createInstanceDataInputValidator;
 
     private UpdateInstanceDataInputValidator $updateInstanceDataInputValidator;
@@ -29,11 +32,13 @@ class ApiAnrInstancesController extends AbstractRestfulControllerRequestHandler
 
     public function __construct(
         InstanceService $instanceService,
+        InstanceExportService $instanceExportService,
         CreateInstanceDataInputValidator $createInstanceDataInputValidator,
         UpdateInstanceDataInputValidator $updateInstanceDataInputValidator,
         PatchInstanceDataInputValidator $patchInstanceDataInputValidator
     ) {
         $this->instanceService = $instanceService;
+        $this->instanceExportService = $instanceExportService;
         $this->createInstanceDataInputValidator = $createInstanceDataInputValidator;
         $this->updateInstanceDataInputValidator = $updateInstanceDataInputValidator;
         $this->patchInstanceDataInputValidator = $patchInstanceDataInputValidator;
@@ -114,9 +119,6 @@ class ApiAnrInstancesController extends AbstractRestfulControllerRequestHandler
      */
     public function exportAction()
     {
-        /** @var InstanceExportService $service */
-        $service = $this->getService();
-
         $id = $this->params()->fromRoute('id');
         $data['id'] = $id;
 
@@ -128,7 +130,7 @@ class ApiAnrInstancesController extends AbstractRestfulControllerRequestHandler
             $extension = '.bin';
         }
 
-        $exportData = $service->export($data);
+        $exportData = $this->instanceExportService->export($data);
         $this->getResponse()
             ->setContent($exportData);
 

@@ -41,7 +41,7 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "doctrine/doctrine-orm-module": "^5.1",
-        "monarc/core": "dev-feature/php8",
+        "monarc/core": "^2.10.3",
         "robmorgan/phinx": "^0.11.1",
         "laminas/laminas-mvc": "^3.1",
         "laminas/laminas-permissions-rbac": "^3.0",

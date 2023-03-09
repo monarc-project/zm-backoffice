@@ -6,6 +6,7 @@ use Monarc\BackOffice\Controller;
 use Monarc\BackOffice\Model\DbCli;
 use Monarc\BackOffice\Model\Entity\Client;
 use Monarc\BackOffice\Model\Entity\Server;
+use Monarc\BackOffice\Model\Table\ClientModelTable;
 use Monarc\BackOffice\Model\Table\ClientTable;
 use Monarc\BackOffice\Model\Table\ServerTable;
 use Monarc\BackOffice\Service\ClientService;

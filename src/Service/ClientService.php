@@ -156,30 +156,64 @@ class ClientService extends AbstractService
         }
 
         if ($entity !== null) {
+            $updateData = [];
+
             $dataModels = null;
             if (isset($data['model_id'])) {
                 $dataModels = $data['model_id'];
                 unset($data['model_id']);
             }
+
+            if ($data['first_user_email'] !== $entity->get('first_user_email')
+                || $data['first_user_firstname'] !== $entity->get('first_user_firstname')
+                || $data['first_user_lastname'] !== $entity->get('first_user_lastname')
+            ) {
+                $updateData['client'] = [
+                    'email' => $data['first_user_email'],
+                    'firstName' => $data['first_user_firstname'],
+                    'lastName' => $data['first_user_lastname'],
+                ];
+            }
+            // TODO: add 2FA and Background import options:
+            //  1. DB migrations and 2 new fields in the entity
+            //  2. Fields on Frontend
+            //  3. enable edit possibility for email, first and last names in the edit view.
+
             $entity->exchangeArray($data, true);
             $entity->setUpdater(
                 $this->getConnectedUser()->getEmail()
             );
             if ($dataModels !== null) {
                 $clientModelTable = $this->get('clientModelTable');
-                $entity->getModels()->clear();
+
+                $existingModelIds = [];
+                foreach ($entity->getModels() as $model) {
+                    if (\in_array($model->getModelId(), $dataModels, true)) {
+                        $existingModelIds[] = $model->getModelId();
+                    } else {
+                        $updateData['modelIdsToRemove'][] = $model->getModelId();
+                    }
+                }
+                $modelIdsToAdd = array_diff($dataModels, $existingModelIds);
+
                 //link model
-                foreach ($dataModels as $newModel) {
-                        $clientModel = (new ClientModel())
-                            ->setClient($entity)
-                            ->setModelId($newModel)
-                            ->setCreator($this->getConnectedUser()->getEmail());
-                        $clientModelTable->save($clientModel);
-                        $entity->getModels()->add($clientModel);
+                foreach ($modelIdsToAdd as $newModelId) {
+                    $clientModel = (new ClientModel())
+                        ->setClient($entity)
+                        ->setModelId($newModelId)
+                        ->setCreator($this->getConnectedUser()->getEmail());
+                    $clientModelTable->save($clientModel, false);
+                    $entity->getModels()->add($clientModel);
+
+                    $updateData['modelIdsToAdd'][] = $newModelId;
                 }
             }
 
             $clientTable->save($entity);
+
+            if (!empty($updateData)) {
+                $this->generateUpdateClientJson($entity, $updateData);
+            }
 
             return true;
         }
@@ -385,7 +419,7 @@ class ClientService extends AbstractService
                 if (!is_array($listValues)) {
                     $listValues = [];
                 }
-                $listValues[]= $this->getListValues($value, $serverTable);
+                $listValues[] = $this->getListValues($value, $serverTable);
             }
             if (!is_array($value) && $key !== '' && $value !== null) {
                 if ($listValues !== '') {
@@ -417,5 +451,13 @@ class ClientService extends AbstractService
         file_put_contents($filename, json_encode($datas));
 
         return $filename;
+    }
+
+    private function generateUpdateClientJson(Client $client, array $updateData): string
+    {
+        //TODO:
+        // 1. generate delete from models, insert into models: $updateData['modelIdsToAdd'], $updateData['modelIdsToRemove']
+        // 2. changed or not first client and user admin email: $updateData['client'] -> ['email'], ['firstName'], ['lastName']
+        // 3. generate inventory params for 'twoFactorAuthEnforced', 'isBackgroundProcessActive' - $updateData['twoFactorAuthEnforced']...
     }
 }

@@ -299,7 +299,7 @@ class ClientService extends AbstractService
 
         $sqlDumpClients = '';
         $listValues = $this->getListValues($fieldsClient, $serverTable);
-        if ($listValues != '') {
+        if ($listValues !== '') {
             $sqlDumpClients = 'INSERT INTO `clients` SET ' . $listValues . ';';
         }
 
@@ -316,12 +316,12 @@ class ClientService extends AbstractService
 
         $sqlDumpClientsModels = '';
         $listValuesModels = $this->getListValues($fieldsClientsModels, $serverTable);
-        if (is_array($listValuesModels)) {
+        if (\is_array($listValuesModels)) {
             foreach ($listValuesModels as $listValuesModel) {
                 $sqlDumpClientsModels
                     .= 'INSERT INTO `clients_models` SET ' . $listValuesModel . ';';
             }
-        } else if (!in_array($listValuesModels) && $listValuesModels !== '') {
+        } elseif ($listValuesModels !== '') {
             $sqlDumpClientsModels
                 = 'INSERT INTO `clients_models` SET ' . $listValuesModels . ';';
         }

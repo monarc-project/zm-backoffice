@@ -38,7 +38,7 @@ class Client extends AbstractEntity
     /**
      * @var ArrayCollection|ClientModel[]
      *
-     * @ORM\OneToMany(targetEntity="Monarc\BackOffice\Model\Entity\ClientModel", mappedBy="client")
+     * @ORM\OneToMany(targetEntity="Monarc\BackOffice\Model\Entity\ClientModel", mappedBy="client", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     protected $models;
 

@@ -38,7 +38,7 @@ class Client extends AbstractEntity
     /**
      * @var ArrayCollection|ClientModel[]
      *
-     * @ORM\OneToMany(targetEntity="Monarc\BackOffice\Model\Entity\ClientModel", mappedBy="client")
+     * @ORM\OneToMany(targetEntity="ClientModel", mappedBy="client", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     protected $models;
 
@@ -98,14 +98,54 @@ class Client extends AbstractEntity
      */
     protected $first_user_email;
 
-    public function __construct()
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="is_two_factor_auth_enforced", type="boolean", nullable=false, options={"default":true})
+     */
+    protected $twoFactorAuthEnforced = true;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="is_background_import_active", type="boolean", nullable=false, options={"default":false})
+     */
+    protected $isBackgroundImportActive = false;
+
+    public function __construct($obj = null)
     {
         $this->models = new ArrayCollection();
+
+        parent::__construct($obj);
     }
 
     public function getModels()
     {
         return $this->models;
+    }
+
+    public function isTwoFactorAuthEnforced(): bool
+    {
+        return $this->twoFactorAuthEnforced;
+    }
+
+    public function setTwoFactorAuthEnforced(bool $twoFactorAuthEnforced): self
+    {
+        $this->twoFactorAuthEnforced = $twoFactorAuthEnforced;
+
+        return $this;
+    }
+
+    public function isBackgroundImportActive(): bool
+    {
+        return $this->isBackgroundImportActive;
+    }
+
+    public function setIsBackgroundImportActive(bool $isBackgroundImportActive): self
+    {
+        $this->isBackgroundImportActive = $isBackgroundImportActive;
+
+        return $this;
     }
 
     public function getInputFilter($partial = false)

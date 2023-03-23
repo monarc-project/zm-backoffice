@@ -65,7 +65,15 @@ class ClientService extends AbstractService
         $clientTable = $this->get('table');
 
         return $clientTable->fetchAllFiltered(
-            ['id', 'name', 'first_user_email', 'proxyAlias', 'createdAt'],
+            [
+                'id',
+                'name',
+                'first_user_email',
+                'proxyAlias',
+                'createdAt',
+                'twoFactorAuthEnforced',
+                'isBackgroundImportActive',
+            ],
             $page,
             $limit,
             $this->parseFrontendOrder($order),
@@ -104,9 +112,14 @@ class ClientService extends AbstractService
         $client = $this->get('clientEntity');
         $client->exchangeArray($data);
 
-        $client->setCreator(
-            $this->getConnectedUser()->getEmail()
-        );
+        $client->setCreator($this->getConnectedUser()->getEmail());
+
+        if (!isset($data['twoFactorAuthEnforced'])) {
+            $client->setTwoFactorAuthEnforced((bool)$data['twoFactorAuthEnforced']);
+        }
+        if (!isset($data['isBackgroundImportActive'])) {
+            $client->setIsBackgroundImportActive((bool)$data['isBackgroundImportActive']);
+        }
 
         $clientTable->save($client, false);
         $dataModels = null;
@@ -156,30 +169,78 @@ class ClientService extends AbstractService
         }
 
         if ($entity !== null) {
+            $updateData = [];
+
             $dataModels = null;
             if (isset($data['model_id'])) {
                 $dataModels = $data['model_id'];
                 unset($data['model_id']);
             }
+
+            if ($data['first_user_email'] !== $entity->get('first_user_email')
+                || $data['first_user_firstname'] !== $entity->get('first_user_firstname')
+                || $data['first_user_lastname'] !== $entity->get('first_user_lastname')
+            ) {
+                $updateData['client'] = [
+                    'oldEmail' => $entity->get('first_user_email'),
+                    'email' => $data['first_user_email'],
+                    'firstName' => $data['first_user_firstname'],
+                    'lastName' => $data['first_user_lastname'],
+                ];
+            }
+
+            if (isset($data['twoFactorAuthEnforced'])
+                && (bool)$data['twoFactorAuthEnforced'] !== $entity->isTwoFactorAuthEnforced()
+            ) {
+                $updateData['twoFactorAuthEnforced'] = (bool)$data['twoFactorAuthEnforced'];
+            }
+            if (isset($data['isBackgroundImportActive'])
+                && (bool)$data['isBackgroundImportActive'] !== $entity->isBackgroundImportActive()
+            ) {
+                $updateData['isBackgroundImportActive'] = (bool)$data['isBackgroundImportActive'];
+            }
+
             $entity->exchangeArray($data, true);
-            $entity->setUpdater(
-                $this->getConnectedUser()->getEmail()
-            );
+            $entity->setUpdater($this->getConnectedUser()->getEmail());
+
+            if (isset($data['twoFactorAuthEnforced'])) {
+                $entity->setTwoFactorAuthEnforced((bool)$data['twoFactorAuthEnforced']);
+            }
+            if (!isset($data['isBackgroundImportActive'])) {
+                $entity->setIsBackgroundImportActive((bool)$data['isBackgroundImportActive']);
+            }
+
             if ($dataModels !== null) {
                 $clientModelTable = $this->get('clientModelTable');
-                $entity->getModels()->clear();
+
+                $existingModelIds = [];
+                foreach ($entity->getModels() as $model) {
+                    if (\in_array($model->getModelId(), $dataModels, true)) {
+                        $existingModelIds[] = $model->getModelId();
+                    } else {
+                        $updateData['modelIdsToRemove'][] = $model->getModelId();
+                    }
+                }
+                $modelIdsToAdd = array_diff($dataModels, $existingModelIds);
+
                 //link model
-                foreach ($dataModels as $newModel) {
-                        $clientModel = (new ClientModel())
-                            ->setClient($entity)
-                            ->setModelId($newModel)
-                            ->setCreator($this->getConnectedUser()->getEmail());
-                        $clientModelTable->save($clientModel);
-                        $entity->getModels()->add($clientModel);
+                foreach ($modelIdsToAdd as $newModelId) {
+                    $clientModel = (new ClientModel())
+                        ->setClient($entity)
+                        ->setModelId($newModelId)
+                        ->setCreator($this->getConnectedUser()->getEmail());
+                    $clientModelTable->save($clientModel, false);
+                    $entity->getModels()->add($clientModel);
+
+                    $updateData['modelIdsToAdd'][] = $newModelId;
                 }
             }
 
             $clientTable->save($entity);
+
+            if (!empty($updateData)) {
+                $this->generateUpdateClientJson($entity, $updateData);
+            }
 
             return true;
         }
@@ -326,14 +387,16 @@ class ClientService extends AbstractService
                 = 'INSERT INTO `clients_models` SET ' . $listValuesModels . ';';
         }
 
-        $datas = array(
+        $datas = [
             'server' => $server->get('fqdn'),
             'proxy_alias' => $client->get('proxyAlias'),
+            'twoFactorAuthEnforced' => $client->isTwoFactorAuthEnforced(),
+            'isBackgroundImportActive' => $client->isBackgroundImportActive(),
             'sql_bootstrap' => $sqlDumpUsers . ' ' .
                 $sqlDumpUsersRoles . ' ' .
                 $sqlDumpClients . ' ' .
-                $sqlDumpClientsModels
-        );
+                $sqlDumpClientsModels,
+        ];
 
         $path = $this->config['spool_path_create'];
 
@@ -385,7 +448,7 @@ class ClientService extends AbstractService
                 if (!is_array($listValues)) {
                     $listValues = [];
                 }
-                $listValues[]= $this->getListValues($value, $serverTable);
+                $listValues[] = $this->getListValues($value, $serverTable);
             }
             if (!is_array($value) && $key !== '' && $value !== null) {
                 if ($listValues !== '') {
@@ -417,5 +480,67 @@ class ClientService extends AbstractService
         file_put_contents($filename, json_encode($datas));
 
         return $filename;
+    }
+
+    private function generateUpdateClientJson(Client $client, array $updateData)
+    {
+        $clientUpdateSql = '';
+        /* Generate the client and user updates. */
+        if (isset($updateData['client'])) {
+            $clientUpdateSql = sprintf(
+                'UPDATE `clients` SET `first_user_firstname` = "%s", `first_user_lastname` = "%s", '
+                . '`first_user_email` = "%s" ORDER BY `id` LIMIT 1; ',
+                $updateData['client']['firstName'],
+                $updateData['client']['lastName'],
+                $updateData['client']['email'],
+            );
+            $clientUpdateSql .= sprintf(
+                'UPDATE `users` SET `firstname` = "%s", `lastname` = "%s", `email` = "%s" '
+                . 'WHERE `id` = 1 OR `email` = "%s"; ',
+                $updateData['client']['firstName'],
+                $updateData['client']['lastName'],
+                $updateData['client']['email'],
+                $updateData['client']['oldEmail'],
+            );
+        }
+
+        /* Generate the models_clients inserts. */
+        if (isset($updateData['modelIdsToAdd'])) {
+            $values = [];
+            foreach ($updateData['modelIdsToAdd'] as $modelIdToAdd) {
+                $values[] = '(' . $modelIdToAdd . ', (SELECT id from clients ORDER BY `id` LIMIT 1), "System", NOW())';
+            }
+            $clientUpdateSql .= sprintf(
+                'INSERT INTO `clients_models` (`model_id`, `client_id`, `creator`, `created_at`) VALUES %s;',
+                implode(', ', $values),
+            );
+        }
+        /* Generate the models_clients deletes. */
+        if (isset($updateData['modelIdsToRemove'])) {
+            $clientUpdateSql .= sprintf(
+                'DELETE FROM `clients_models` WHERE `model_id` in (%s); ',
+                implode(', ', $updateData['modelIdsToRemove'])
+            );
+        }
+
+        $serverTable = $this->get('serverTable');
+        $server = $serverTable->getEntity($client->get('server_id'));
+
+        $data = [
+            'server' => $server->get('fqdn'),
+            'proxy_alias' => $client->get('proxyAlias'),
+            'sql_update' => $clientUpdateSql === '' ? 'SELECT 1 FROM dual;' : $clientUpdateSql,
+        ];
+
+        if (isset($updateData['twoFactorAuthEnforced'])) {
+            $data['twoFactorAuthEnforced'] = $client->isTwoFactorAuthEnforced();
+        }
+        if (isset($updateData['isBackgroundImportActive'])) {
+            $data['isBackgroundImportActive'] = $client->isBackgroundImportActive();
+        }
+
+        $path = $this->config['spool_path_update'];
+
+        $this->createJsonFile($path, $data);
     }
 }

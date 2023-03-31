@@ -25,4 +25,16 @@ class ClientModelTable extends AbstractEntityTable
     ) {
         parent::__construct($dbService, ClientModel::class, $connectedUserService);
     }
+
+    public function deleteByModelIds(array $modelIds): void
+    {
+        $queryBuilder = $this->getRepository()->createQueryBuilder('cm');
+        $clientModels = $queryBuilder->where($queryBuilder->expr()->in('cm.modelId', array_map('\intval', $modelIds)))
+            ->getQuery()
+            ->getResult();
+
+        foreach ($clientModels as $clientModel) {
+            $this->getDb()->delete($clientModel);
+        }
+    }
 }

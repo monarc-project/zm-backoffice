@@ -9,6 +9,7 @@ namespace Monarc\BackOffice\Service;
 
 use Monarc\BackOffice\Model\Entity\Client;
 use Monarc\BackOffice\Model\Entity\ClientModel;
+use Monarc\BackOffice\Model\Table\ClientModelTable;
 use Monarc\BackOffice\Model\Table\ClientTable;
 use Monarc\Core\Service\AbstractService;
 use PDO;
@@ -211,6 +212,7 @@ class ClientService extends AbstractService
             }
 
             if ($dataModels !== null) {
+                /** @var ClientModelTable $clientModelTable */
                 $clientModelTable = $this->get('clientModelTable');
 
                 $existingModelIds = [];
@@ -233,6 +235,9 @@ class ClientService extends AbstractService
                     $entity->getModels()->add($clientModel);
 
                     $updateData['modelIdsToAdd'][] = $newModelId;
+                }
+                if (!empty($updateData['modelIdsToRemove'])) {
+                    $clientModelTable->deleteByModelIds($updateData['modelIdsToRemove']);
                 }
             }
 

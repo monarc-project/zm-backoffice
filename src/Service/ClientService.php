@@ -534,9 +534,11 @@ class ClientService extends AbstractService
         $data = [
             'server' => $server->get('fqdn'),
             'proxy_alias' => $client->get('proxyAlias'),
-            'sql_update' => $clientUpdateSql === '' ? 'SELECT 1 FROM dual;' : $clientUpdateSql,
         ];
 
+        if ($clientUpdateSql !== '') {
+            $data['sql_update'] = $clientUpdateSql;
+        }
         if (isset($updateData['twoFactorAuthEnforced'])) {
             $data['twoFactorAuthEnforced'] = $client->isTwoFactorAuthEnforced();
         }

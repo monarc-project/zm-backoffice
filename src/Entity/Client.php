@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2022 SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
@@ -96,6 +96,20 @@ class Client
      * @ORM\Column(name="first_user_email", type="string", length=255, nullable=false)
      */
     protected $firstUserEmail = '';
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="is_two_factor_auth_enforced", type="boolean", nullable=false, options={"default":true})
+     */
+    protected $twoFactorAuthEnforced = true;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="is_background_import_active", type="boolean", nullable=false, options={"default":false})
+     */
+    protected $isBackgroundImportActive = false;
 
     public function __construct()
     {
@@ -224,6 +238,31 @@ class Client
     public function setFirstUserEmail(string $firstUserEmail): self
     {
         $this->firstUserEmail = $firstUserEmail;
+
+        return $this;
+    }
+
+
+    public function isTwoFactorAuthEnforced(): bool
+    {
+        return $this->twoFactorAuthEnforced;
+    }
+
+    public function setTwoFactorAuthEnforced(bool $twoFactorAuthEnforced): self
+    {
+        $this->twoFactorAuthEnforced = $twoFactorAuthEnforced;
+
+        return $this;
+    }
+
+    public function isBackgroundImportActive(): bool
+    {
+        return $this->isBackgroundImportActive;
+    }
+
+    public function setIsBackgroundImportActive(bool $isBackgroundImportActive): self
+    {
+        $this->isBackgroundImportActive = $isBackgroundImportActive;
 
         return $this;
     }

@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2022  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
@@ -95,6 +95,13 @@ class ClientService
             ->setServer($server)
             ->setCreator($this->connectedUser->getEmail());
 
+        if (!isset($data['twoFactorAuthEnforced'])) {
+            $client->setTwoFactorAuthEnforced((bool)$data['twoFactorAuthEnforced']);
+        }
+        if (!isset($data['isBackgroundImportActive'])) {
+            $client->setIsBackgroundImportActive((bool)$data['isBackgroundImportActive']);
+        }
+
         $models = [];
         if (!empty($data['modelId'])) {
             /** @var Model[] $models */
@@ -136,13 +143,43 @@ class ClientService
             $client->setContactEmail($data['contactEmail']);
         }
 
+        $updateData = [];
+        if ($data['firstUserEmail'] !== $client->getFirstUserEmail()
+            || $data['firstUserFirstname'] !== $client->getFirstUserFirstname()
+            || $data['firstUserLastname'] !== $client->getFirstUserLastname()
+        ) {
+            $updateData['client'] = [
+                'oldEmail' => $client->getFirstUserEmail(),
+                'email' => $data['firstUserEmail'],
+                'firstName' => $data['firstUserFirstname'],
+                'lastName' => $data['firstUserLastname'],
+            ];
+            $client->setFirstUserEmail($data['firstUserEmail'])
+                ->setFirstUserFirstname($data['firstUserFirstname'])
+                ->setFirstUserLastname($data['firstUserLastname']);
+        }
+        if (isset($data['twoFactorAuthEnforced'])
+            && (bool)$data['twoFactorAuthEnforced'] !== $client->isTwoFactorAuthEnforced()
+        ) {
+            $client->setTwoFactorAuthEnforced((bool)$data['twoFactorAuthEnforced']);
+            $updateData['twoFactorAuthEnforced'] = $client->isTwoFactorAuthEnforced();
+        }
+        if (isset($data['isBackgroundImportActive'])
+            && (bool)$data['isBackgroundImportActive'] !== $client->isBackgroundImportActive()
+        ) {
+            $client->setIsBackgroundImportActive((bool)$data['isBackgroundImportActive']);
+            $updateData['isBackgroundImportActive'] = $client->isBackgroundImportActive();
+        }
+
         $linkedModelIds = [];
         foreach ($client->getClientModels() as $clientModel) {
-            if (!\in_array($clientModel->getModelId(), $data['modelId'], true)) {
+            if (\in_array($clientModel->getModelId(), $data['modelId'], true)) {
+                $linkedModelIds[] = $clientModel->getModelId();
+            } else {
                 $client->removeClientModel($clientModel);
                 $this->clientTable->save($client, false);
-            } else {
-                $linkedModelIds[] = $clientModel->getModelId();
+
+                $updateData['modelIdsToRemove'][] = $clientModel->getModelId();
             }
         }
         $models = [];
@@ -163,10 +200,16 @@ class ClientService
                     ->setModelId($model->getId())
                     ->setCreator($this->connectedUser->getEmail());
                 $this->clientModelTable->save($clientModel, false);
+
+                $updateData['modelIdsToAdd'][] = $model->getId();
             }
         }
 
         $this->clientTable->save($client);
+
+        if (!empty($updateData)) {
+            $this->generateUpdateClientJson($client, $updateData);
+        }
 
         return $client;
     }
@@ -275,6 +318,8 @@ class ClientService
         $this->createJsonFileWithDataContent($this->config['spool_path_create'], [
             'server' => $client->getServer()->getFqdn(),
             'proxy_alias' => $client->getProxyAlias(),
+            'twoFactorAuthEnforced' => $client->isTwoFactorAuthEnforced(),
+            'isBackgroundImportActive' => $client->isBackgroundImportActive(),
             'sql_bootstrap' => rtrim($sqlBootstrap),
         ]);
     }
@@ -339,7 +384,6 @@ class ClientService
         return (bool)file_put_contents($filename, json_encode($data, JSON_THROW_ON_ERROR));
     }
 
-
     private function getPreparedClientData(Client $client): array
     {
         $modelIds = [];
@@ -355,6 +399,8 @@ class ClientService
             'firstUserFirstname' => $client->getFirstUserFirstname(),
             'firstUserLastname' => $client->getFirstUserLastname(),
             'firstUserEmail' => $client->getFirstUserEmail(),
+            'twoFactorAuthEnforced' => $client->isTwoFactorAuthEnforced(),
+            'isBackgroundImportActive' => $client->isBackgroundImportActive(),
             'logoId' => $client->getLogoId(),
             'serverId' => $client->getServer()->getId(),
             'modelId' => $modelIds,
@@ -362,5 +408,66 @@ class ClientService
                 'date' => $client->getCreatedAt()->format('Y-m-d H:i'),
             ],
         ];
+    }
+
+    private function generateUpdateClientJson(Client $client, array $updateData)
+    {
+        $clientUpdateSql = '';
+        /* Generate the client and user updates. */
+        if (isset($updateData['client'])) {
+            $clientUpdateSql = sprintf(
+                'UPDATE `clients` SET `first_user_firstname` = "%s", `first_user_lastname` = "%s", '
+                . '`first_user_email` = "%s" ORDER BY `id` LIMIT 1; ',
+                $updateData['client']['firstName'],
+                $updateData['client']['lastName'],
+                $updateData['client']['email'],
+            );
+            $clientUpdateSql .= sprintf(
+                'UPDATE `users` SET `firstname` = "%s", `lastname` = "%s", `email` = "%s" '
+                . 'WHERE `id` = 1 OR `email` = "%s"; ',
+                $updateData['client']['firstName'],
+                $updateData['client']['lastName'],
+                $updateData['client']['email'],
+                $updateData['client']['oldEmail'],
+            );
+        }
+
+        /* Generate the models_clients inserts. */
+        if (isset($updateData['modelIdsToAdd'])) {
+            $values = [];
+            foreach ($updateData['modelIdsToAdd'] as $modelIdToAdd) {
+                $values[] = '(' . $modelIdToAdd . ', (SELECT id from clients ORDER BY `id` LIMIT 1), "System", NOW())';
+            }
+            $clientUpdateSql .= sprintf(
+                'INSERT INTO `clients_models` (`model_id`, `client_id`, `creator`, `created_at`) VALUES %s;',
+                implode(', ', $values),
+            );
+        }
+        /* Generate the models_clients deletes. */
+        if (isset($updateData['modelIdsToRemove'])) {
+            $clientUpdateSql .= sprintf(
+                'DELETE FROM `clients_models` WHERE `model_id` in (%s); ',
+                implode(', ', $updateData['modelIdsToRemove'])
+            );
+        }
+
+        $data = [
+            'server' => $client->getServer()->getFqdn(),
+            'proxy_alias' => $client->getProxyAlias(),
+        ];
+
+        if ($clientUpdateSql !== '') {
+            $data['sql_update'] = $clientUpdateSql;
+        }
+        if (isset($updateData['twoFactorAuthEnforced'])) {
+            $data['twoFactorAuthEnforced'] = $client->isTwoFactorAuthEnforced();
+        }
+        if (isset($updateData['isBackgroundImportActive'])) {
+            $data['isBackgroundImportActive'] = $client->isBackgroundImportActive();
+        }
+
+        $path = $this->config['spool_path_update'];
+
+        $this->createJsonFileWithDataContent($path, $data);
     }
 }

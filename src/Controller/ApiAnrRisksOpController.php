@@ -56,14 +56,16 @@ class ApiAnrRisksOpController extends AbstractRestfulControllerRequestHandler
 
     protected function parseParams(): array
     {
+        $params = $this->params();
+
         return [
-            'keywords' => $this->params()->fromQuery("keywords"),
-            'kindOfMeasure' => $this->params()->fromQuery("kindOfMeasure"),
-            'order' => $this->params()->fromQuery("order", "maxRisk"),
-            'order_direction' => $this->params()->fromQuery("order_direction", "desc"),
-            'thresholds' => $this->params()->fromQuery("thresholds"),
-            'page' => $this->params()->fromQuery("page", 1),
-            'limit' => $this->params()->fromQuery("limit", 50),
+            'keywords' => $params->fromQuery("keywords"),
+            'kindOfMeasure' => $params->fromQuery("kindOfMeasure"),
+            'order' => $params->fromQuery("order", "maxRisk"),
+            'order_direction' => $params->fromQuery("order_direction", "desc"),
+            'thresholds' => $params->fromQuery("thresholds"),
+            'page' => (int)$params->fromQuery('page', 1),
+            'limit' => (int)$params->fromQuery('limit', 50),
         ];
     }
 }

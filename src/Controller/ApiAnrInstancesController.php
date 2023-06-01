@@ -10,7 +10,6 @@ namespace Monarc\BackOffice\Controller;
 use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Model\Entity\Anr;
-use Monarc\Core\Service\InstanceExportService;
 use Monarc\Core\Service\InstanceService;
 use Monarc\Core\Validator\InputValidator\Instance\CreateInstanceDataInputValidator;
 use Monarc\Core\Validator\InputValidator\Instance\PatchInstanceDataInputValidator;
@@ -22,8 +21,6 @@ class ApiAnrInstancesController extends AbstractRestfulControllerRequestHandler
 
     private InstanceService $instanceService;
 
-    private InstanceExportService $instanceExportService;
-
     private CreateInstanceDataInputValidator $createInstanceDataInputValidator;
 
     private UpdateInstanceDataInputValidator $updateInstanceDataInputValidator;
@@ -32,13 +29,11 @@ class ApiAnrInstancesController extends AbstractRestfulControllerRequestHandler
 
     public function __construct(
         InstanceService $instanceService,
-        InstanceExportService $instanceExportService,
         CreateInstanceDataInputValidator $createInstanceDataInputValidator,
         UpdateInstanceDataInputValidator $updateInstanceDataInputValidator,
         PatchInstanceDataInputValidator $patchInstanceDataInputValidator
     ) {
         $this->instanceService = $instanceService;
-        $this->instanceExportService = $instanceExportService;
         $this->createInstanceDataInputValidator = $createInstanceDataInputValidator;
         $this->updateInstanceDataInputValidator = $updateInstanceDataInputValidator;
         $this->patchInstanceDataInputValidator = $patchInstanceDataInputValidator;
@@ -108,40 +103,5 @@ class ApiAnrInstancesController extends AbstractRestfulControllerRequestHandler
         $this->instanceService->delete((int)$id);
 
         return $this->getSuccessfulJsonResponse();
-    }
-
-    /**
-     * TODO: use the InstanceExportService
-     * TODO: the export with password and evals doesn't work as far as we need to get [POST] data, but request is [GET]
-     *
-     * Exports an instance in our own custom encrypted format and downloads it to the client browser
-     * @return \Laminas\Stdlib\ResponseInterface The file attachment response
-     */
-    public function exportAction()
-    {
-        $id = $this->params()->fromRoute('id');
-        $data['id'] = $id;
-
-        if (empty($data['password'])) {
-            $contentType = 'application/json; charset=utf-8';
-            $extension = '.json';
-        } else {
-            $contentType = 'text/plain; charset=utf-8';
-            $extension = '.bin';
-        }
-
-        $exportData = $this->instanceExportService->export($data);
-        $this->getResponse()
-            ->setContent($exportData);
-
-        $this->getResponse()
-            ->getHeaders()
-            ->clearHeaders()
-            ->addHeaderLine('Content-Type', $contentType)
-            ->addHeaderLine('Content-Length', \strlen($exportData))
-            ->addHeaderLine('Content-Disposition', 'attachment; filename="' .
-                (empty($data['filename']) ? $data['id'] : $data['filename']) . $extension . '"');
-
-        return $this->getResponse();
     }
 }

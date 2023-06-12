@@ -51,4 +51,3 @@ class ApiAnrInstancesRisksController extends AbstractRestfulControllerRequestHan
         ]);
     }
 }
-

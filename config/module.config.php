@@ -489,6 +489,40 @@ return [
                 ],
             ],
 
+            'monarc_api_anr_instances_risks' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/anr/:anrid/instances-risks[/:id]',
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(
+                            AnrValidationMiddleware::class,
+                            Controller\ApiAnrInstancesRisksController::class,
+                        ),
+                    ],
+                ],
+            ],
+
+            'monarc_api_anr_instances_risksop' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/anr/:anrid/instances-oprisks[/:id]',
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(
+                            AnrValidationMiddleware::class,
+                            Controller\ApiAnrInstancesRisksOpController::class,
+                        ),
+                    ],
+                ],
+            ],
+
             'monarc_api_anr_risk_owners' => [
                 'type' => 'segment',
                 'options' => [
@@ -789,7 +823,9 @@ return [
             Controller\ApiRolfRisksController::class => AutowireFactory::class,
             Controller\ApiRolfTagsController::class => AutowireFactory::class,
             Controller\ApiAnrRisksController::class => AutowireFactory::class,
+            Controller\ApiAnrInstancesRisksController::class => AutowireFactory::class,
             Controller\ApiAnrRisksOpController::class => AutowireFactory::class,
+            Controller\ApiAnrInstancesRisksOpController::class => AutowireFactory::class,
             Controller\ApiAnrRiskOwnersController::class => AutowireFactory::class,
             Controller\ApiSoaCategoryController::class => AutowireFactory::class,
             Controller\ApiSoaScaleCommentController::class => AutowireFactory::class,

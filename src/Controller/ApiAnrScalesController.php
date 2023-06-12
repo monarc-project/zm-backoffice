@@ -49,4 +49,3 @@ class ApiAnrScalesController extends AbstractRestfulControllerRequestHandler
         return $this->getSuccessfulJsonResponse();
     }
 }
-

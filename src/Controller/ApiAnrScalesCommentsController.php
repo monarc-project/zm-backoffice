@@ -32,10 +32,10 @@ class ApiAnrScalesCommentsController extends AbstractRestfulControllerRequestHan
 
     public function getList()
     {
-        $formattedParams = $this->getFormattedInputParams($this->getScaleImpactTypesInputFormatter);
+        $formattedParams = $this->getFormattedInputParams($this->getScaleCommentsInputFormatter);
         $formattedParams->setFilterValueFor('scale', (int)$this->params()->fromRoute('scaleId'));
 
-        $comments = $this->getService()->getList($formattedParams);
+        $comments = $this->scaleCommentService->getList($formattedParams);
 
         return new JsonModel(array(
             'count' => \count($comments),
@@ -51,7 +51,7 @@ class ApiAnrScalesCommentsController extends AbstractRestfulControllerRequestHan
         /** @var Anr $anr */
         $anr = $this->getRequest()->getAttribute('anr');
 
-        $scaleComment = $this->getService()->create($anr, $data);
+        $scaleComment = $this->scaleCommentService->create($anr, $data);
 
         return $this->getSuccessfulJsonResponse(['id' => $scaleComment->getId()]);
     }
@@ -61,7 +61,7 @@ class ApiAnrScalesCommentsController extends AbstractRestfulControllerRequestHan
         /** @var Anr $anr */
         $anr = $this->getRequest()->getAttribute('anr');
 
-        $scaleComment = $this->getService()->update($anr, (int)$id, $data);
+        $scaleComment = $this->scaleCommentService->update($anr, (int)$id, $data);
 
         return $this->getSuccessfulJsonResponse(['id' => $scaleComment->getId()]);
     }

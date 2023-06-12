@@ -7,7 +7,6 @@
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Exception;
 use Monarc\Core\Service\UserRoleService;
 use Laminas\Mvc\Controller\AbstractRestfulController;
 use Laminas\View\Model\JsonModel;

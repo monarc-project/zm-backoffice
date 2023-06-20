@@ -200,6 +200,9 @@ class ClientService extends AbstractService
             ) {
                 $updateData['isBackgroundImportActive'] = (bool)$data['isBackgroundImportActive'];
             }
+            if (!empty($data['resetTwoFactorAuth'])) {
+                $updateData['resetTwoFactorAuth'] = true;
+            }
 
             $entity->exchangeArray($data, true);
             $entity->setUpdater($this->getConnectedUser()->getEmail());
@@ -499,14 +502,24 @@ class ClientService extends AbstractService
                 $updateData['client']['lastName'],
                 $updateData['client']['email'],
             );
+
+            $resetTwoFactorAuthSqlPart = '';
+            if (!empty($updateData['resetTwoFactorAuth'])) {
+                $resetTwoFactorAuthSqlPart = ', `is_two_factor_enabled` = 0, `secret_key` = "", '
+                    . '`recovery_codes` = NULL ';
+            }
+
             $clientUpdateSql .= sprintf(
-                'UPDATE `users` SET `firstname` = "%s", `lastname` = "%s", `email` = "%s" '
+                'UPDATE `users` SET `firstname` = "%s", `lastname` = "%s", `email` = "%s" ' . $resetTwoFactorAuthSqlPart
                 . 'WHERE `id` = 1 OR `email` = "%s"; ',
                 $updateData['client']['firstName'],
                 $updateData['client']['lastName'],
                 $updateData['client']['email'],
                 $updateData['client']['oldEmail'],
             );
+        } elseif (!empty($updateData['resetTwoFactorAuth'])) {
+            $clientUpdateSql = 'UPDATE `users` SET `is_two_factor_enabled` = 0, `secret_key` = "", '
+                . '`recovery_codes` = NULL WHERE `id` = 1 OR `email` = "' . $client->get('first_user_email') . '"; ';
         }
 
         /* Generate the models_clients inserts. */

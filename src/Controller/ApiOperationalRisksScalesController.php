@@ -53,7 +53,10 @@ class ApiOperationalRisksScalesController extends AbstractRestfulControllerReque
      */
     public function deleteList($data)
     {
-        $this->operationalRiskScaleService->deleteOperationalRiskScaleTypes($data);
+        /** @var Anr $anr */
+        $anr = $this->getRequest()->getAttribute('anr');
+
+        $this->operationalRiskScaleService->deleteOperationalRiskScaleTypes($anr, $data);
 
         return $this->getSuccessfulJsonResponse();
     }

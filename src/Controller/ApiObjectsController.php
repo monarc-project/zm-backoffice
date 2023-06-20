@@ -49,6 +49,9 @@ class ApiObjectsController extends AbstractRestfulControllerRequestHandler
         ]);
     }
 
+    /**
+     * @param string $id
+     */
     public function get($id)
     {
         $formattedInputParams = $this->getFormattedInputParams($this->getObjectInputFormatter);
@@ -56,6 +59,9 @@ class ApiObjectsController extends AbstractRestfulControllerRequestHandler
         return $this->getPreparedJsonResponse($this->objectService->getObjectData($id, $formattedInputParams));
     }
 
+    /**
+     * @param array $data
+     */
     public function create($data)
     {
         $this->validatePostParams($this->postObjectDataInputValidator, $data);
@@ -65,6 +71,10 @@ class ApiObjectsController extends AbstractRestfulControllerRequestHandler
         return $this->getSuccessfulJsonResponse(['id' => $object->getUuid()]);
     }
 
+    /**
+     * @param string $id
+     * @param array $data
+     */
     public function update($id, $data)
     {
         $this->validatePostParams($this->postObjectDataInputValidator, $data);
@@ -74,6 +84,9 @@ class ApiObjectsController extends AbstractRestfulControllerRequestHandler
         return $this->getSuccessfulJsonResponse();
     }
 
+    /**
+     * @param string $id
+     */
     public function delete($id)
     {
         $this->objectService->delete($id);

@@ -45,6 +45,9 @@ class ApiAnrInstancesMetadataFieldsController extends AbstractRestfulControllerR
         ]);
     }
 
+    /**
+     * @param array $data
+     */
     public function create($data)
     {
         /** @var Anr $anr */
@@ -57,14 +60,23 @@ class ApiAnrInstancesMetadataFieldsController extends AbstractRestfulControllerR
 
     public function delete($id)
     {
-        $this->instanceMetadataFieldService->delete((int)$id);
+        /** @var Anr $anr */
+        $anr = $this->getRequest()->getAttribute('anr');
+
+        $this->instanceMetadataFieldService->delete($anr, (int)$id);
 
         return $this->getSuccessfulJsonResponse();
     }
 
+    /**
+     * @param array $data
+     */
     public function update($id, $data)
     {
-        $this->instanceMetadataFieldService->update((int)$id, $data);
+        /** @var Anr $anr */
+        $anr = $this->getRequest()->getAttribute('anr');
+
+        $this->instanceMetadataFieldService->update($anr, (int)$id, $data);
 
         return $this->getSuccessfulJsonResponse();
     }

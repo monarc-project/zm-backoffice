@@ -14,7 +14,7 @@ use Laminas\Router\RouteMatch;
 use Monarc\Core\Model\Entity\UserRole;
 use Monarc\Core\Model\Entity\UserSuperClass;
 use Monarc\Core\Service\ConnectedUserService;
-use Monarc\Core\Model\Table\AnrTable;
+use Monarc\Core\Table\AnrTable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

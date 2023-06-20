@@ -7,7 +7,6 @@
 
 namespace Monarc\BackOffice\Controller;
 
-use Laminas\View\Model\JsonModel;
 use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\InputFormatter\ScaleComment\GetScaleCommentsInputFormatter;
@@ -37,13 +36,13 @@ class ApiAnrScalesCommentsController extends AbstractRestfulControllerRequestHan
 
         $comments = $this->scaleCommentService->getList($formattedParams);
 
-        return new JsonModel(array(
+        return $this->getPreparedJsonResponse([
             'count' => \count($comments),
             'comments' => $comments,
             // TODO: check if we need those fields:
             //'anr' => $anrId,
             //'scale' => $scale,
-        ));
+        ]);
     }
 
     public function create($data)

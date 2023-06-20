@@ -60,6 +60,8 @@ class ApiUserTwoFAController extends AbstractRestfulController
 
     /**
      * Confirms the newly generated key with a token given by the user.
+     *
+     * @param string[] $data
      */
     public function create($data)
     {
@@ -80,7 +82,7 @@ class ApiUserTwoFAController extends AbstractRestfulController
     public function delete($id)
     {
         $this->connectedUser->setTwoFactorAuthEnabled(false);
-        $this->connectedUser->setSecretKey(null);
+        $this->connectedUser->setSecretKey('');
         $this->connectedUser->setRecoveryCodes(null);
         $this->userTable->save($this->connectedUser);
 

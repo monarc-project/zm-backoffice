@@ -27,6 +27,19 @@ use Monarc\Core\Table\Factory\ClientEntityManagerFactory;
 return [
     'router' => [
         'routes' => [
+            'monarc_api_models_duplication' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/models-duplication[/:id]',
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiModelsDuplicationController::class,
+                    ],
+                ],
+            ],
+
             'monarc_api_admin_historicals' => [
                 'type' => 'segment',
                 'options' => [
@@ -86,6 +99,56 @@ return [
                     ],
                     'defaults' => [
                         'controller' => Controller\ApiAdminUsersRolesController::class,
+                    ],
+                ],
+            ],
+
+
+            'monarc_api_user_password' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/user/password/:id',
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiUserPasswordController::class,
+                    ],
+                ],
+            ],
+
+            'monarc_api_user_activate_2fa' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/user/activate2FA/:id',
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiUserTwoFAController::class,
+                    ],
+                ],
+            ],
+
+            'monarc_api_user_recovery_codes' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/user/recoveryCodes/:id',
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiUserRecoveryCodesController::class,
+                    ],
+                ],
+            ],
+
+            'monarc_api_user_profile' => [
+                'type' => 'literal',
+                'options' => [
+                    'route' => '/api/user/profile',
+                    'defaults' => [
+                        'controller' => Controller\ApiUserProfileController::class,
                     ],
                 ],
             ],
@@ -303,112 +366,6 @@ return [
                 ],
             ],
 
-            'monarc_api_anr_objects' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrid/objects[/:id]',
-                    'constraints' => [
-                        'anrid' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiObjectsController::class,
-                        ),
-                    ],
-                ],
-            ],
-
-            'monarc_api_anr_library' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrid/library[/:id]',
-                    'constraints' => [
-                        'anrid' => '[0-9]+',
-                        'id' => '[a-f0-9-]*',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiAnrLibraryController::class,
-                        ),
-                    ],
-                ],
-            ],
-
-            'monarc_api_anr_objects_parents' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrid/objects/:id/parents',
-                    'constraints' => [
-                        'anrid' => '[0-9]+',
-                        'id' => '[a-f0-9-]*',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiObjectsController::class,
-                        ),
-                        'action' => 'parents'
-                    ],
-                ],
-            ],
-
-            'monarc_api_objects_duplication' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrid/objects-duplication',
-                    'constraints' => [
-                        'anrid' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiObjectsDuplicationController::class,
-                        ),
-                    ],
-                ],
-            ],
-
-            'monarc_api_anr_instances' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrid/instances[/:id]',
-                    'constraints' => [
-                        'anrid' => '[0-9]+',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiAnrInstancesController::class,
-                        ),
-                    ],
-                ],
-            ],
-
-            'monarc_api_anr_instances_consequences' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrid/instances-consequences[/:id]',
-                    'constraints' => [
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiAnrInstancesConsequencesController::class,
-                        ),
-                    ],
-                ],
-            ],
-
             'monarc_api_objects_export' => [
                 'type' => 'segment',
                 'options' => [
@@ -457,89 +414,6 @@ return [
                 ],
             ],
 
-            'monarc_api_anr_risks' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrid/risks[/:id]',
-                    'constraints' => [
-                        'anrid' => '[0-9]+',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiAnrRisksController::class,
-                        ),
-                    ],
-                ],
-            ],
-
-            'monarc_api_anr_risks_op' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrid/risksop[/:id]',
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiAnrRisksOpController::class,
-                        ),
-                    ],
-                ],
-            ],
-
-            'monarc_api_anr_instances_risks' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrid/instances-risks[/:id]',
-                    'constraints' => [
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiAnrInstancesRisksController::class,
-                        ),
-                    ],
-                ],
-            ],
-
-            'monarc_api_anr_instances_risksop' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrid/instances-oprisks[/:id]',
-                    'constraints' => [
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiAnrInstancesRisksOpController::class,
-                        ),
-                    ],
-                ],
-            ],
-
-            'monarc_api_anr_risk_owners' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrid/risk-owners[/:id]',
-                    'constraints' => [
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiAnrRiskOwnersController::class,
-                        ),
-                    ],
-                ],
-            ],
-
             'monarc_api_themes' => [
                 'type' => 'segment',
                 'options' => [
@@ -552,7 +426,6 @@ return [
                     ],
                 ],
             ],
-
 
             'monarc_api_soacategory' => [
                 'type' => 'segment',
@@ -580,55 +453,6 @@ return [
                 ],
             ],
 
-            'monarc_api_user_password' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/user/password/:id',
-                    'constraints' => [
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\ApiUserPasswordController::class,
-                    ],
-                ],
-            ],
-
-            'monarc_api_user_activate_2fa' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/user/activate2FA/:id',
-                    'constraints' => [
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\ApiUserTwoFAController::class,
-                    ],
-                ],
-            ],
-
-            'monarc_api_user_recovery_codes' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/user/recoveryCodes/:id',
-                    'constraints' => [
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\ApiUserRecoveryCodesController::class,
-                    ],
-                ],
-            ],
-
-            'monarc_api_user_profile' => [
-                'type' => 'literal',
-                'options' => [
-                    'route' => '/api/user/profile',
-                    'defaults' => [
-                        'controller' => Controller\ApiUserProfileController::class,
-                    ],
-                ],
-            ],
-
             'monarc_api_vulnerabilities' => [
                 'type' => 'segment',
                 'options' => [
@@ -642,142 +466,320 @@ return [
                 ],
             ],
 
-
-
-            'monarc_api_scales' => [
+            'monarc_api_anr' => [
                 'type' => 'segment',
                 'options' => [
-                    'route' => '/api/anr/:anrId/scales[/:id]',
-                    'constraints' => [
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiAnrScalesController::class,
-                        ),
-                    ],
-                ],
-            ],
-
-            'monarc_api_scales_comments' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrId/scales/:scaleId/comments[/:id]',
-                    'constraints' => [
-                        'anrId' => '[0-9]+',
-                        'scaleId' => '[0-9]+',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiAnrScalesCommentsController::class,
-                        ),
-                    ],
-                ],
-            ],
-
-            'monarc_api_scales_types' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrId/scales-types[/:id]',
-                    'constraints' => [
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiAnrScalesTypesController::class,
-                        ),
-                    ],
-                ],
-            ],
-
-            'monarc_api_delete_operational_scales' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/delete-operational-scales[/:id]',
-                    'constraints' => [
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\ApiOperationalRisksScalesController::class,
-                    ],
-                ],
-            ],
-
-
-            'monarc_api_operational_scales' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrId/operational-scales[/:id]',
-                    'constraints' => [
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiOperationalRisksScalesController::class,
-                        ),
-                    ],
-                ],
-            ],
-
-            'monarc_api_operational_scales_comment' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrId/operational-scales/:scaleid/comments[/:id]',
-                    'constraints' => [
-                        'id' => '[0-9]+',
-                        'scaleid' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiOperationalRisksScalesCommentsController::class,
-                        ),
-                    ],
-                ],
-            ],
-
-            'monarc_api_soa_scale_comment' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrid/soa-scale-comment[/:id]',
+                    'route' => '/api/anr/:anrid/',
                     'constraints' => [
                         'anrid' => '[0-9]+',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiSoaScaleCommentController::class,
-                        ),
                     ],
                 ],
-            ],
-
-            'monarc_api_anr_instances_metadata_fields' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/api/anr/:anrid/instances-metadata-fields[/:id]',
-                    'constraints' => [
-                        'anrid' => '[0-9]+',
-                        'id' => '[0-9]+',
+                'may_terminate' => false,
+                'child_routes' => [
+                    'risks' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'risks[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiAnrRisksController::class,
+                                ),
+                            ],
+                        ],
                     ],
-                    'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiAnrInstancesMetadataFieldsController::class,
-                        ),
+
+                    'risks_op' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'risksop[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiAnrRisksOpController::class,
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    'instances_risks' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'instances-risks[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiAnrInstancesRisksController::class,
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    'instances_risksop' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'instances-oprisks[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiAnrInstancesRisksOpController::class,
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    'risk_owners' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'risk-owners[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiAnrRiskOwnersController::class,
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    'objects' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'objects[/:id]',
+                            'constraints' => [
+                                'id' => '[a-f0-9-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiObjectsController::class,
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    'library' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'library[/:id]',
+                            'constraints' => [
+                                'id' => '[a-f0-9-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiAnrLibraryController::class,
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    'objects_parents' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'objects/:id/parents',
+                            'constraints' => [
+                                'id' => '[a-f0-9-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiObjectsController::class,
+                                ),
+                                'action' => 'parents'
+                            ],
+                        ],
+                    ],
+
+                    'objects_duplication' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'objects-duplication',
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiObjectsDuplicationController::class,
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    'instances' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'instances[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiAnrInstancesController::class,
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    'instances_consequences' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'instances-consequences[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiAnrInstancesConsequencesController::class,
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    'scales' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'scales[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiAnrScalesController::class,
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    'scales_comments' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'scales/:scaleId/comments[/:id]',
+                            'constraints' => [
+                                'scaleId' => '[0-9]+',
+                                'id' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiAnrScalesCommentsController::class,
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    'scales_types' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'scales-types[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiAnrScalesTypesController::class,
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    'operational_scales' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'operational-scales[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiOperationalRisksScalesController::class,
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    'operational_scales_comment' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'operational-scales/:scaleid/comments[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]+',
+                                'scaleid' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiOperationalRisksScalesCommentsController::class,
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    'soa_scale_comment' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'soa-scale-comment[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiSoaScaleCommentController::class,
+                                ),
+                            ],
+                        ],
+                    ],
+
+                    'instances_metadata_fields' => [
+                        'type' => 'segment',
+                        'options' => [
+                            'route' => 'instances-metadata-fields[/:id]',
+                            'constraints' => [
+                                'id' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'controller' => PipeSpec::class,
+                                'middleware' => new PipeSpec(
+                                    AnrValidationMiddleware::class,
+                                    Controller\ApiAnrInstancesMetadataFieldsController::class,
+                                ),
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -787,6 +789,7 @@ return [
     'controllers' => [
         'invokables' => [],
         'factories' => [
+            Controller\ApiModelsDuplicationController::class => AutowireFactory::class,
             Controller\ApiAdminHistoricalsController::class => AutowireFactory::class,
             Controller\ApiAdminPasswordsController::class => AutowireFactory::class,
             Controller\ApiAdminServersController::class => AutowireFactory::class,
@@ -915,19 +918,19 @@ return [
         'dbadmin' => [
             'monarc_api_amvs',
             'monarc_api_assets',
-            'monarc_api_anr_risks',
-            'monarc_api_anr_risks_op',
-            'monarc_api_anr_export',
-            'monarc_api_anr_instances',
-            'monarc_api_anr_instances_export',
-            'monarc_api_anr_risk_owners',
-            'monarc_api_anr_instances_risks',
-            'monarc_api_anr_instances_risksop',
-            'monarc_api_anr_instances_consequences',
-            'monarc_api_anr_instances_metadata_fields',
-            'monarc_api_anr_library',
-            'monarc_api_anr_library_category',
-            'monarc_api_anr_objects',
+            'monarc_api_anr/risks',
+            'monarc_api_anr/risks_op',
+            'monarc_api_anr/export',
+            'monarc_api_anr/instances',
+            'monarc_api_anr/instances_export',
+            'monarc_api_anr/risk_owners',
+            'monarc_api_anr/instances_risks',
+            'monarc_api_anr/instances_risksop',
+            'monarc_api_anr/instances_consequences',
+            'monarc_api_anr/instances_metadata_fields',
+            'monarc_api_anr/library',
+            'monarc_api_anr/library_category',
+            'monarc_api_anr/objects',
             'monarc_api_referentials',
             'monarc_api_measures',
             'monarc_api_measuremeasure',
@@ -937,19 +940,18 @@ return [
             'monarc_api_models_duplication',
             'monarc_api_objects',
             'monarc_api_objects_categories',
-            'monarc_api_objects_duplication',
+            'monarc_api_anr/objects_duplication',
             'monarc_api_objects_export',
             'monarc_api_objects_objects',
             'monarc_api_rolf_categories',
             'monarc_api_rolf_risks',
             'monarc_api_rolf_tags',
-            'monarc_api_scales',
-            'monarc_api_operational_scales',
-            'monarc_api_delete_operational_scales',
-            'monarc_api_operational_scales_comment',
-            'monarc_api_scales_comments',
-            'monarc_api_scales_types',
-            'monarc_api_anr_metadatas_on_instances',
+            'monarc_api_anr/scales',
+            'monarc_api_anr/operational_scales',
+            'monarc_api_anr/operational_scales_comment',
+            'monarc_api_anr/scales_comments',
+            'monarc_api_anr/scales_types',
+            'monarc_api_anr/metadatas_on_instances',
             'monarc_api_threats',
             'monarc_api_vulnerabilities',
             'monarc_api_admin_users_roles',
@@ -963,8 +965,8 @@ return [
             'monarc_api_models',
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
-            'monarc_api_anr_objects_parents',
-            'monarc_api_soa_scale_comment',
+            'monarc_api_anr/objects_parents',
+            'monarc_api_anr/soa_scale_comment',
             'monarc_api_user_activate_2fa',
             'monarc_api_user_recovery_codes',
         ],

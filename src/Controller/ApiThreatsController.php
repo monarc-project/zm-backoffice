@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2022  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
@@ -43,11 +43,17 @@ class ApiThreatsController extends AbstractRestfulController
         ]);
     }
 
+    /**
+     * @param string $id
+     */
     public function get($id)
     {
         return $this->getPreparedJsonResponse($this->threatService->getThreatData($id));
     }
 
+    /**
+     * @param array $data
+     */
     public function create($data)
     {
         $isBatchData = $this->isBatchData($data);
@@ -61,39 +67,52 @@ class ApiThreatsController extends AbstractRestfulController
             $threatsUuids[] = $this->threatService->create($validatedDataSet)->getUuid();
         }
 
-        return $this->getPreparedJsonResponse([
-            'status' => 'ok',
+        return $this->getSuccessfulJsonResponse([
             'id' => implode(', ', $threatsUuids),
         ]);
     }
 
+    /**
+     * @param string $id
+     * @param array $data
+     */
     public function update($id, $data)
     {
         $this->validatePostParams($this->postThreatDataInputValidator, $data);
 
         $this->threatService->update($id, $this->postThreatDataInputValidator->getValidData());
 
-        return $this->getPreparedJsonResponse(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 
+    /**
+     * @param string $id
+     * @param array $data
+     */
     public function patch($id, $data)
     {
         $this->threatService->patch($id, $data);
 
-        return $this->getPreparedJsonResponse(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 
+    /**
+     * @param string $id
+     */
     public function delete($id)
     {
         $this->threatService->delete($id);
 
-        return $this->getPreparedJsonResponse(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 
+    /**
+     * @param array $data
+     */
     public function deleteList($data)
     {
         $this->threatService->deleteList($data);
 
-        return $this->getPreparedJsonResponse(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 }

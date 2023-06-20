@@ -26,14 +26,12 @@ class ApiObjectsDuplicationController extends AbstractRestfulControllerRequestHa
 
     public function create($data)
     {
+        /** @var array $data */
         if (!isset($data['id'])) {
             throw new Exception('Object ID parameter is required.', 412);
         }
         /** @var Anr $anr */
         $anr = $this->getRequest()->getAttribute('anr');
-        if ($anr === null) {
-            throw new Exception('"anrid" param is required for the duplication action.', 412);
-        }
 
         $object = $this->objectService->duplicate($anr, $data);
 

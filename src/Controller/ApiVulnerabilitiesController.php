@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2022  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
@@ -43,11 +43,17 @@ class ApiVulnerabilitiesController extends AbstractRestfulController
         ]);
     }
 
+    /**
+     * @param string $id
+     */
     public function get($id)
     {
         return $this->getPreparedJsonResponse($this->vulnerabilityService->getVulnerabilityData($id));
     }
 
+    /**
+     * @param array $data
+     */
     public function create($data)
     {
         $isBatchData = $this->isBatchData($data);
@@ -61,39 +67,49 @@ class ApiVulnerabilitiesController extends AbstractRestfulController
             $vulnerabilitiesUuids[] = $this->vulnerabilityService->create($validatedDataRow)->getUuid();
         }
 
-        return $this->getPreparedJsonResponse([
-            'status' => 'ok',
+        return $this->getSuccessfulJsonResponse([
             'id' => implode(', ', $vulnerabilitiesUuids),
         ]);
     }
 
+    /**
+     * @param string $id
+     * @param array $data
+     */
     public function update($id, $data)
     {
         $this->validatePostParams($this->postVulnerabilityDataInputValidator, $data);
 
         $this->vulnerabilityService->update($id, $this->postVulnerabilityDataInputValidator->getValidData());
 
-        return $this->getPreparedJsonResponse(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 
+    /**
+     * @param string $id
+     * @param array $data
+     */
     public function patch($id, $data)
     {
         $this->vulnerabilityService->patch($id, $data);
 
-        return $this->getPreparedJsonResponse(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 
+    /**
+     * @param string $id
+     */
     public function delete($id)
     {
         $this->vulnerabilityService->delete($id);
 
-        return $this->getPreparedJsonResponse(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 
     public function deleteList($data)
     {
         $this->vulnerabilityService->deleteList($data);
 
-        return $this->getPreparedJsonResponse(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 }

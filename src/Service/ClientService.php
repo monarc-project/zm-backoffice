@@ -148,12 +148,7 @@ class ClientService
             || $data['firstUserFirstname'] !== $client->getFirstUserFirstname()
             || $data['firstUserLastname'] !== $client->getFirstUserLastname()
         ) {
-            $updateData['client'] = [
-                'oldEmail' => $client->getFirstUserEmail(),
-                'email' => $data['firstUserEmail'],
-                'firstName' => $data['firstUserFirstname'],
-                'lastName' => $data['firstUserLastname'],
-            ];
+            $updateData['clientOldEmail'] = $client->getFirstUserEmail();
             $client->setFirstUserEmail($data['firstUserEmail'])
                 ->setFirstUserFirstname($data['firstUserFirstname'])
                 ->setFirstUserLastname($data['firstUserLastname']);
@@ -169,6 +164,9 @@ class ClientService
         ) {
             $client->setIsBackgroundImportActive((bool)$data['isBackgroundImportActive']);
             $updateData['isBackgroundImportActive'] = $client->isBackgroundImportActive();
+        }
+        if (!empty($data['resetTwoFactorAuth'])) {
+            $updateData['resetTwoFactorAuth'] = true;
         }
 
         $linkedModelIds = [];
@@ -414,22 +412,32 @@ class ClientService
     {
         $clientUpdateSql = '';
         /* Generate the client and user updates. */
-        if (isset($updateData['client'])) {
+        if (isset($updateData['clientOldEmail'])) {
             $clientUpdateSql = sprintf(
                 'UPDATE `clients` SET `first_user_firstname` = "%s", `first_user_lastname` = "%s", '
                 . '`first_user_email` = "%s" ORDER BY `id` LIMIT 1; ',
-                $updateData['client']['firstName'],
-                $updateData['client']['lastName'],
-                $updateData['client']['email'],
+                $client->getFirstUserFirstname(),
+                $client->getFirstUserLastname(),
+                $client->getFirstUserEmail()
             );
+
+            $resetTwoFactorAuthSqlPart = '';
+            if (!empty($updateData['resetTwoFactorAuth'])) {
+                $resetTwoFactorAuthSqlPart = ', `is_two_factor_enabled` = 0, `secret_key` = "", '
+                    . '`recovery_codes` = NULL ';
+            }
+
             $clientUpdateSql .= sprintf(
-                'UPDATE `users` SET `firstname` = "%s", `lastname` = "%s", `email` = "%s" '
+                'UPDATE `users` SET `firstname` = "%s", `lastname` = "%s", `email` = "%s" ' . $resetTwoFactorAuthSqlPart
                 . 'WHERE `id` = 1 OR `email` = "%s"; ',
-                $updateData['client']['firstName'],
-                $updateData['client']['lastName'],
-                $updateData['client']['email'],
-                $updateData['client']['oldEmail'],
+                $client->getFirstUserFirstname(),
+                $client->getFirstUserLastname(),
+                $client->getFirstUserEmail(),
+                $updateData['clientOldEmail']
             );
+        } elseif (!empty($updateData['resetTwoFactorAuth'])) {
+            $clientUpdateSql = 'UPDATE `users` SET `is_two_factor_enabled` = 0, `secret_key` = "", '
+                . '`recovery_codes` = NULL WHERE `id` = 1 OR `email` = "' . $client->getFirstUserEmail() . '"; ';
         }
 
         /* Generate the models_clients inserts. */

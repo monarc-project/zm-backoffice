@@ -68,7 +68,7 @@ class ApiThreatsController extends AbstractRestfulController
         }
 
         return $this->getSuccessfulJsonResponse([
-            'id' => implode(', ', $threatsUuids),
+            'id' => \count($threatsUuids) === 1 ? current($threatsUuids) : $threatsUuids,
         ]);
     }
 

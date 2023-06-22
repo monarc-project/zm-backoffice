@@ -43,58 +43,64 @@ class ApiAmvsController extends AbstractRestfulController
         ]);
     }
 
+    /**
+     * @param string $id
+     */
     public function get($id)
     {
         return $this->getPreparedJsonResponse($this->amvService->getAmvData($id));
     }
 
+    /**
+     * @param array $data
+     */
     public function create($data)
     {
         if ($this->isBatchData($data)) {
-            return $this->getPreparedJsonResponse([
-                'status' => 'ok',
+            return $this->getSuccessfulJsonResponse([
                 'id' => current($this->amvService->createAmvItems($data))
             ]);
         }
 
         $this->validatePostParams($this->postAmvDataInputValidator, $data);
 
-        return $this->getPreparedJsonResponse([
-            'status' => 'ok',
+        return $this->getSuccessfulJsonResponse([
             'id' => $this->amvService->create($data),
         ]);
     }
 
+    /**
+     * @param string $id
+     * @param array $data
+     */
     public function update($id, $data)
     {
         $this->validatePostParams($this->postAmvDataInputValidator, $data);
 
         $this->amvService->update($id, $data);
 
-        return $this->getPreparedJsonResponse(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 
     public function patch($id, $data)
     {
         $this->amvService->patch($id, $data);
 
-        return $this->getPreparedJsonResponse(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 
     public function patchList($data)
     {
         $this->amvService->createLinkedAmvs($data['fromReferential'], $data['toReferential']);
 
-        return $this->getPreparedJsonResponse([
-            'status' =>  'ok',
-        ]);
+        return $this->getSuccessfulJsonResponse();
     }
 
     public function delete($id)
     {
         $this->amvService->delete($id);
 
-        return $this->getPreparedJsonResponse(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 
     public function deleteList($data)

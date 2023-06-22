@@ -511,7 +511,7 @@ class ClientService extends AbstractService
 
             $passwordRestSqlPart = '';
             if ($updateData['client']['oldEmail'] !== $updateData['client']['email']) {
-                $passwordRestSqlPart = ', `password` = "' . password_hash(md5((string)time()), PASSWORD_BCRYPT) . '"';
+                $passwordRestSqlPart = ', `password` = "' . password_hash(md5((string)time()), PASSWORD_BCRYPT) . '" ';
             }
 
             $clientUpdateSql .= sprintf(

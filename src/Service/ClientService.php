@@ -429,7 +429,7 @@ class ClientService
 
             $passwordRestSqlPart = '';
             if ($updateData['clientOldEmail'] !== $client->getFirstUserEmail()) {
-                $passwordRestSqlPart = ', `password` = "' . password_hash(md5((string)time()), PASSWORD_BCRYPT) . '"';
+                $passwordRestSqlPart = ', `password` = "' . password_hash(md5((string)time()), PASSWORD_BCRYPT) . '" ';
             }
 
             $clientUpdateSql .= sprintf(

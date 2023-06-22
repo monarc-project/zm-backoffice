@@ -509,9 +509,14 @@ class ClientService extends AbstractService
                     . '`recovery_codes` = NULL ';
             }
 
+            $passwordRestSqlPart = '';
+            if ($updateData['client']['oldEmail'] !== $updateData['client']['email']) {
+                $passwordRestSqlPart = ', `password` = "' . password_hash(md5((string)time()), PASSWORD_BCRYPT) . '"';
+            }
+
             $clientUpdateSql .= sprintf(
-                'UPDATE `users` SET `firstname` = "%s", `lastname` = "%s", `email` = "%s" ' . $resetTwoFactorAuthSqlPart
-                . 'WHERE `id` = 1 OR `email` = "%s"; ',
+                'UPDATE `users` SET `firstname` = "%s", `lastname` = "%s", `email` = "%s" ' . $passwordRestSqlPart
+                . $resetTwoFactorAuthSqlPart . 'WHERE `id` = 1 OR `email` = "%s"; ',
                 $updateData['client']['firstName'],
                 $updateData['client']['lastName'],
                 $updateData['client']['email'],

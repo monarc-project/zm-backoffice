@@ -78,7 +78,7 @@ class ApiThreatsController extends AbstractRestfulController
      */
     public function update($id, $data)
     {
-        $this->validatePostParams($this->postThreatDataInputValidator, $data);
+        $this->validatePostParams($this->postThreatDataInputValidator->setExcludeFilter(['uuid' => $id]), $data);
 
         $this->threatService->update($id, $this->postThreatDataInputValidator->getValidData());
 

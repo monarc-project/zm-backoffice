@@ -78,7 +78,7 @@ class ApiVulnerabilitiesController extends AbstractRestfulController
      */
     public function update($id, $data)
     {
-        $this->validatePostParams($this->postVulnerabilityDataInputValidator, $data);
+        $this->validatePostParams($this->postVulnerabilityDataInputValidator->setExcludeFilter(['uuid' => $id]), $data);
 
         $this->vulnerabilityService->update($id, $this->postVulnerabilityDataInputValidator->getValidData());
 

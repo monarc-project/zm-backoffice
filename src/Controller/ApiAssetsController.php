@@ -78,7 +78,7 @@ class ApiAssetsController extends AbstractRestfulController
      */
     public function update($id, $data)
     {
-        $this->validatePostParams($this->postAssetDataInputValidator, $data);
+        $this->validatePostParams($this->postAssetDataInputValidator->setExcludeFilter(['uuid' => $id]), $data);
 
         $this->assetService->update($id, $this->postAssetDataInputValidator->getValidData());
 

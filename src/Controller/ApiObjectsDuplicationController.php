@@ -30,10 +30,10 @@ class ApiObjectsDuplicationController extends AbstractRestfulControllerRequestHa
         if (!isset($data['id'])) {
             throw new Exception('Object ID parameter is required.', 412);
         }
-        /** @var Anr $anr */
+        /** @var Anr|null $anr */
         $anr = $this->getRequest()->getAttribute('anr');
 
-        $object = $this->objectService->duplicate($anr, $data);
+        $object = $this->objectService->duplicate($data, $anr);
 
         return $this->getSuccessfulJsonResponse(['id' => $object->getUuid()]);
     }

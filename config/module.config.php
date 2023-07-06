@@ -7,6 +7,7 @@
 
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Interop\Container\Containerinterface;
 use Laminas\Mvc\Middleware\PipeSpec;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Monarc\BackOffice\Controller;
@@ -22,7 +23,10 @@ use Monarc\BackOffice\Validator\InputValidator\Server\PostServerDataInputValidat
 use Monarc\BackOffice\Validator\InputValidator\Threat\PostThreatDataInputValidator;
 use Monarc\BackOffice\Validator\InputValidator\Vulnerability\PostVulnerabilityDataInputValidator;
 use Laminas\Di\Container\AutowireFactory;
+use Monarc\Core\Table\AssetTable;
 use Monarc\Core\Table\Factory\ClientEntityManagerFactory;
+use Monarc\Core\Table\ThreatTable;
+use Monarc\Core\Table\VulnerabilityTable;
 
 return [
     'router' => [
@@ -466,6 +470,19 @@ return [
                 ],
             ],
 
+            'kb_objects_duplication' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/objects-duplication',
+                    'defaults' => [
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(
+                            Controller\ApiObjectsDuplicationController::class,
+                        ),
+                    ],
+                ],
+            ],
+
             'monarc_api_anr' => [
                 'type' => 'segment',
                 'options' => [
@@ -853,9 +870,23 @@ return [
             ClientService::class => ReflectionBasedAbstractFactory::class,
 
             /* Validators */
-            PostAssetDataInputValidator::class => ReflectionBasedAbstractFactory::class,
-            PostThreatDataInputValidator::class => ReflectionBasedAbstractFactory::class,
-            PostVulnerabilityDataInputValidator::class => ReflectionBasedAbstractFactory::class,
+            PostAssetDataInputValidator::class => static function (Containerinterface $container, $serviceName)
+            {
+                return new PostAssetDataInputValidator($container->get('config'), $container->get(AssetTable::class));
+            },
+            PostThreatDataInputValidator::class => static function (Containerinterface $container, $serviceName)
+            {
+                return new PostThreatDataInputValidator($container->get('config'), $container->get(ThreatTable::class));
+            },
+            PostVulnerabilityDataInputValidator::class => static function (
+                Containerinterface $container,
+                $serviceName
+            ) {
+                return new PostVulnerabilityDataInputValidator(
+                    $container->get('config'),
+                    $container->get(VulnerabilityTable::class)
+                );
+            },
             PostServerDataInputValidator::class => ReflectionBasedAbstractFactory::class,
             PostClientInputValidator::class => ReflectionBasedAbstractFactory::class,
         ],
@@ -940,6 +971,7 @@ return [
             'monarc_api_models_duplication',
             'monarc_api_objects',
             'monarc_api_objects_categories',
+            'kb_objects_duplication',
             'monarc_api_anr/objects_duplication',
             'monarc_api_objects_export',
             'monarc_api_objects_objects',

@@ -45,9 +45,11 @@ class ApiAnrInstancesRisksController extends AbstractRestfulControllerRequestHan
             'threatRate' => $instanceRisk->getThreatRate(),
             'vulnerabilityRate' => $instanceRisk->getVulnerabilityRate(),
             'reductionAmount' => $instanceRisk->getReductionAmount(),
-            'riskConfidentiality' => $instanceRisk->getRiskConfidentiality(),
-            'riskIntegrity' => $instanceRisk->getRiskIntegrity(),
-            'riskAvailability' => $instanceRisk->getRiskAvailability(),
+            'riskC' => $instanceRisk->getRiskConfidentiality(),
+            'riskI' => $instanceRisk->getRiskIntegrity(),
+            'riskD' => $instanceRisk->getRiskAvailability(),
+            'cacheMaxRisk' => $instanceRisk->getCacheMaxRisk(),
+            'cacheTargetedRisk' => $instanceRisk->getCacheTargetedRisk(),
         ]);
     }
 }

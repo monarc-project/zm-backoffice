@@ -483,6 +483,23 @@ return [
                 ],
             ],
 
+            'monarc_api_anr_thresholds' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/anr[/:anrid]',
+                    'constraints' => [
+                        'anrid' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(
+                            AnrValidationMiddleware::class,
+                            Controller\ApiAnrController::class,
+                        ),
+                    ],
+                ],
+            ],
+
             'monarc_api_anr' => [
                 'type' => 'segment',
                 'options' => [
@@ -504,7 +521,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiAnrRisksController::class,
+                                    Controller\ApiAnrRisksController::class
                                 ),
                             ],
                         ],
@@ -521,7 +538,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiAnrRisksOpController::class,
+                                    Controller\ApiAnrRisksOpController::class
                                 ),
                             ],
                         ],
@@ -538,7 +555,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiAnrInstancesRisksController::class,
+                                    Controller\ApiAnrInstancesRisksController::class
                                 ),
                             ],
                         ],
@@ -555,7 +572,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiAnrInstancesRisksOpController::class,
+                                    Controller\ApiAnrInstancesRisksOpController::class
                                 ),
                             ],
                         ],
@@ -572,7 +589,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiAnrRiskOwnersController::class,
+                                    Controller\ApiAnrRiskOwnersController::class
                                 ),
                             ],
                         ],
@@ -589,7 +606,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiObjectsController::class,
+                                    Controller\ApiObjectsController::class
                                 ),
                             ],
                         ],
@@ -606,7 +623,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiAnrLibraryController::class,
+                                    Controller\ApiAnrLibraryController::class
                                 ),
                             ],
                         ],
@@ -623,7 +640,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiObjectsController::class,
+                                    Controller\ApiObjectsController::class
                                 ),
                                 'action' => 'parents'
                             ],
@@ -638,7 +655,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiObjectsDuplicationController::class,
+                                    Controller\ApiObjectsDuplicationController::class
                                 ),
                             ],
                         ],
@@ -655,7 +672,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiAnrInstancesController::class,
+                                    Controller\ApiAnrInstancesController::class
                                 ),
                             ],
                         ],
@@ -672,7 +689,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiAnrInstancesConsequencesController::class,
+                                    Controller\ApiAnrInstancesConsequencesController::class
                                 ),
                             ],
                         ],
@@ -689,7 +706,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiAnrScalesController::class,
+                                    Controller\ApiAnrScalesController::class
                                 ),
                             ],
                         ],
@@ -707,7 +724,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiAnrScalesCommentsController::class,
+                                    Controller\ApiAnrScalesCommentsController::class
                                 ),
                             ],
                         ],
@@ -724,7 +741,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiAnrScalesTypesController::class,
+                                    Controller\ApiAnrScalesTypesController::class
                                 ),
                             ],
                         ],
@@ -741,7 +758,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiOperationalRisksScalesController::class,
+                                    Controller\ApiOperationalRisksScalesController::class
                                 ),
                             ],
                         ],
@@ -759,7 +776,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiOperationalRisksScalesCommentsController::class,
+                                    Controller\ApiOperationalRisksScalesCommentsController::class
                                 ),
                             ],
                         ],
@@ -776,7 +793,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiSoaScaleCommentController::class,
+                                    Controller\ApiSoaScaleCommentController::class
                                 ),
                             ],
                         ],
@@ -793,7 +810,7 @@ return [
                                 'controller' => PipeSpec::class,
                                 'middleware' => new PipeSpec(
                                     AnrValidationMiddleware::class,
-                                    Controller\ApiAnrInstancesMetadataFieldsController::class,
+                                    Controller\ApiAnrInstancesMetadataFieldsController::class
                                 ),
                             ],
                         ],
@@ -949,6 +966,7 @@ return [
         'dbadmin' => [
             'monarc_api_amvs',
             'monarc_api_assets',
+            'monarc_api_anr_thresholds',
             'monarc_api_anr/risks',
             'monarc_api_anr/risks_op',
             'monarc_api_anr/export',

@@ -37,7 +37,7 @@ class ApiAnrInstancesConsequencesController extends AbstractRestfulControllerReq
         $this->validatePostParams($this->patchConsequenceDataInputValidator, $data);
 
         $this->instanceConsequenceService
-            ->patchConsequence($anr, $id, $this->patchConsequenceDataInputValidator->getValidData());
+            ->patchConsequence($anr, (int)$id, $this->patchConsequenceDataInputValidator->getValidData());
 
         return $this->getSuccessfulJsonResponse();
     }

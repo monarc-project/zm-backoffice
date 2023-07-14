@@ -48,13 +48,12 @@ class ApiRolfRisksController extends AbstractController
         $limit = $this->params()->fromQuery('limit');
         $order = $this->params()->fromQuery('order');
         $filter = $this->params()->fromQuery('filter');
-        $category = $this->params()->fromQuery('category');
         $tag = $this->params()->fromQuery('tag');
 
         /** @var RolfRiskService $service */
         $service = $this->getService();
 
-        $rolfRisks = $service->getListSpecific($page, $limit, $order, $filter, $category, $tag);
+        $rolfRisks = $service->getListSpecific($page, $limit, $order, $filter, $tag);
 
         foreach ($rolfRisks as $key => $rolfRisk) {
             if (count($this->dependencies)) {
@@ -70,7 +69,7 @@ class ApiRolfRisksController extends AbstractController
         }
 
         return new JsonModel(array(
-            'count' => $service->getFilteredCount($filter),
+            'count' => $service->getFilteredSpecificCount($page, $limit, $order, $filter, $tag),
             $this->name => $rolfRisks
         ));
     }

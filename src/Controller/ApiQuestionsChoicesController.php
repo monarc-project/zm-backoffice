@@ -50,7 +50,7 @@ class ApiQuestionsChoicesController extends AbstractController
 
         // Add new choices
         $pos = 1;
-        foreach ($data['choice'] as $c) {
+        foreach ($data['choice'] ?? [] as $c) {
             $c['position'] = $pos;
             unset($c['question']);
 

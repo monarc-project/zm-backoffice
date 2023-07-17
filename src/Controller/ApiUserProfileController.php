@@ -7,27 +7,35 @@
 
 namespace Monarc\BackOffice\Controller;
 
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Model\Entity\UserSuperClass;
 use Monarc\Core\Service\ConnectedUserService;
 use Monarc\Core\Service\UserProfileService;
 use Laminas\Mvc\Controller\AbstractRestfulController;
-use Laminas\View\Model\JsonModel;
+use Monarc\Core\Validator\InputValidator\Profile\PatchProfileDataInputValidator;
 
 class ApiUserProfileController extends AbstractRestfulController
 {
+    use ControllerRequestResponseHandlerTrait;
+
     private UserProfileService $userProfileService;
 
     private UserSuperClass $connectedUser;
+    private PatchProfileDataInputValidator $patchProfileDataInputValidator;
 
-    public function __construct(UserProfileService $userProfileService, ConnectedUserService $connectedUserService)
-    {
+    public function __construct(
+        PatchProfileDataInputValidator $patchProfileDataInputValidator,
+        UserProfileService $userProfileService,
+        ConnectedUserService $connectedUserService
+    ) {
+        $this->patchProfileDataInputValidator = $patchProfileDataInputValidator;
         $this->userProfileService = $userProfileService;
         $this->connectedUser = $connectedUserService->getConnectedUser();
     }
 
     public function getList()
     {
-        return new JsonModel([
+        return $this->getPreparedJsonResponse([
             'id' => $this->connectedUser->getId(),
             'firstname' => $this->connectedUser->getFirstname(),
             'lastname' => $this->connectedUser->getLastname(),
@@ -41,16 +49,18 @@ class ApiUserProfileController extends AbstractRestfulController
 
     public function patchList($data)
     {
+        $this->validatePostParams($this->patchProfileDataInputValidator, $data);
+
         $this->userProfileService->updateMyData($data);
 
-        return new JsonModel(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 
     public function replaceList($data)
     {
         $this->userProfileService->updateMyData($data);
 
-        return new JsonModel(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 
     public function deleteList($id)
@@ -59,6 +69,6 @@ class ApiUserProfileController extends AbstractRestfulController
 
         $this->getResponse()->setStatusCode(204);
 
-        return new JsonModel();
+        return $this->getPreparedJsonResponse();
     }
 }

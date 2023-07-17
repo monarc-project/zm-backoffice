@@ -23,6 +23,7 @@ use Monarc\BackOffice\Validator\InputValidator\Server\PostServerDataInputValidat
 use Monarc\BackOffice\Validator\InputValidator\Threat\PostThreatDataInputValidator;
 use Monarc\BackOffice\Validator\InputValidator\Vulnerability\PostVulnerabilityDataInputValidator;
 use Laminas\Di\Container\AutowireFactory;
+use Monarc\Core\Service\ConnectedUserService;
 use Monarc\Core\Table\AssetTable;
 use Monarc\Core\Table\Factory\ClientEntityManagerFactory;
 use Monarc\Core\Table\ThreatTable;
@@ -889,11 +890,19 @@ return [
             /* Validators */
             PostAssetDataInputValidator::class => static function (Containerinterface $container, $serviceName)
             {
-                return new PostAssetDataInputValidator($container->get('config'), $container->get(AssetTable::class));
+                return new PostAssetDataInputValidator(
+                    $container->get('config'),
+                    $container->get(ConnectedUserService::class),
+                    $container->get(AssetTable::class)
+                );
             },
             PostThreatDataInputValidator::class => static function (Containerinterface $container, $serviceName)
             {
-                return new PostThreatDataInputValidator($container->get('config'), $container->get(ThreatTable::class));
+                return new PostThreatDataInputValidator(
+                    $container->get('config'),
+                    $container->get(ConnectedUserService::class),
+                    $container->get(ThreatTable::class)
+                );
             },
             PostVulnerabilityDataInputValidator::class => static function (
                 Containerinterface $container,
@@ -901,6 +910,7 @@ return [
             ) {
                 return new PostVulnerabilityDataInputValidator(
                     $container->get('config'),
+                    $container->get(ConnectedUserService::class),
                     $container->get(VulnerabilityTable::class)
                 );
             },

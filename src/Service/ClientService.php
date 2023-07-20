@@ -115,10 +115,10 @@ class ClientService extends AbstractService
 
         $client->setCreator($this->getConnectedUser()->getEmail());
 
-        if (!isset($data['twoFactorAuthEnforced'])) {
+        if (isset($data['twoFactorAuthEnforced'])) {
             $client->setTwoFactorAuthEnforced((bool)$data['twoFactorAuthEnforced']);
         }
-        if (!isset($data['isBackgroundImportActive'])) {
+        if (isset($data['isBackgroundImportActive'])) {
             $client->setIsBackgroundImportActive((bool)$data['isBackgroundImportActive']);
         }
 

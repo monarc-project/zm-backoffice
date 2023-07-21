@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2022 SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
@@ -10,6 +10,7 @@ namespace Monarc\BackOffice\Validator\InputValidator\Client;
 use Monarc\BackOffice\Table\ClientTable;
 use Monarc\BackOffice\Validator\FieldValidator\UniqueClientProxyAlias;
 use Monarc\Core\Validator\InputValidator\AbstractInputValidator;
+use Monarc\Core\Validator\InputValidator\InputValidationTranslator;
 
 class PostClientInputValidator extends AbstractInputValidator
 {
@@ -17,11 +18,11 @@ class PostClientInputValidator extends AbstractInputValidator
 
     private int $currentClientId = 0;
 
-    public function __construct(ClientTable $clientTable, array $config)
+    public function __construct(ClientTable $clientTable, array $config, InputValidationTranslator $translator)
     {
         $this->clientTable = $clientTable;
 
-        parent::__construct($config);
+        parent::__construct($config, $translator);
     }
 
     public function setCurrentClientId(int $currentClientId): self

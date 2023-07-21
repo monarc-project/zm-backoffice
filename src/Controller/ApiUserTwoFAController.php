@@ -1,12 +1,13 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2022 SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Model\Entity\UserSuperClass;
 use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\Providers\Qr\EndroidQrCodeProvider;
@@ -14,10 +15,11 @@ use Monarc\Core\Service\ConnectedUserService;
 use Monarc\Core\Service\ConfigService;
 use Monarc\Core\Table\UserTable;
 use Laminas\Mvc\Controller\AbstractRestfulController;
-use Laminas\View\Model\JsonModel;
 
 class ApiUserTwoFAController extends AbstractRestfulController
 {
+    use ControllerRequestResponseHandlerTrait;
+
     private UserSuperClass $connectedUser;
 
     private ConfigService $configService;
@@ -51,7 +53,7 @@ class ApiUserTwoFAController extends AbstractRestfulController
         $secret = $this->twoFactorAuth->createSecret();
         $qrcode = $this->twoFactorAuth->getQRCodeImageAsDataUri($label, $secret);
 
-        return new JsonModel([
+        return $this->getPreparedJsonResponse([
             'id' => $this->connectedUser->getId(),
             'secret' => $secret,
             'qrcode' => $qrcode,
@@ -73,7 +75,7 @@ class ApiUserTwoFAController extends AbstractRestfulController
             $this->userTable->save($this->connectedUser);
         }
 
-        return new JsonModel(['status' => $isValid]);
+        return $this->getPreparedJsonResponse(['status' => $isValid]);
     }
 
     /**
@@ -88,6 +90,6 @@ class ApiUserTwoFAController extends AbstractRestfulController
 
         $this->getResponse()->setStatusCode(204);
 
-        return new JsonModel();
+        return $this->getPreparedJsonResponse();
     }
 }

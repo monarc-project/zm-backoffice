@@ -107,6 +107,6 @@ class ApiAmvsController extends AbstractRestfulController
     {
         $this->amvService->deleteList($data);
 
-        return $this->getPreparedJsonResponse(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 }

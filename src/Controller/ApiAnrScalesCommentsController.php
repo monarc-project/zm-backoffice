@@ -39,12 +39,12 @@ class ApiAnrScalesCommentsController extends AbstractRestfulControllerRequestHan
         return $this->getPreparedJsonResponse([
             'count' => \count($comments),
             'comments' => $comments,
-            // TODO: check if we need those fields:
-            //'anr' => $anrId,
-            //'scale' => $scale,
         ]);
     }
 
+    /**
+     * @param array $data
+     */
     public function create($data)
     {
         /** @var Anr $anr */
@@ -55,6 +55,9 @@ class ApiAnrScalesCommentsController extends AbstractRestfulControllerRequestHan
         return $this->getSuccessfulJsonResponse(['id' => $scaleComment->getId()]);
     }
 
+    /**
+     * @param array $data
+     */
     public function update($id, $data)
     {
         /** @var Anr $anr */

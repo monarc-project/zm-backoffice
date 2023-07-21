@@ -28,6 +28,7 @@ use Monarc\Core\Table\AssetTable;
 use Monarc\Core\Table\Factory\ClientEntityManagerFactory;
 use Monarc\Core\Table\ThreatTable;
 use Monarc\Core\Table\VulnerabilityTable;
+use Monarc\Core\Validator\InputValidator\InputValidationTranslator;
 
 return [
     'router' => [
@@ -53,7 +54,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiAdminHistoricalsController::class,
+                        'controller' => Controller\ApiAdminHistoricalController::class,
                     ],
                 ],
             ],
@@ -825,7 +826,7 @@ return [
         'invokables' => [],
         'factories' => [
             Controller\ApiModelsDuplicationController::class => AutowireFactory::class,
-            Controller\ApiAdminHistoricalsController::class => AutowireFactory::class,
+            Controller\ApiAdminHistoricalController::class => AutowireFactory::class,
             Controller\ApiAdminPasswordsController::class => AutowireFactory::class,
             Controller\ApiAdminServersController::class => AutowireFactory::class,
             Controller\ApiAdminUsersController::class => AutowireFactory::class,
@@ -892,7 +893,7 @@ return [
             {
                 return new PostAssetDataInputValidator(
                     $container->get('config'),
-                    $container->get(ConnectedUserService::class),
+                    $container->get(InputValidationTranslator::class),
                     $container->get(AssetTable::class)
                 );
             },
@@ -900,7 +901,7 @@ return [
             {
                 return new PostThreatDataInputValidator(
                     $container->get('config'),
-                    $container->get(ConnectedUserService::class),
+                    $container->get(InputValidationTranslator::class),
                     $container->get(ThreatTable::class)
                 );
             },
@@ -910,7 +911,7 @@ return [
             ) {
                 return new PostVulnerabilityDataInputValidator(
                     $container->get('config'),
-                    $container->get(ConnectedUserService::class),
+                    $container->get(InputValidationTranslator::class),
                     $container->get(VulnerabilityTable::class)
                 );
             },
@@ -1023,7 +1024,6 @@ return [
             'monarc_api_themes',
             'monarc_api_soacategory',
             'monarc_api_models',
-            'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
             'monarc_api_anr/objects_parents',
             'monarc_api_anr/soa_scale_comment',

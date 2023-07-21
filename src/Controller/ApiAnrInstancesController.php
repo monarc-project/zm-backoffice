@@ -61,6 +61,9 @@ class ApiAnrInstancesController extends AbstractRestfulControllerRequestHandler
         return $this->getPreparedJsonResponse($instanceData);
     }
 
+    /**
+     * @param array $data
+     */
     public function create($data)
     {
         /** @var Anr $anr */
@@ -74,6 +77,9 @@ class ApiAnrInstancesController extends AbstractRestfulControllerRequestHandler
         return $this->getSuccessfulJsonResponse(['id' => $instance->getId()]);
     }
 
+    /**
+     * @param array $data
+     */
     public function update($id, $data)
     {
         /** @var Anr $anr */

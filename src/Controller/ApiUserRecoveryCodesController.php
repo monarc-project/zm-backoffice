@@ -1,21 +1,23 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2022 SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Exception\Exception;
 use Monarc\Core\Model\Entity\UserSuperClass;
 use Monarc\Core\Service\ConnectedUserService;
 use Monarc\Core\Table\UserTable;
 use Laminas\Mvc\Controller\AbstractRestfulController;
-use Laminas\View\Model\JsonModel;
 
 class ApiUserRecoveryCodesController extends AbstractRestfulController
 {
+    use ControllerRequestResponseHandlerTrait;
+
     private UserTable $userTable;
 
     private UserSuperClass $connectedUser;
@@ -44,8 +46,7 @@ class ApiUserRecoveryCodesController extends AbstractRestfulController
 
         $this->userTable->save($this->connectedUser);
 
-        return new JsonModel([
-            'status' => 'ok',
+        return $this->getSuccessfulJsonResponse([
             'recoveryCodes' => $recoveryCodes,
         ]);
     }

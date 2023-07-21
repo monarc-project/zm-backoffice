@@ -13,9 +13,6 @@ use Laminas\View\Model\JsonModel;
 
 /**
  * TODO: extend AbstractRestfulController and remove AbstractController.
- *
- * Class ApiReferentialsController
- * @package Monarc\BackOffice\Controller
  */
 class ApiReferentialsController extends AbstractController
 {

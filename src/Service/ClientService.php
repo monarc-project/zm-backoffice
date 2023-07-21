@@ -95,10 +95,10 @@ class ClientService
             ->setServer($server)
             ->setCreator($this->connectedUser->getEmail());
 
-        if (!isset($data['twoFactorAuthEnforced'])) {
+        if (isset($data['twoFactorAuthEnforced'])) {
             $client->setTwoFactorAuthEnforced((bool)$data['twoFactorAuthEnforced']);
         }
-        if (!isset($data['isBackgroundImportActive'])) {
+        if (isset($data['isBackgroundImportActive'])) {
             $client->setIsBackgroundImportActive((bool)$data['isBackgroundImportActive']);
         }
 

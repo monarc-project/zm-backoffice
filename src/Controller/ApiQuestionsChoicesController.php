@@ -15,9 +15,6 @@ use Laminas\View\Model\JsonModel;
 
 /**
  * TODO: extend AbstractRestfulController and remove AbstractController.
- *
- * Class ApiQuestionsChoicesController
- * @package Monarc\BackOffice\Controller
  */
 class ApiQuestionsChoicesController extends AbstractController
 {

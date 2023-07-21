@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2022  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
@@ -47,35 +47,36 @@ class ApiThemesController extends AbstractRestfulController
         return $this->getPreparedJsonResponse($this->themeService->getThemeData((int)$id));
     }
 
+    /**
+     * @param array $data
+     */
     public function create($data)
     {
         $this->validatePostParams($this->postThemeDataInputValidator, $data);
 
         $theme = $this->themeService->create($data);
 
-        return $this->getPreparedJsonResponse([
-            'status' => 'ok',
+        return $this->getSuccessfulJsonResponse([
             'id' => $theme->getId(),
         ]);
     }
 
+    /**
+     * @param array $data
+     */
     public function update($id, $data)
     {
         $this->validatePostParams($this->postThemeDataInputValidator, $data);
 
         $this->themeService->update((int)$id, $data);
 
-        return $this->getPreparedJsonResponse([
-            'status' => 'ok',
-        ]);
+        return $this->getSuccessfulJsonResponse();
     }
 
     public function delete($id)
     {
         $this->themeService->delete((int)$id);
 
-        return $this->getPreparedJsonResponse([
-            'status' => 'ok',
-        ]);
+        return $this->getSuccessfulJsonResponse();
     }
 }

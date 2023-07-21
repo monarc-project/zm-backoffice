@@ -14,9 +14,6 @@ use Laminas\View\Model\JsonModel;
 
 /**
  * TODO: extend AbstractRestfulController and remove AbstractController.
- *
- * Class ApiRolfRisksController
- * @package Monarc\BackOffice\Controller
  */
 class ApiRolfRisksController extends AbstractController
 {

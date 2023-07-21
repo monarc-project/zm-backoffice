@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2022 SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
@@ -10,17 +10,17 @@ namespace Monarc\BackOffice\Controller;
 use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Model\Entity\Anr;
-use Monarc\Core\Service\InstanceMetadataFieldService;
+use Monarc\Core\Service\AnrInstanceMetadataFieldService;
 
 class ApiAnrInstancesMetadataFieldsController extends AbstractRestfulControllerRequestHandler
 {
     use ControllerRequestResponseHandlerTrait;
 
-    private InstanceMetadataFieldService $instanceMetadataFieldService;
+    private AnrInstanceMetadataFieldService $anrInstanceMetadataFieldService;
 
-    public function __construct(InstanceMetadataFieldService $instanceMetadataFieldService)
+    public function __construct(AnrInstanceMetadataFieldService $anrInstanceMetadataFieldService)
     {
-        $this->instanceMetadataFieldService = $instanceMetadataFieldService;
+        $this->anrInstanceMetadataFieldService = $anrInstanceMetadataFieldService;
     }
 
     public function getList()
@@ -30,7 +30,7 @@ class ApiAnrInstancesMetadataFieldsController extends AbstractRestfulControllerR
         $language = $this->params()->fromQuery("language");
 
         return $this->getPreparedJsonResponse([
-            'data' => $this->instanceMetadataFieldService->getList($anr, $language),
+            'data' => $this->anrInstanceMetadataFieldService->getList($anr, $language),
         ]);
     }
 
@@ -41,7 +41,7 @@ class ApiAnrInstancesMetadataFieldsController extends AbstractRestfulControllerR
         $language = $this->params()->fromQuery("language");
 
         return $this->getPreparedJsonResponse([
-            'data' => $this->instanceMetadataFieldService->getInstanceMetadataField($anr, (int)$id, $language),
+            'data' => $this->anrInstanceMetadataFieldService->getAnrInstanceMetadataField($anr, (int)$id, $language),
         ]);
     }
 
@@ -54,7 +54,7 @@ class ApiAnrInstancesMetadataFieldsController extends AbstractRestfulControllerR
         $anr = $this->getRequest()->getAttribute('anr');
 
         return $this->getSuccessfulJsonResponse([
-            'id' => $this->instanceMetadataFieldService->create($anr, $data),
+            'id' => $this->anrInstanceMetadataFieldService->create($anr, $data),
         ]);
     }
 
@@ -63,7 +63,7 @@ class ApiAnrInstancesMetadataFieldsController extends AbstractRestfulControllerR
         /** @var Anr $anr */
         $anr = $this->getRequest()->getAttribute('anr');
 
-        $this->instanceMetadataFieldService->delete($anr, (int)$id);
+        $this->anrInstanceMetadataFieldService->delete($anr, (int)$id);
 
         return $this->getSuccessfulJsonResponse();
     }
@@ -76,7 +76,7 @@ class ApiAnrInstancesMetadataFieldsController extends AbstractRestfulControllerR
         /** @var Anr $anr */
         $anr = $this->getRequest()->getAttribute('anr');
 
-        $this->instanceMetadataFieldService->update($anr, (int)$id, $data);
+        $this->anrInstanceMetadataFieldService->update($anr, (int)$id, $data);
 
         return $this->getSuccessfulJsonResponse();
     }

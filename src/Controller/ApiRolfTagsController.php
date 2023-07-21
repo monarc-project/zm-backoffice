@@ -12,9 +12,6 @@ use Monarc\Core\Service\RolfTagService;
 
 /**
  * TODO: extend AbstractRestfulController and remove AbstractController.
- *
- * Class ApiRolfTagsController
- * @package Monarc\BackOffice\Controller
  */
 class ApiRolfTagsController extends AbstractController
 {

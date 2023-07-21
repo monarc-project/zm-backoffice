@@ -41,6 +41,9 @@ class ApiAnrScalesTypesController extends AbstractRestfulControllerRequestHandle
         ]);
     }
 
+    /**
+     * @param array $data
+     */
     public function create($data)
     {
         /** @var Anr $anr */

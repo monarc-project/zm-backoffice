@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2022 SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
@@ -36,9 +36,12 @@ class ApiAnrLibraryController extends AbstractRestfulControllerRequestHandler
         ]);
     }
 
+    /**
+     * @param array $data
+     */
     public function create($data)
     {
-        /** @var Anr|null $anr */
+        /** @var Anr $anr */
         $anr = $this->getRequest()->getAttribute('anr');
 
         if (!isset($data['objectId']) && !isset($data['categoryId'])) {
@@ -57,9 +60,12 @@ class ApiAnrLibraryController extends AbstractRestfulControllerRequestHandler
         ]);
     }
 
+    /**
+     * @param string $id
+     */
     public function delete($id)
     {
-        /** @var Anr|null $anr */
+        /** @var Anr $anr */
         $anr = $this->getRequest()->getAttribute('anr');
 
         $this->objectService->detachObjectFromAnr($id, $anr);

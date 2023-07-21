@@ -8,12 +8,14 @@
 namespace Monarc\BackOffice\Controller;
 
 use Exception;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Service\PasswordService;
 use Laminas\Mvc\Controller\AbstractRestfulController;
-use Laminas\View\Model\JsonModel;
 
 class ApiUserPasswordController extends AbstractRestfulController
 {
+    use ControllerRequestResponseHandlerTrait;
+
     private PasswordService $passwordService;
 
     public function __construct(PasswordService $passwordService)
@@ -32,6 +34,6 @@ class ApiUserPasswordController extends AbstractRestfulController
 
         $this->passwordService->changePassword((int)$id, $data['old'], $data['new']);
 
-        return new JsonModel(array('status' => 'ok'));
+        return $this->getSuccessfulJsonResponse();
     }
 }

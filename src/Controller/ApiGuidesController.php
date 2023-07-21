@@ -12,9 +12,6 @@ use Monarc\Core\Service\GuideService;
 
 /**
  * TODO: extend AbstractRestfulController and remove AbstractController.
- *
- * Class ApiGuidesController
- * @package Monarc\BackOffice\Controller
  */
 class ApiGuidesController extends AbstractController
 {

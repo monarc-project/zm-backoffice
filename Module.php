@@ -51,7 +51,7 @@ class Module
 
         $exception = $e->getParam('exception');
         $exceptionJson = [];
-        if ($exception) {
+        if ($exception !== null) {
             $exceptionJson = [
                 'class' => get_class($exception),
                 'file' => $exception->getFile(),
@@ -70,10 +70,18 @@ class Module
             'error' => $error,
             'exception' => $exceptionJson,
         ];
-        if ($error == 'error-router-no-match') {
+        if ($error === 'error-router-no-match') {
             $errorJson['message'] = 'Resource not found.';
         }
-        $model = new JsonModel(['errors' => [$errorJson]]);
+
+        if ($exception !== null && $exception->getCode() === 400) {
+            $model = new JsonModel([
+                'errors' => [json_decode($exception->getMessage(), true, 512, JSON_THROW_ON_ERROR)],
+            ]);
+        } else {
+            $model = new JsonModel(['errors' => [$errorJson]]);
+        }
+
         $e->setResult($model);
 
         return $model;

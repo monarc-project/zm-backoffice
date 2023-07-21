@@ -7,7 +7,7 @@
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Service\ObjectExportService;
+use Monarc\Core\Service\Export\ObjectExportService;
 use Laminas\Mvc\Controller\AbstractRestfulController;
 
 class ApiObjectsExportController extends AbstractRestfulController
@@ -19,9 +19,12 @@ class ApiObjectsExportController extends AbstractRestfulController
         $this->objectExportService = $objectExportService;
     }
 
+    /**
+     * @param array $data
+     */
     public function create($data)
     {
-        $output = $this->objectExportService->export($data);
+        $result = $this->objectExportService->export($data);
 
         $contentType = 'application/json; charset=utf-8';
         $extension = '.json';
@@ -34,12 +37,10 @@ class ApiObjectsExportController extends AbstractRestfulController
             ->getHeaders()
             ->clearHeaders()
             ->addHeaderLine('Content-Type', $contentType)
-            ->addHeaderLine('Content-Length', \strlen($output))
-            ->addHeaderLine('Content-Disposition', 'attachment; filename="' .
-                (empty($data['filename']) ? $data['id'] : $data['filename']) . $extension . '"');
+            ->addHeaderLine('Content-Length', \strlen($result['content']))
+            ->addHeaderLine('Content-Disposition', 'attachment; filename="' . $result['filename'] . $extension . '"');
 
-        $this->getResponse()
-            ->setContent($output);
+        $this->getResponse()->setContent($result['content']);
 
         return $this->getResponse();
     }

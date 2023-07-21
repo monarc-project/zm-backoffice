@@ -1,26 +1,20 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2021  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
+use Monarc\Core\Exception\UserNotLoggedInException;
 use Monarc\Core\Service\UserRoleService;
 use Laminas\Mvc\Controller\AbstractRestfulController;
 use Laminas\View\Model\JsonModel;
 
-/**
- * Api Admin Users Roles Controller
- *
- * Class ApiAdminUsersRolesController
- * @package Monarc\BackOffice\Controller
- */
 class ApiAdminUsersRolesController extends AbstractRestfulController
 {
-    /** @var UserRoleService */
-    private $userRoleService;
+    private UserRoleService $userRoleService;
 
     public function __construct(UserRoleService $userRoleService)
     {

@@ -23,7 +23,6 @@ use Monarc\BackOffice\Validator\InputValidator\Server\PostServerDataInputValidat
 use Monarc\BackOffice\Validator\InputValidator\Threat\PostThreatDataInputValidator;
 use Monarc\BackOffice\Validator\InputValidator\Vulnerability\PostVulnerabilityDataInputValidator;
 use Laminas\Di\Container\AutowireFactory;
-use Monarc\Core\Service\ConnectedUserService;
 use Monarc\Core\Table\AssetTable;
 use Monarc\Core\Table\Factory\ClientEntityManagerFactory;
 use Monarc\Core\Table\ThreatTable;
@@ -627,7 +626,7 @@ return [
                                     AnrValidationMiddleware::class,
                                     Controller\ApiObjectsController::class
                                 ),
-                                'action' => 'parents'
+                                'action' => 'parents',
                             ],
                         ],
                     ],
@@ -871,16 +870,14 @@ return [
             ClientService::class => ReflectionBasedAbstractFactory::class,
 
             /* Validators */
-            PostAssetDataInputValidator::class => static function (Containerinterface $container, $serviceName)
-            {
+            PostAssetDataInputValidator::class => static function (Containerinterface $container, $serviceName) {
                 return new PostAssetDataInputValidator(
                     $container->get('config'),
                     $container->get(InputValidationTranslator::class),
                     $container->get(AssetTable::class)
                 );
             },
-            PostThreatDataInputValidator::class => static function (Containerinterface $container, $serviceName)
-            {
+            PostThreatDataInputValidator::class => static function (Containerinterface $container, $serviceName) {
                 return new PostThreatDataInputValidator(
                     $container->get('config'),
                     $container->get(InputValidationTranslator::class),
@@ -909,7 +906,7 @@ return [
         'not_found_template' => 'error/404',
         'exception_template' => 'error/index',
         'strategies' => [
-            'ViewJsonStrategy'
+            'ViewJsonStrategy',
         ],
         'template_map' => [
             'monarc-bo/index/index' => __DIR__ . '/../view/layout/layout.phtml',

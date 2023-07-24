@@ -580,23 +580,6 @@ return [
                         ],
                     ],
 
-                    'risk_owners' => [
-                        'type' => 'segment',
-                        'options' => [
-                            'route' => 'risk-owners[/:id]',
-                            'constraints' => [
-                                'id' => '[0-9]+',
-                            ],
-                            'defaults' => [
-                                'controller' => PipeSpec::class,
-                                'middleware' => new PipeSpec(
-                                    AnrValidationMiddleware::class,
-                                    Controller\ApiAnrRiskOwnersController::class
-                                ),
-                            ],
-                        ],
-                    ],
-
                     'objects' => [
                         'type' => 'segment',
                         'options' => [
@@ -865,7 +848,6 @@ return [
             Controller\ApiAnrInstancesRisksController::class => AutowireFactory::class,
             Controller\ApiAnrRisksOpController::class => AutowireFactory::class,
             Controller\ApiAnrInstancesRisksOpController::class => AutowireFactory::class,
-            Controller\ApiAnrRiskOwnersController::class => AutowireFactory::class,
             Controller\ApiSoaCategoryController::class => AutowireFactory::class,
             Controller\ApiSoaScaleCommentController::class => AutowireFactory::class,
             Controller\ApiThemesController::class => AutowireFactory::class,
@@ -983,7 +965,6 @@ return [
             'monarc_api_anr/export',
             'monarc_api_anr/instances',
             'monarc_api_anr/instances_export',
-            'monarc_api_anr/risk_owners',
             'monarc_api_anr/instances_risks',
             'monarc_api_anr/instances_risksop',
             'monarc_api_anr/instances_consequences',

@@ -783,10 +783,10 @@ return [
                         ],
                     ],
 
-                    'instances_metadata_fields' => [
+                    'anr_instance_metadata_field' => [
                         'type' => 'segment',
                         'options' => [
-                            'route' => 'instances-metadata-fields[/:id]',
+                            'route' => 'anr-instances-metadata-fields[/:id]',
                             'constraints' => [
                                 'id' => '[0-9]+',
                             ],
@@ -965,7 +965,7 @@ return [
             'monarc_api_anr/instances_risks',
             'monarc_api_anr/instances_risksop',
             'monarc_api_anr/instances_consequences',
-            'monarc_api_anr/instances_metadata_fields',
+            'monarc_api_anr/anr_instance_metadata_field',
             'monarc_api_anr/library',
             'monarc_api_anr/library_category',
             'monarc_api_anr/objects',

@@ -119,7 +119,7 @@ class ApiUserTwoFAController extends AbstractRestfulController
      * Disable the Two Factor Authentication for the connected user.
      * Also delete the secret key.
      */
-    public function delete()
+    public function delete($id)
     {
         $connectedUser = $this->connectedUserService->getConnectedUser();
         if ($connectedUser === null) {

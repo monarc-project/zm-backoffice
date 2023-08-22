@@ -9,6 +9,7 @@ namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
+use Monarc\Core\Exception\Exception;
 use Monarc\Core\Model\Entity\Anr;
 use Monarc\Core\Service\AnrInstanceMetadataFieldService;
 
@@ -54,7 +55,7 @@ class ApiAnrInstancesMetadataFieldsController extends AbstractRestfulControllerR
         $anr = $this->getRequest()->getAttribute('anr');
 
         return $this->getSuccessfulJsonResponse([
-            'id' => $this->anrInstanceMetadataFieldService->create($anr, $data),
+            'id' => $this->anrInstanceMetadataFieldService->create($anr, $data)->getId(),
         ]);
     }
 

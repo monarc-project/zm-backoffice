@@ -57,16 +57,13 @@ class ApiAmvsController extends AbstractRestfulController
     public function create($data)
     {
         if ($this->isBatchData($data)) {
-            return $this->getSuccessfulJsonResponse([
-                'id' => current($this->amvService->createAmvItems($data))
-            ]);
+            $result = $this->amvService->createAmvItems($data);
+        } else {
+            $this->validatePostParams($this->postAmvDataInputValidator, $data);
+            $result = $this->amvService->create($data)->getUuid();
         }
 
-        $this->validatePostParams($this->postAmvDataInputValidator, $data);
-
-        return $this->getSuccessfulJsonResponse([
-            'id' => $this->amvService->create($data),
-        ]);
+        return $this->getSuccessfulJsonResponse(['id' => $result]);
     }
 
     /**
@@ -96,6 +93,9 @@ class ApiAmvsController extends AbstractRestfulController
         return $this->getSuccessfulJsonResponse();
     }
 
+    /**
+     * @param string $id
+     */
     public function delete($id)
     {
         $this->amvService->delete($id);

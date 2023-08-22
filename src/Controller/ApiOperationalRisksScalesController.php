@@ -44,21 +44,8 @@ class ApiOperationalRisksScalesController extends AbstractRestfulControllerReque
         $anr = $this->getRequest()->getAttribute('anr');
 
         return $this->getSuccessfulJsonResponse([
-            'id' => $this->operationalRiskScaleService->createOperationalRiskScaleType($anr, $data),
+            'id' => $this->operationalRiskScaleService->createOperationalRiskScaleType($anr, $data)->getId(),
         ]);
-    }
-
-    /**
-     * @param array $data
-     */
-    public function deleteList($data)
-    {
-        /** @var Anr $anr */
-        $anr = $this->getRequest()->getAttribute('anr');
-
-        $this->operationalRiskScaleService->deleteOperationalRiskScaleTypes($anr, $data);
-
-        return $this->getSuccessfulJsonResponse();
     }
 
     /**
@@ -66,7 +53,10 @@ class ApiOperationalRisksScalesController extends AbstractRestfulControllerReque
      */
     public function update($id, $data)
     {
-        $this->operationalRiskScaleService->update((int)$id, $data);
+        /** @var Anr $anr */
+        $anr = $this->getRequest()->getAttribute('anr');
+
+        $this->operationalRiskScaleService->updateScaleType($anr, (int)$id, $data);
 
         return $this->getSuccessfulJsonResponse();
     }
@@ -105,6 +95,19 @@ class ApiOperationalRisksScalesController extends AbstractRestfulControllerReque
 
             $this->operationalRiskScaleService->updateMinMaxForOperationalRiskProbability($anr, $data);
         }
+
+        return $this->getSuccessfulJsonResponse();
+    }
+
+    /**
+     * @param array $data
+     */
+    public function deleteList($data)
+    {
+        /** @var Anr $anr */
+        $anr = $this->getRequest()->getAttribute('anr');
+
+        $this->operationalRiskScaleService->deleteOperationalRiskScaleTypes($anr, $data);
 
         return $this->getSuccessfulJsonResponse();
     }

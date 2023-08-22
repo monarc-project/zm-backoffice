@@ -39,7 +39,10 @@ class ApiSoaScaleCommentController extends AbstractRestfulControllerRequestHandl
      */
     public function update($id, $data)
     {
-        $this->soaScaleCommentService->update((int)$id, $data);
+        /** @var Anr $anr */
+        $anr = $this->getRequest()->getAttribute('anr');
+
+        $this->soaScaleCommentService->update($anr, (int)$id, $data);
 
         return $this->getSuccessfulJsonResponse();
     }
@@ -50,7 +53,7 @@ class ApiSoaScaleCommentController extends AbstractRestfulControllerRequestHandl
         $anr = $this->getRequest()->getAttribute('anr');
         $language = $this->params()->fromQuery("language");
 
-        $this->soaScaleCommentService->createOrHideSoaScaleComment($anr, $data);
+        $this->soaScaleCommentService->createOrHideSoaScaleComments($anr, $data);
 
         return $this->getSuccessfulJsonResponse([
             'data' => $this->soaScaleCommentService->getSoaScaleComments($anr, $language),

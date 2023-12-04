@@ -240,7 +240,7 @@ class ClientService extends AbstractService
                     $updateData['modelIdsToAdd'][] = $newModelId;
                 }
                 if (!empty($updateData['modelIdsToRemove'])) {
-                    $clientModelTable->deleteByModelIds($updateData['modelIdsToRemove']);
+                    $clientModelTable->deleteByClientAndModelIds($entity, $updateData['modelIdsToRemove']);
                 }
             }
 

@@ -8,6 +8,7 @@
 namespace Monarc\BackOffice\Model\Table;
 
 use Monarc\BackOffice\Model\DbCli;
+use Monarc\BackOffice\Model\Entity\Client;
 use Monarc\BackOffice\Model\Entity\ClientModel;
 use Monarc\Core\Model\Table\AbstractEntityTable;
 use Monarc\Core\Service\ConnectedUserService;
@@ -26,10 +27,13 @@ class ClientModelTable extends AbstractEntityTable
         parent::__construct($dbService, ClientModel::class, $connectedUserService);
     }
 
-    public function deleteByModelIds(array $modelIds): void
+    public function deleteByClientAndModelIds(Client $client, array $modelIds): void
     {
         $queryBuilder = $this->getRepository()->createQueryBuilder('cm');
-        $clientModels = $queryBuilder->where($queryBuilder->expr()->in('cm.modelId', array_map('\intval', $modelIds)))
+        $clientModels = $queryBuilder
+            ->where('cm.client = :client')
+            ->andWhere($queryBuilder->expr()->in('cm.modelId', array_map('\intval', $modelIds)))
+            ->setParameter('client', $client)
             ->getQuery()
             ->getResult();
 

@@ -11,7 +11,7 @@ use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\InputFormatter\Object\GetObjectInputFormatter;
 use Monarc\Core\InputFormatter\Object\GetObjectsInputFormatter;
-use Monarc\Core\Model\Entity\AnrSuperClass;
+use Monarc\Core\Model\Entity\Anr;
 use Monarc\Core\Service\ObjectService;
 use Monarc\Core\Validator\InputValidator\Object\PostObjectDataInputValidator;
 
@@ -45,7 +45,7 @@ class ApiObjectsController extends AbstractRestfulControllerRequestHandler
 
         return $this->getPreparedJsonResponse([
             'count' => $this->objectService->getCount($formattedInputParams),
-            'objects' => $this->objectService->getListSpecific($formattedInputParams),
+            'objects' => $this->objectService->getList($formattedInputParams),
         ]);
     }
 
@@ -96,7 +96,7 @@ class ApiObjectsController extends AbstractRestfulControllerRequestHandler
 
     public function parentsAction()
     {
-        /** @var AnrSuperClass|null $anr */
+        /** @var Anr|null $anr */
         $anr = $this->getRequest()->getAttribute('anr');
         $objectUuid = $this->params()->fromRoute('id');
 

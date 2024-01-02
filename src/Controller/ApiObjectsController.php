@@ -64,11 +64,20 @@ class ApiObjectsController extends AbstractRestfulControllerRequestHandler
      */
     public function create($data)
     {
-        $this->validatePostParams($this->postObjectDataInputValidator, $data);
+        $isBatchData = $this->isBatchData($data);
+        $this->validatePostParams($this->postObjectDataInputValidator, $data, $isBatchData);
 
-        $object = $this->objectService->create($this->postObjectDataInputValidator->getValidData());
+        $objectsUuids = [];
+        $validatedData = $isBatchData
+            ? $this->postObjectDataInputValidator->getValidDataSets()
+            : [$this->postObjectDataInputValidator->getValidData()];
+        foreach ($validatedData as $validatedDataRow) {
+            $objectsUuids[] = $this->objectService->create($validatedDataRow)->getUuid();
+        }
 
-        return $this->getSuccessfulJsonResponse(['id' => $object->getUuid()]);
+        return $this->getSuccessfulJsonResponse([
+            'id' => \count($objectsUuids) === 1 ? current($objectsUuids) : $objectsUuids,
+        ]);
     }
 
     /**

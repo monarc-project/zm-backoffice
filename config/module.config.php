@@ -215,7 +215,8 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiDeliveriesModelsController::class,
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(Controller\ApiDeliveriesModelsController::class),
                     ],
                 ],
             ],
@@ -228,7 +229,8 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiQuestionsController::class,
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(Controller\ApiQuestionsController::class),
                     ],
                 ],
             ],
@@ -241,7 +243,8 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiQuestionsChoicesController::class,
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(Controller\ApiQuestionsChoicesController::class),
                     ],
                 ],
             ],
@@ -254,7 +257,8 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiGuidesController::class,
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(Controller\ApiGuidesController::class),
                     ],
                 ],
             ],
@@ -267,7 +271,8 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiGuidesItemsController::class,
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(Controller\ApiGuidesItemsController::class),
                     ],
                 ],
             ],
@@ -293,7 +298,8 @@ return [
                         'id' => '[a-f0-9-]*',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiReferentialsController::class,
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(Controller\ApiReferentialsController::class),
                     ],
                 ],
             ],
@@ -306,7 +312,8 @@ return [
                         'id' => '[a-f0-9-]*',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiMeasuresController::class,
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(Controller\ApiMeasuresController::class),
                     ],
                 ],
             ],
@@ -319,7 +326,8 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiMeasureMeasureController::class,
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(Controller\ApiMeasureMeasureController::class),
                     ],
                 ],
             ],
@@ -401,7 +409,8 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiRolfRisksController::class,
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(Controller\ApiRolfRisksController::class),
                     ],
                 ],
             ],
@@ -414,7 +423,8 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiRolfTagsController::class,
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(Controller\ApiRolfTagsController::class),
                     ],
                 ],
             ],
@@ -440,7 +450,8 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiSoaCategoryController::class,
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(Controller\ApiSoaCategoryController::class),
                     ],
                 ],
             ],

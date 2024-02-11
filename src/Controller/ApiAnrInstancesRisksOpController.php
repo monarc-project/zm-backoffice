@@ -11,25 +11,42 @@ use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Model\Entity\Anr;
 use Monarc\Core\Service\InstanceRiskOpService;
+use Monarc\Core\Validator\InputValidator\InstanceRiskOp\PatchInstanceRiskOpDataInputValidator;
+use Monarc\Core\Validator\InputValidator\InstanceRiskOp\UpdateInstanceRiskOpDataInputValidator;
 
 class ApiAnrInstancesRisksOpController extends AbstractRestfulControllerRequestHandler
 {
     use ControllerRequestResponseHandlerTrait;
 
     private InstanceRiskOpService $instanceRiskOpService;
+    private PatchInstanceRiskOpDataInputValidator $patchInstanceRiskOpDataInputValidator;
+    private UpdateInstanceRiskOpDataInputValidator $updateInstanceRiskOpDataInputValidator;
 
-    public function __construct(InstanceRiskOpService $instanceRiskOpService)
-    {
+    public function __construct(
+        InstanceRiskOpService $instanceRiskOpService,
+        UpdateInstanceRiskOpDataInputValidator $updateInstanceRiskOpDataInputValidator,
+        PatchInstanceRiskOpDataInputValidator $patchInstanceRiskOpDataInputValidator
+    ) {
         $this->instanceRiskOpService = $instanceRiskOpService;
+        $this->updateInstanceRiskOpDataInputValidator = $updateInstanceRiskOpDataInputValidator;
+        $this->patchInstanceRiskOpDataInputValidator = $patchInstanceRiskOpDataInputValidator;
     }
 
+    /**
+     * @param array $data
+     */
     public function update($id, $data)
     {
+        $this->validatePostParams($this->updateInstanceRiskOpDataInputValidator, $data);
         /** @var Anr $anr */
         $anr = $this->getRequest()->getAttribute('anr');
 
         /** @var array $data */
-        $instanceRiskOp = $this->instanceRiskOpService->update($anr, (int)$id, $data);
+        $instanceRiskOp = $this->instanceRiskOpService->update(
+            $anr,
+            (int)$id,
+            $this->updateInstanceRiskOpDataInputValidator->getValidData()
+        );
 
         return $this->getPreparedJsonResponse([
             'cacheBrutRisk' => $instanceRiskOp->getCacheBrutRisk(),
@@ -40,10 +57,15 @@ class ApiAnrInstancesRisksOpController extends AbstractRestfulControllerRequestH
 
     public function patch($id, $data)
     {
+        $this->validatePostParams($this->patchInstanceRiskOpDataInputValidator, $data);
         /** @var Anr $anr */
         $anr = $this->getRequest()->getAttribute('anr');
 
-        $instanceRiskOp = $this->instanceRiskOpService->updateScaleValue($anr, (int)$id, $data);
+        $instanceRiskOp = $this->instanceRiskOpService->updateScaleValue(
+            $anr,
+            (int)$id,
+            $this->patchInstanceRiskOpDataInputValidator->getValidData()
+        );
 
         return $this->getPreparedJsonResponse([
             'cacheBrutRisk' => $instanceRiskOp->getCacheBrutRisk(),

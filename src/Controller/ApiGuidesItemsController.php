@@ -8,14 +8,16 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Service\GuideItemService;
-use Laminas\View\Model\JsonModel;
 
 /**
  * TODO: extend AbstractRestfulController and remove AbstractController.
  */
 class ApiGuidesItemsController extends AbstractController
 {
+    use ControllerRequestResponseHandlerTrait;
+
     protected $dependencies = ['guide'];
     protected $name = 'items';
 
@@ -24,9 +26,6 @@ class ApiGuidesItemsController extends AbstractController
         parent::__construct($guideItemService);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getList()
     {
         $page = $this->params()->fromQuery('page');
@@ -49,11 +48,9 @@ class ApiGuidesItemsController extends AbstractController
             }
         }
 
-        return new JsonModel(array(
+        return $this->getPreparedJsonResponse([
             'count' => $service->getFilteredCount($filter),
             $this->name => $entities
-        ));
+        ]);
     }
-
 }
-

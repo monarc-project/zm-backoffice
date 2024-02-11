@@ -24,13 +24,14 @@ class ApiAnrRisksOpController extends AbstractRestfulControllerRequestHandler
     }
 
     /**
-     * @param int $id Instance ID.
+     * @param int|null $id Instance ID.
      */
     public function get($id)
     {
         /** @var Anr $anr */
         $anr = $this->getRequest()->getAttribute('anr');
         $params = $this->parseParams();
+        $id = $id === null ? null : (int)$id;
 
         $risks = $this->instanceRiskOpService->getOperationalRisks($anr, (int)$id, $params);
 
@@ -42,16 +43,7 @@ class ApiAnrRisksOpController extends AbstractRestfulControllerRequestHandler
 
     public function getList()
     {
-        /** @var Anr $anr */
-        $anr = $this->getRequest()->getAttribute('anr');
-        $params = $this->parseParams();
-
-        $risks = $this->instanceRiskOpService->getOperationalRisks($anr, null, $params);
-
-        return $this->getPreparedJsonResponse([
-            'count' => \count($risks),
-            'oprisks' => \array_slice($risks, ($params['page'] - 1) * $params['limit'], $params['limit']),
-        ]);
+        return $this->get(null);
     }
 
     protected function parseParams(): array
@@ -59,11 +51,11 @@ class ApiAnrRisksOpController extends AbstractRestfulControllerRequestHandler
         $params = $this->params();
 
         return [
-            'keywords' => $params->fromQuery("keywords"),
-            'kindOfMeasure' => $params->fromQuery("kindOfMeasure"),
-            'order' => $params->fromQuery("order", "maxRisk"),
-            'order_direction' => $params->fromQuery("order_direction", "desc"),
-            'thresholds' => $params->fromQuery("thresholds"),
+            'keywords' => $params->fromQuery('keywords'),
+            'kindOfMeasure' => $params->fromQuery('kindOfMeasure'),
+            'order' => $params->fromQuery('order', 'maxRisk'),
+            'order_direction' => $params->fromQuery('order_direction', 'desc'),
+            'thresholds' => $params->fromQuery('thresholds'),
             'page' => (int)$params->fromQuery('page', 1),
             'limit' => (int)$params->fromQuery('limit', 50),
         ];

@@ -8,15 +8,17 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Model\Entity\Measure;
 use Monarc\Core\Service\RolfRiskService;
-use Laminas\View\Model\JsonModel;
 
 /**
  * TODO: extend AbstractRestfulController and remove AbstractController.
  */
 class ApiRolfRisksController extends AbstractController
 {
+    use ControllerRequestResponseHandlerTrait;
+
     protected $name = 'risks';
     protected $dependencies = ['measures', 'tags'];
 
@@ -33,7 +35,7 @@ class ApiRolfRisksController extends AbstractController
             $this->formatDependencies($entity, $this->dependencies, Measure::class, ['referential']);
         }
 
-        return new JsonModel($entity);
+        return $this->getPreparedJsonResponse($entity);
     }
 
     /**
@@ -65,10 +67,10 @@ class ApiRolfRisksController extends AbstractController
             }
         }
 
-        return new JsonModel(array(
+        return $this->getPreparedJsonResponse([
             'count' => $service->getFilteredSpecificCount($page, $limit, $order, $filter, $tag),
             $this->name => $rolfRisks
-        ));
+        ]);
     }
 
     public function update($id, $data)
@@ -88,8 +90,6 @@ class ApiRolfRisksController extends AbstractController
 
         $service->createLinkedRisks($data['fromReferential'], $data['toReferential']);
 
-        return new JsonModel([
-            'status' => 'ok',
-        ]);
+        return $this->getSuccessfulJsonResponse();
     }
 }

@@ -8,25 +8,24 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Service\MeasureMeasureService;
-use Laminas\View\Model\JsonModel;
 
 /**
  * TODO: extend AbstractRestfulController and remove AbstractController.
  */
 class ApiMeasureMeasureController extends AbstractController
 {
+    use ControllerRequestResponseHandlerTrait;
+
     protected $name = 'MeasureMeasure';
-    protected $dependencies = ['father','child'];
+    protected $dependencies = ['father', 'child'];
 
     public function __construct(MeasureMeasureService $measureMeasureService)
     {
         parent::__construct($measureMeasureService);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getList()
     {
         $page = $this->params()->fromQuery('page');
@@ -38,10 +37,10 @@ class ApiMeasureMeasureController extends AbstractController
         $filterAnd = [];
 
         if ($fatherId) {
-          $filterAnd['father'] = $fatherId;
+            $filterAnd['father'] = $fatherId;
         }
         if ($childId) {
-          $filterAnd['child'] = $childId;
+            $filterAnd['child'] = $childId;
         }
 
         $service = $this->getService();
@@ -53,21 +52,22 @@ class ApiMeasureMeasureController extends AbstractController
             }
         }
 
-        return new JsonModel(array(
+        return $this->getPreparedJsonResponse([
             'count' => $service->getFilteredCount($filter, $filterAnd),
-            $this->name => $entities
-        ));
+            $this->name => $entities,
+        ]);
     }
 
     public function deleteList($data)
     {
-        if($data==null) //we delete one measuremeasure
-        {
-          $fatherId = $this->params()->fromQuery('father');
-          $childId = $this->params()->fromQuery('child');
-          $this->getService()->delete(['father'=>$fatherId, 'child'=>$childId]);
-          return new JsonModel(['status' => 'ok']);
-        }else
-          return parent::deleteList($data);
+        if ($data === null) {
+            $fatherId = $this->params()->fromQuery('father');
+            $childId = $this->params()->fromQuery('child');
+            $this->getService()->delete(['father' => $fatherId, 'child' => $childId]);
+
+            return $this->getSuccessfulJsonResponse();
+        }
+
+        return parent::deleteList($data);
     }
 }

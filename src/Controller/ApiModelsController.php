@@ -77,14 +77,14 @@ class ApiModelsController extends AbstractRestfulController
 
         $this->modelService->update((int)$id, $data);
 
-        return $this->getPreparedJsonResponse(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 
     public function patch($id, $data)
     {
         $this->modelService->patch((int)$id, $data);
 
-        return $this->getPreparedJsonResponse(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 
     public function delete($id)
@@ -94,6 +94,6 @@ class ApiModelsController extends AbstractRestfulController
         /* Unlink the model for all the clients where it is linked. */
         $this->clientService->unlinkModel((int)$id);
 
-        return $this->getPreparedJsonResponse(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 }

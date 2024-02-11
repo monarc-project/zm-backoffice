@@ -8,14 +8,16 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Service\SoaCategoryService;
-use Laminas\View\Model\JsonModel;
 
 /**
  * TODO: extend AbstractRestfulController and remove AbstractController.
  */
 class ApiSoaCategoryController extends AbstractController
 {
+    use ControllerRequestResponseHandlerTrait;
+
     protected $name = 'categories';
     protected $dependencies = ['referential'];
 
@@ -53,9 +55,9 @@ class ApiSoaCategoryController extends AbstractController
             }
         }
 
-        return new JsonModel(array(
+        return $this->getPreparedJsonResponse([
             'count' => $service->getFilteredCount($filter, $filterAnd),
             $this->name => $entities
-        ));
+        ]);
     }
 }

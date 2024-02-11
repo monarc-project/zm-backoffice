@@ -8,14 +8,16 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Service\ReferentialService;
-use Laminas\View\Model\JsonModel;
 
 /**
  * TODO: extend AbstractRestfulController and remove AbstractController.
  */
 class ApiReferentialsController extends AbstractController
 {
+    use ControllerRequestResponseHandlerTrait;
+
     protected $name = 'referentials';
     protected $dependencies = ['measures'];
 
@@ -43,9 +45,9 @@ class ApiReferentialsController extends AbstractController
             }
         }
 
-        return new JsonModel(array(
+        return $this->getPreparedJsonResponse([
             'count' => $service->getFilteredCount($filter),
-            $this->name => $entities
-        ));
+            $this->name => $entities,
+        ]);
     }
 }

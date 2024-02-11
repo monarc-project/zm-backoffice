@@ -8,16 +8,18 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Model\Entity\QuestionChoice;
 use Monarc\Core\Model\Table\QuestionChoiceTable;
 use Monarc\Core\Service\QuestionChoiceService;
-use Laminas\View\Model\JsonModel;
 
 /**
  * TODO: extend AbstractRestfulController and remove AbstractController.
  */
 class ApiQuestionsChoicesController extends AbstractController
 {
+    use ControllerRequestResponseHandlerTrait;
+
     protected $dependencies = ['questions'];
     protected $name = 'choices';
 
@@ -60,6 +62,6 @@ class ApiQuestionsChoicesController extends AbstractController
             ++$pos;
         }
 
-        return new JsonModel(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 }

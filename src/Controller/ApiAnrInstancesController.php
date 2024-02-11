@@ -62,6 +62,8 @@ class ApiAnrInstancesController extends AbstractRestfulControllerRequestHandler
     }
 
     /**
+     * Instantiation of an object to the analysis.
+     *
      * @param array $data
      */
     public function create($data)
@@ -78,6 +80,8 @@ class ApiAnrInstancesController extends AbstractRestfulControllerRequestHandler
     }
 
     /**
+     * Is called when instances consequences are set (edit impact).
+     *
      * @param array $data
      */
     public function update($id, $data)
@@ -92,6 +96,9 @@ class ApiAnrInstancesController extends AbstractRestfulControllerRequestHandler
         return $this->getSuccessfulJsonResponse();
     }
 
+    /**
+     * Is called when we move (drag-n-drop) instance inside of analysis.
+     */
     public function patch($id, $data)
     {
         /** @var Anr $anr */
@@ -106,7 +113,10 @@ class ApiAnrInstancesController extends AbstractRestfulControllerRequestHandler
 
     public function delete($id)
     {
-        $this->instanceService->delete((int)$id);
+        /** @var Anr $anr */
+        $anr = $this->getRequest()->getAttribute('anr');
+
+        $this->instanceService->delete($anr, (int)$id);
 
         return $this->getSuccessfulJsonResponse();
     }

@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2024 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
@@ -9,28 +9,26 @@ namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
-use Monarc\Core\InputFormatter\Scale\GetScalesInputFormatter;
 use Monarc\Core\Model\Entity\Anr;
 use Monarc\Core\Service\ScaleService;
+use Monarc\Core\Validator\InputValidator\Scale\UpdateScalesDataInputValidator;
 
 class ApiAnrScalesController extends AbstractRestfulControllerRequestHandler
 {
     use ControllerRequestResponseHandlerTrait;
 
-    private ScaleService $scaleService;
-
-    private GetScalesInputFormatter $getScalesInputFormatter;
-
-    public function __construct(ScaleService $scaleService, GetScalesInputFormatter $getScalesInputFormatter)
-    {
-        $this->scaleService = $scaleService;
-        $this->getScalesInputFormatter = $getScalesInputFormatter;
+    public function __construct(
+        private ScaleService $scaleService,
+        private UpdateScalesDataInputValidator $updateScalesDataInputValidator
+    ) {
     }
 
     public function getList()
     {
-        $formattedParams = $this->getFormattedInputParams($this->getScalesInputFormatter);
-        $scales = $this->scaleService->getList($formattedParams);
+        /** @var Anr $anr */
+        $anr = $this->getRequest()->getAttribute('anr');
+
+        $scales = $this->scaleService->getList($anr);
 
         return $this->getPreparedJsonResponse([
             'count' => \count($scales),
@@ -40,11 +38,11 @@ class ApiAnrScalesController extends AbstractRestfulControllerRequestHandler
 
     public function update($id, $data)
     {
+        $this->validatePostParams($this->updateScalesDataInputValidator, $data);
+
         /** @var Anr $anr */
         $anr = $this->getRequest()->getAttribute('anr');
-
-        /** @var array $data */
-        $this->scaleService->update($anr, (int)$id, $data);
+        $this->scaleService->update($anr, (int)$id, $this->updateScalesDataInputValidator->getValidData());
 
         return $this->getSuccessfulJsonResponse();
     }

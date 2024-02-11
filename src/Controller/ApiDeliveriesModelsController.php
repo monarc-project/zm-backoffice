@@ -8,15 +8,17 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Exception\Exception;
 use Monarc\Core\Service\DeliveriesModelsService;
-use Laminas\View\Model\JsonModel;
 
 /**
  * TODO: extend AbstractRestfulController and remove AbstractController.
  */
 class ApiDeliveriesModelsController extends AbstractController
 {
+    use ControllerRequestResponseHandlerTrait;
+
     protected $name = "deliveriesmodels";
 
     public function __construct(DeliveriesModelsService $deliveriesModelsService)
@@ -24,9 +26,6 @@ class ApiDeliveriesModelsController extends AbstractController
         parent::__construct($deliveriesModelsService);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function create($data)
     {
         $service = $this->getService();
@@ -41,12 +40,9 @@ class ApiDeliveriesModelsController extends AbstractController
 
         $service->create($data);
 
-        return new JsonModel(array('status' => 'ok'));
+        return $this->getSuccessfulJsonResponse();
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getList()
     {
         $page = $this->params()->fromQuery('page');
@@ -57,11 +53,6 @@ class ApiDeliveriesModelsController extends AbstractController
         $service = $this->getService();
 
         $entities = $service->getList($page, $limit, $order, $filter);
-        if (count($this->dependencies)) {
-            foreach ($entities as $key => $entity) {
-                $this->formatDependencies($entities[$key], $this->dependencies);
-            }
-        }
 
         foreach ($entities as $k => $v) {
             for ($i = 1; $i <= 4; $i++) {
@@ -73,15 +64,12 @@ class ApiDeliveriesModelsController extends AbstractController
             }
         }
 
-        return new JsonModel(array(
-            'count' => count($entities),
+        return $this->getPreparedJsonResponse([
+            'count' => \count($entities),
             $this->name => $entities
-        ));
+        ]);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function get($id)
     {
         $entity = $this->getService()->getEntity($id);
@@ -125,7 +113,7 @@ class ApiDeliveriesModelsController extends AbstractController
         }
         $service->update($id, $data);
 
-        return new JsonModel(array('status' => 'ok'));
+        return $this->getSuccessfulJsonResponse();
     }
 
     /**
@@ -143,6 +131,6 @@ class ApiDeliveriesModelsController extends AbstractController
         }
         $service->patch($id, $data);
 
-        return new JsonModel(array('status' => 'ok'));
+        return $this->getSuccessfulJsonResponse();
     }
 }

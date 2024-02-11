@@ -8,17 +8,16 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Service\MeasureService;
-use Laminas\View\Model\JsonModel;
 
 /**
  * TODO: extend AbstractRestfulController and remove AbstractController.
- *
- * Class ApiMeasuresController
- * @package Monarc\BackOffice\Controller
  */
 class ApiMeasuresController extends AbstractController
 {
+    use ControllerRequestResponseHandlerTrait;
+
     protected $name = 'measures';
     protected $dependencies = ['category', 'referential', 'measuresLinked','rolfRisks'];
 
@@ -60,15 +59,16 @@ class ApiMeasuresController extends AbstractController
             }
         }
 
-        return new JsonModel(array(
+        return $this->getPreparedJsonResponse([
            'count' => $service->getFilteredCount($filter, $filterAnd),
             $this->name => $entities
-        ));
+        ]);
     }
 
     public function update($id, $data)
     {
       $data ['referential'] = $data['referential']['uuid']; //all the objects is send but we just need the uuid
+
       return parent::update($id,$data);
     }
 
@@ -78,6 +78,7 @@ class ApiMeasuresController extends AbstractController
       foreach ($data as $uuid) {
         $new_data[] = ['uuid' => $uuid];
       }
+
       return parent::deleteList($new_data);
     }
 }

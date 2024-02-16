@@ -31,9 +31,8 @@ class ApiAnrRisksOpController extends AbstractRestfulControllerRequestHandler
         /** @var Anr $anr */
         $anr = $this->getRequest()->getAttribute('anr');
         $params = $this->parseParams();
-        $id = $id === null ? null : (int)$id;
 
-        $risks = $this->instanceRiskOpService->getOperationalRisks($anr, (int)$id, $params);
+        $risks = $this->instanceRiskOpService->getOperationalRisks($anr, $id === null ? null : (int)$id, $params);
 
         return $this->getPreparedJsonResponse([
             'count' => \count($risks),

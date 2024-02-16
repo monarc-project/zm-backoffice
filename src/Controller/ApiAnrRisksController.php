@@ -23,13 +23,16 @@ class ApiAnrRisksController extends AbstractRestfulControllerRequestHandler
         $this->instanceRiskService = $instanceRiskService;
     }
 
+    /**
+     * @param int|null $id Instance ID.
+     */
     public function get($id)
     {
         /** @var Anr $anr */
         $anr = $this->getRequest()->getAttribute('anr');
         $params = $this->prepareParams();
 
-        $risks = $this->instanceRiskService->getInstanceRisks($anr, (int)$id, $params);
+        $risks = $this->instanceRiskService->getInstanceRisks($anr, $id === null ? null : (int)$id, $params);
 
         return $this->getPreparedJsonResponse([
             'count' => \count($risks),
@@ -41,19 +44,7 @@ class ApiAnrRisksController extends AbstractRestfulControllerRequestHandler
 
     public function getList()
     {
-        /** @var Anr $anr */
-        $anr = $this->getRequest()->getAttribute('anr');
-
-        $params = $this->prepareParams();
-
-        $risks = $this->instanceRiskService->getInstanceRisks($anr, null, $params);
-
-        return $this->getPreparedJsonResponse([
-            'count' => \count($risks),
-            'risks' => $params['limit'] > 0 ?
-                \array_slice($risks, ($params['page'] - 1) * $params['limit'], $params['limit'])
-                : $risks,
-        ]);
+        return $this->get(null);
     }
 
     protected function prepareParams(): array

@@ -9,7 +9,6 @@ namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
-use Monarc\Core\InputFormatter\ScaleImpactType\GetScaleImpactTypesInputFormatter;
 use Monarc\Core\Model\Entity\Anr;
 use Monarc\Core\Service\ScaleImpactTypeService;
 
@@ -19,21 +18,17 @@ class ApiAnrScalesTypesController extends AbstractRestfulControllerRequestHandle
 
     private ScaleImpactTypeService $scaleImpactTypeService;
 
-    private GetScaleImpactTypesInputFormatter $getScaleImpactTypesInputFormatter;
-
-    public function __construct(
-        ScaleImpactTypeService $scaleImpactTypeService,
-        GetScaleImpactTypesInputFormatter $getScaleImpactTypesInputFormatter
-    ) {
+    public function __construct(ScaleImpactTypeService $scaleImpactTypeService)
+    {
         $this->scaleImpactTypeService = $scaleImpactTypeService;
-        $this->getScaleImpactTypesInputFormatter = $getScaleImpactTypesInputFormatter;
     }
 
     public function getList()
     {
-        $formattedParams = $this->getFormattedInputParams($this->getScaleImpactTypesInputFormatter);
+        /** @var Anr $anr */
+        $anr = $this->getRequest()->getAttribute('anr');
 
-        $scaleImpactTypesList = $this->scaleImpactTypeService->getList($formattedParams);
+        $scaleImpactTypesList = $this->scaleImpactTypeService->getList($anr);
 
         return $this->getPreparedJsonResponse([
             'count' => \count($scaleImpactTypesList),

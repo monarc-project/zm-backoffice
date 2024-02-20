@@ -36,6 +36,7 @@ class ApiObjectsCategoriesController extends AbstractRestfulControllerRequestHan
     public function getList()
     {
         $formattedParams = $this->getFormattedInputParams($this->objectCategoriesInputFormatter);
+        $this->objectCategoriesInputFormatter->prepareCategoryFilter();
 
         return $this->getPreparedJsonResponse([
             'count' => $this->objectCategoryService->getCount(),

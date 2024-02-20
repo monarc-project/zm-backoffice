@@ -354,10 +354,7 @@ return [
                     ],
                     'defaults' => [
                         'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(
-                            AnrValidationMiddleware::class,
-                            Controller\ApiObjectsCategoriesController::class,
-                        ),
+                        'middleware' => new PipeSpec(Controller\ApiObjectsCategoriesController::class),
                     ],
                 ],
             ],

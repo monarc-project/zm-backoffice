@@ -9,7 +9,7 @@ namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Exception\Exception;
-use Monarc\Core\Model\Entity\UserSuperClass;
+use Monarc\Core\Entity\UserSuperClass;
 use Monarc\Core\Service\ConnectedUserService;
 use Monarc\Core\Table\UserTable;
 use Laminas\Mvc\Controller\AbstractRestfulController;

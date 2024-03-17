@@ -9,8 +9,8 @@ namespace Monarc\BackOffice\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use Monarc\Core\Model\Entity\Traits\CreateEntityTrait;
-use Monarc\Core\Model\Entity\Traits\UpdateEntityTrait;
+use Monarc\Core\Entity\Traits\CreateEntityTrait;
+use Monarc\Core\Entity\Traits\UpdateEntityTrait;
 
 /**
  * @ORM\Table(name="clients")

@@ -10,7 +10,7 @@ namespace Monarc\BackOffice\Service;
 use Monarc\BackOffice\Entity\Server;
 use Monarc\BackOffice\Table\ServerTable;
 use Monarc\Core\InputFormatter\FormattedInputParams;
-use Monarc\Core\Model\Entity\User;
+use Monarc\Core\Entity\User;
 use Monarc\Core\Service\ConnectedUserService;
 
 class ServerService

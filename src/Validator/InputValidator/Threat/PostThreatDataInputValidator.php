@@ -8,7 +8,7 @@
 namespace Monarc\BackOffice\Validator\InputValidator\Threat;
 
 use Laminas\Validator\InArray;
-use Monarc\Core\Model\Entity\ThreatSuperClass;
+use Monarc\Core\Entity\ThreatSuperClass;
 use Monarc\Core\Validator\InputValidator\Threat\PostThreatDataInputValidator as CorePostThreatDataInputValidator;
 
 class PostThreatDataInputValidator extends CorePostThreatDataInputValidator

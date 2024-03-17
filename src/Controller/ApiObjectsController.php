@@ -11,7 +11,7 @@ use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\InputFormatter\Object\GetObjectInputFormatter;
 use Monarc\Core\InputFormatter\Object\GetObjectsInputFormatter;
-use Monarc\Core\Model\Entity\Anr;
+use Monarc\Core\Entity\Anr;
 use Monarc\Core\Service\ObjectService;
 use Monarc\Core\Validator\InputValidator\Object\PostObjectDataInputValidator;
 

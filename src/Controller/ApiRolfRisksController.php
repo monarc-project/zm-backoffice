@@ -9,7 +9,7 @@ namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
-use Monarc\Core\Model\Entity\Measure;
+use Monarc\Core\Entity\Measure;
 use Monarc\Core\Service\RolfRiskService;
 
 /**

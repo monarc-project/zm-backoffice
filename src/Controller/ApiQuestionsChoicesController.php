@@ -9,7 +9,7 @@ namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\AbstractController;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
-use Monarc\Core\Model\Entity\QuestionChoice;
+use Monarc\Core\Entity\QuestionChoice;
 use Monarc\Core\Model\Table\QuestionChoiceTable;
 use Monarc\Core\Service\QuestionChoiceService;
 

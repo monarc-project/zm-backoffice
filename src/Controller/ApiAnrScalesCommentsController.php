@@ -10,7 +10,7 @@ namespace Monarc\BackOffice\Controller;
 use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\InputFormatter\ScaleComment\GetScaleCommentsInputFormatter;
-use Monarc\Core\Model\Entity\Anr;
+use Monarc\Core\Entity\Anr;
 use Monarc\Core\Service\ScaleCommentService;
 
 class ApiAnrScalesCommentsController extends AbstractRestfulControllerRequestHandler

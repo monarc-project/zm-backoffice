@@ -12,8 +12,8 @@ use Monarc\BackOffice\InputFormatter\Server\GetServersInputFormatter;
 use Monarc\BackOffice\Service\ServerService;
 use Monarc\BackOffice\Validator\InputValidator\Server\PostServerDataInputValidator;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
-use Monarc\Core\Model\Entity\User;
-use Monarc\Core\Model\Entity\UserRole;
+use Monarc\Core\Entity\User;
+use Monarc\Core\Entity\UserRole;
 use Monarc\Core\Service\ConnectedUserService;
 
 class ApiAdminServersController extends AbstractRestfulController

@@ -8,7 +8,7 @@
 namespace Monarc\BackOffice\Validator\InputValidator\Asset;
 
 use Laminas\Validator\InArray;
-use Monarc\Core\Model\Entity\AssetSuperClass;
+use Monarc\Core\Entity\AssetSuperClass;
 use Monarc\Core\Validator\InputValidator\Asset\PostAssetDataInputValidator as CorePostAssetDataInputValidator;
 
 class PostAssetDataInputValidator extends CorePostAssetDataInputValidator

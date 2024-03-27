@@ -1,73 +1,52 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2024 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
+use Laminas\Mvc\Controller\AbstractRestfulController;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Service\MeasureMeasureService;
 
-/**
- * TODO: extend AbstractRestfulController and remove AbstractController.
- */
-class ApiMeasureMeasureController extends AbstractController
+class ApiMeasureMeasureController extends AbstractRestfulController
 {
     use ControllerRequestResponseHandlerTrait;
 
-    protected $name = 'MeasureMeasure';
-    protected $dependencies = ['father', 'child'];
-
-    public function __construct(MeasureMeasureService $measureMeasureService)
+    public function __construct(private MeasureMeasureService $measureMeasureService)
     {
-        parent::__construct($measureMeasureService);
     }
 
     public function getList()
     {
-        $page = $this->params()->fromQuery('page');
-        $limit = $this->params()->fromQuery('limit');
-        $order = $this->params()->fromQuery('order');
-        $filter = $this->params()->fromQuery('filter');
-        $fatherId = $this->params()->fromQuery('fatherId');
-        $childId = $this->params()->fromQuery('childId');
-        $filterAnd = [];
-
-        if ($fatherId) {
-            $filterAnd['father'] = $fatherId;
-        }
-        if ($childId) {
-            $filterAnd['child'] = $childId;
-        }
-
-        $service = $this->getService();
-
-        $entities = $service->getList($page, $limit, $order, $filter, $filterAnd);
-        if (count($this->dependencies)) {
-            foreach ($entities as $key => $entity) {
-                $this->formatDependencies($entities[$key], $this->dependencies);
-            }
-        }
+        /* Fetches all the measures links. */
+        $measuresLinksData = $this->measureMeasureService->getList();
 
         return $this->getPreparedJsonResponse([
-            'count' => $service->getFilteredCount($filter, $filterAnd),
-            $this->name => $entities,
+            'count' => \count($measuresLinksData),
+            'measuresLinks' => $measuresLinksData,
         ]);
+    }
+
+    public function create($data)
+    {
+        if ($this->isBatchData($data)) {
+            $this->measureMeasureService->createList($data);
+        } else {
+            $this->measureMeasureService->create($data);
+        }
+
+        return $this->getSuccessfulJsonResponse();
     }
 
     public function deleteList($data)
     {
-        if ($data === null) {
-            $fatherId = $this->params()->fromQuery('father');
-            $childId = $this->params()->fromQuery('child');
-            $this->getService()->delete(['father' => $fatherId, 'child' => $childId]);
+        $masterMeasureUuid = $this->params()->fromQuery('masterMeasureUuid');
+        $linkedMeasureUuid = $this->params()->fromQuery('linkedMeasureUuid');
+        $this->measureMeasureService->delete($masterMeasureUuid, $linkedMeasureUuid);
 
-            return $this->getSuccessfulJsonResponse();
-        }
-
-        return parent::deleteList($data);
+        return $this->getSuccessfulJsonResponse();
     }
 }

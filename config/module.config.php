@@ -326,8 +326,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(Controller\ApiMeasureMeasureController::class),
+                        'controller' => Controller\ApiMeasureMeasureController::class,
                     ],
                 ],
             ],

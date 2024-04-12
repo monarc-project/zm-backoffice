@@ -59,16 +59,14 @@ class ApiThreatsController extends AbstractRestfulController
         $isBatchData = $this->isBatchData($data);
         $this->validatePostParams($this->postThreatDataInputValidator, $data, $isBatchData);
 
-        $threatsUuids = [];
-        $validatedData = $isBatchData
-            ? $this->postThreatDataInputValidator->getValidDataSets()
-            : [$this->postThreatDataInputValidator->getValidData()];
-        foreach ($validatedData as $validatedDataSet) {
-            $threatsUuids[] = $this->threatService->create($validatedDataSet)->getUuid();
+        if ($isBatchData) {
+            return $this->getSuccessfulJsonResponse([
+                'id' => $this->threatService->createList($this->postThreatDataInputValidator->getValidDataSets()),
+            ]);
         }
 
         return $this->getSuccessfulJsonResponse([
-            'id' => \count($threatsUuids) === 1 ? current($threatsUuids) : $threatsUuids,
+            'id' => $this->threatService->create($this->postThreatDataInputValidator->getValidData())->getUuid(),
         ]);
     }
 

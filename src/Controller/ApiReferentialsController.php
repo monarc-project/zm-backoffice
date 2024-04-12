@@ -1,53 +1,80 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2024 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
+use Laminas\Mvc\Controller\AbstractRestfulController;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
+use Monarc\Core\InputFormatter\Referential\GetReferentialInputFormatter;
 use Monarc\Core\Service\ReferentialService;
+use Monarc\Core\Validator\InputValidator\Referential\PostReferentialDataInputValidator;
 
-/**
- * TODO: extend AbstractRestfulController and remove AbstractController.
- */
-class ApiReferentialsController extends AbstractController
+class ApiReferentialsController extends AbstractRestfulController
 {
     use ControllerRequestResponseHandlerTrait;
 
-    protected $name = 'referentials';
-    protected $dependencies = ['measures'];
+    public function __construct(
+        private ReferentialService $referentialService,
+        private GetReferentialInputFormatter $getReferentialInputFormatter,
+        private PostReferentialDataInputValidator $postReferentialDataInputValidator,
+    ) {
+    }
 
-    public function __construct(ReferentialService $referentialService)
+    public function getList()
     {
-        parent::__construct($referentialService);
+        $formatterParams = $this->getFormattedInputParams($this->getReferentialInputFormatter);
+
+        return $this->getPreparedJsonResponse([
+            'referentials' => $this->referentialService->getList($formatterParams),
+        ]);
     }
 
     /**
-     * @inheritdoc
+     * @param string $id
      */
-    public function getList()
+    public function get($id)
     {
-        $page = $this->params()->fromQuery('page');
-        $limit = $this->params()->fromQuery('limit');
-        $order = $this->params()->fromQuery('order');
-        $filter = $this->params()->fromQuery('filter');
+        return $this->getPreparedJsonResponse($this->referentialService->getReferentialData($id));
+    }
 
-        $service = $this->getService();
+    /**
+     * @param array $data
+     */
+    public function create($data)
+    {
+        $this->validatePostParams($this->postReferentialDataInputValidator, $data);
 
-        $entities = $service->getList($page, $limit, $order, $filter);
-        if (count($this->dependencies)) {
-            foreach ($entities as $key => $entity) {
-                $this->formatDependencies($entities[$key], $this->dependencies);
-            }
-        }
-
-        return $this->getPreparedJsonResponse([
-            'count' => $service->getFilteredCount($filter),
-            $this->name => $entities,
+        return $this->getSuccessfulJsonResponse([
+            'id' => $this->referentialService->create(
+                $this->postReferentialDataInputValidator->getValidData()
+            )->getUuid(),
         ]);
+    }
+
+    /**
+     * @param string $id
+     * @param array $data
+     */
+    public function update($id, $data)
+    {
+        $this->validatePostParams($this->postReferentialDataInputValidator, $data);
+
+        $this->referentialService->update($id, $this->postReferentialDataInputValidator->getValidData());
+
+        return $this->getSuccessfulJsonResponse();
+    }
+
+    /**
+     * @param string $id
+     */
+    public function delete($id)
+    {
+        $this->referentialService->delete($id);
+
+        return $this->getSuccessfulJsonResponse();
     }
 }

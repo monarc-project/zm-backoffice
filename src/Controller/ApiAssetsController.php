@@ -59,16 +59,14 @@ class ApiAssetsController extends AbstractRestfulController
         $isBatchData = $this->isBatchData($data);
         $this->validatePostParams($this->postAssetDataInputValidator, $data, $isBatchData);
 
-        $assetsUuids = [];
-        $validatedData = $isBatchData
-            ? $this->postAssetDataInputValidator->getValidDataSets()
-            : [$this->postAssetDataInputValidator->getValidData()];
-        foreach ($validatedData as $validatedDataRow) {
-            $assetsUuids[] = $this->assetService->create($validatedDataRow)->getUuid();
+        if ($isBatchData) {
+            return $this->getSuccessfulJsonResponse([
+                'id' => $this->assetService->createList($this->postAssetDataInputValidator->getValidDataSets()),
+            ]);
         }
 
         return $this->getSuccessfulJsonResponse([
-            'id' => \count($assetsUuids) === 1 ? current($assetsUuids) : $assetsUuids,
+            'id' => $this->assetService->create($this->postAssetDataInputValidator->getValidData())->getUuid(),
         ]);
     }
 

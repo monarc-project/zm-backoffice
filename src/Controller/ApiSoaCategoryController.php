@@ -1,63 +1,73 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2024 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
+use Laminas\Mvc\Controller\AbstractRestfulController;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
+use Monarc\Core\InputFormatter\SoaCategory\GetSoaCategoriesInputFormatter;
 use Monarc\Core\Service\SoaCategoryService;
+use Monarc\Core\Validator\InputValidator\SoaCategory\PostSoaCategoryDataInputValidator;
 
-/**
- * TODO: extend AbstractRestfulController and remove AbstractController.
- */
-class ApiSoaCategoryController extends AbstractController
+class ApiSoaCategoryController extends AbstractRestfulController
 {
     use ControllerRequestResponseHandlerTrait;
 
-    protected $name = 'categories';
-    protected $dependencies = ['referential'];
+    public function __construct(
+        private SoaCategoryService $soaCategoryService,
+        private GetSoaCategoriesInputFormatter $getSoaCategoriesInputFormatter,
+        private PostSoaCategoryDataInputValidator $postSoaCategoryDataInputValidator
+    ) {
+    }
 
-    public function __construct(SoaCategoryService $soaCategoryService)
+    public function getList()
     {
-        parent::__construct($soaCategoryService);
+        $formatterParams = $this->getFormattedInputParams($this->getSoaCategoriesInputFormatter);
+
+        return $this->getPreparedJsonResponse([
+            'categories' => $this->soaCategoryService->getList($formatterParams),
+        ]);
+    }
+
+    public function get($id)
+    {
+        return $this->getPreparedJsonResponse($this->soaCategoryService->getSoaCategoryData((int)$id));
     }
 
     /**
-     * @inheritdoc
+     * @param array $data
      */
-    public function getList()
+    public function create($data)
     {
-        $page = $this->params()->fromQuery('page');
-        $limit = $this->params()->fromQuery('limit');
-        $order = $this->params()->fromQuery('order');
-        $filter = $this->params()->fromQuery('filter');
-        $status = $this->params()->fromQuery('status');
-        $referential = $this->params()->fromQuery('referential');
+        $this->validatePostParams($this->postSoaCategoryDataInputValidator, $data);
 
-        if (is_null($status)) {
-            $status = 1;
-        }
-        $filterAnd = ($status == "all") ? null : ['status' => (int)$status];
-        if ($referential) {
-            $filterAnd['referential'] = (array)$referential;
-        }
-
-        $service = $this->getService();
-
-        $entities = $service->getList($page, $limit, $order, $filter, $filterAnd);
-        if (\count($this->dependencies)) {
-            foreach ($entities as $key => $entity) {
-                $this->formatDependencies($entities[$key], $this->dependencies);
-            }
-        }
-
-        return $this->getPreparedJsonResponse([
-            'count' => $service->getFilteredCount($filter, $filterAnd),
-            $this->name => $entities
+        return $this->getSuccessfulJsonResponse([
+            'id' => $this->soaCategoryService->create(
+                $this->postSoaCategoryDataInputValidator->getValidData()
+            )->getId(),
         ]);
+    }
+
+    /**
+     * @param array $data
+     */
+    public function update($id, $data)
+    {
+        $this->validatePostParams($this->postSoaCategoryDataInputValidator, $data);
+
+        $this->soaCategoryService->update((int)$id, $this->postSoaCategoryDataInputValidator->getValidData());
+
+        return $this->getSuccessfulJsonResponse();
+    }
+
+    public function delete($id)
+    {
+        $this->soaCategoryService->delete((int)$id);
+
+        return $this->getSuccessfulJsonResponse();
     }
 }

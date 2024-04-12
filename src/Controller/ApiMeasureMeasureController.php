@@ -10,13 +10,16 @@ namespace Monarc\BackOffice\Controller;
 use Laminas\Mvc\Controller\AbstractRestfulController;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Service\MeasureMeasureService;
+use Monarc\Core\Validator\InputValidator\MeasureMeasure\PostMeasureMeasureDataInputValidator;
 
 class ApiMeasureMeasureController extends AbstractRestfulController
 {
     use ControllerRequestResponseHandlerTrait;
 
-    public function __construct(private MeasureMeasureService $measureMeasureService)
-    {
+    public function __construct(
+        private MeasureMeasureService $measureMeasureService,
+        private PostMeasureMeasureDataInputValidator $postMeasureMeasureDataInputValidator
+    ) {
     }
 
     public function getList()
@@ -32,10 +35,13 @@ class ApiMeasureMeasureController extends AbstractRestfulController
 
     public function create($data)
     {
+        $isBatchData = $this->isBatchData($data);
+        $this->validatePostParams($this->postMeasureMeasureDataInputValidator, $data, $isBatchData);
+
         if ($this->isBatchData($data)) {
-            $this->measureMeasureService->createList($data);
+            $this->measureMeasureService->createList($this->postMeasureMeasureDataInputValidator->getValidDataSets());
         } else {
-            $this->measureMeasureService->create($data);
+            $this->measureMeasureService->create($this->postMeasureMeasureDataInputValidator->getValidData());
         }
 
         return $this->getSuccessfulJsonResponse();
@@ -45,6 +51,11 @@ class ApiMeasureMeasureController extends AbstractRestfulController
     {
         $masterMeasureUuid = $this->params()->fromQuery('masterMeasureUuid');
         $linkedMeasureUuid = $this->params()->fromQuery('linkedMeasureUuid');
+        $this->validatePostParams(
+            $this->postMeasureMeasureDataInputValidator,
+            compact('masterMeasureUuid', 'linkedMeasureUuid')
+        );
+
         $this->measureMeasureService->delete($masterMeasureUuid, $linkedMeasureUuid);
 
         return $this->getSuccessfulJsonResponse();

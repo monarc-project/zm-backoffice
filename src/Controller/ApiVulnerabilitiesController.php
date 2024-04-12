@@ -59,16 +59,18 @@ class ApiVulnerabilitiesController extends AbstractRestfulController
         $isBatchData = $this->isBatchData($data);
         $this->validatePostParams($this->postVulnerabilityDataInputValidator, $data, $isBatchData);
 
-        $vulnerabilitiesUuids = [];
-        $validatedData = $isBatchData
-            ? $this->postVulnerabilityDataInputValidator->getValidDataSets()
-            : [$this->postVulnerabilityDataInputValidator->getValidData()];
-        foreach ($validatedData as $validatedDataRow) {
-            $vulnerabilitiesUuids[] = $this->vulnerabilityService->create($validatedDataRow)->getUuid();
+        if ($isBatchData) {
+            return $this->getSuccessfulJsonResponse([
+                'id' => $this->vulnerabilityService->createList(
+                    $this->postVulnerabilityDataInputValidator->getValidDataSets()
+                ),
+            ]);
         }
 
         return $this->getSuccessfulJsonResponse([
-            'id' => \count($vulnerabilitiesUuids) === 1 ? current($vulnerabilitiesUuids) : $vulnerabilitiesUuids,
+            'id' => $this->vulnerabilityService->create(
+                $this->postVulnerabilityDataInputValidator->getValidData()
+            )->getUuid(),
         ]);
     }
 

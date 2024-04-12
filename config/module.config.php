@@ -298,8 +298,7 @@ return [
                         'id' => '[a-f0-9-]*',
                     ],
                     'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(Controller\ApiReferentialsController::class),
+                        'controller' => Controller\ApiReferentialsController::class,
                     ],
                 ],
             ],
@@ -312,8 +311,7 @@ return [
                         'id' => '[a-f0-9-]*',
                     ],
                     'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(Controller\ApiMeasuresController::class),
+                        'controller' => Controller\ApiMeasuresController::class,
                     ],
                 ],
             ],
@@ -352,8 +350,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(Controller\ApiObjectsCategoriesController::class),
+                        'controller' => Controller\ApiObjectsCategoriesController::class,
                     ],
                 ],
             ],
@@ -446,8 +443,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(Controller\ApiSoaCategoryController::class),
+                        'controller' => Controller\ApiSoaCategoryController::class,
                     ],
                 ],
             ],

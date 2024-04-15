@@ -66,7 +66,7 @@ class ApiMeasuresController extends AbstractRestfulController
      */
     public function update($id, $data)
     {
-        $this->validatePostParams($this->updateMeasureDataInputValidator, $data);
+        $this->validatePostParams($this->updateMeasureDataInputValidator->setExcludeFilter(['uuid' => $id]), $data);
 
         $this->measureService->update($id, $this->updateMeasureDataInputValidator->getValidData());
 

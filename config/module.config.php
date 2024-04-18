@@ -402,8 +402,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(Controller\ApiRolfRisksController::class),
+                        'controller' => Controller\ApiRolfRisksController::class,
                     ],
                 ],
             ],
@@ -416,8 +415,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => PipeSpec::class,
-                        'middleware' => new PipeSpec(Controller\ApiRolfTagsController::class),
+                        'controller' => Controller\ApiRolfTagsController::class,
                     ],
                 ],
             ],

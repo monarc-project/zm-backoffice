@@ -88,7 +88,7 @@ class ApiAmvsController extends AbstractRestfulController
 
     public function patchList($data)
     {
-        $this->amvService->createLinkedAmvs($data['fromReferential'], $data['toReferential']);
+        $this->amvService->linkMeasuresToAmvs($data['fromReferential'], $data['toReferential']);
 
         return $this->getSuccessfulJsonResponse();
     }

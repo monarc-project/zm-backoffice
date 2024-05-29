@@ -324,7 +324,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiMeasureMeasureController::class,
+                        'controller' => Controller\ApiMeasuresLinksController::class,
                     ],
                 ],
             ],
@@ -827,7 +827,7 @@ return [
             Controller\ApiAnrInstancesController::class => AutowireFactory::class,
             Controller\ApiAnrInstancesConsequencesController::class => AutowireFactory::class,
             Controller\ApiMeasuresController::class => AutowireFactory::class,
-            Controller\ApiMeasureMeasureController::class => AutowireFactory::class,
+            Controller\ApiMeasuresLinksController::class => AutowireFactory::class,
             Controller\ApiModelsController::class => AutowireFactory::class,
             Controller\ApiObjectsController::class => AutowireFactory::class,
             Controller\ApiObjectsDuplicationController::class => AutowireFactory::class,

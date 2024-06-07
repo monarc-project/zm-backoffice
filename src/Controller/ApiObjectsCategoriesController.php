@@ -7,13 +7,13 @@
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
+use Laminas\Mvc\Controller\AbstractRestfulController;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\InputFormatter\ObjectCategory\ObjectCategoriesInputFormatter;
 use Monarc\Core\Service\ObjectCategoryService;
 use Monarc\Core\Validator\InputValidator\ObjectCategory\PostObjectCategoryDataInputValidator;
 
-class ApiObjectsCategoriesController extends AbstractRestfulControllerRequestHandler
+class ApiObjectsCategoriesController extends AbstractRestfulController
 {
     use ControllerRequestResponseHandlerTrait;
 
@@ -58,11 +58,7 @@ class ApiObjectsCategoriesController extends AbstractRestfulControllerRequestHan
 
         $objectCategory = $this->objectCategoryService->create($data);
 
-        return $this->getSuccessfulJsonResponse([
-            'categ' => [
-                'id' => $objectCategory->getId(),
-            ],
-        ]);
+        return $this->getSuccessfulJsonResponse(['categ' => ['id' => $objectCategory->getId()]]);
     }
 
     /**

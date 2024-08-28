@@ -941,6 +941,8 @@ return [
     'roles' => [
         // Super Admin : Gestion des droits des utilisateurs uniquement (Carnet d’adresses)
         'superadmin' => [
+            'monarc_api_user_password',
+            'monarc_api_admin_user_reset_password',
             'monarc_api_guides',
             'monarc_api_guides_items',
             'monarc_api_guides_types',
@@ -955,6 +957,7 @@ return [
         ],
         // Admin DB : Gestion des bases de connaissances (paramètres généraux)
         'dbadmin' => [
+            'monarc_api_user_password',
             'monarc_api_amvs',
             'monarc_api_assets',
             'monarc_api_anr_thresholds',
@@ -1011,6 +1014,7 @@ return [
         ],
         // Admin système : Gestion des logs et tout ce qui est non applicatif (Administration)
         'sysadmin' => [
+            'monarc_api_user_password',
             'monarc_api_admin_historicals',
             'monarc_api_admin_servers',
             'monarc_api_guides',
@@ -1027,6 +1031,7 @@ return [
         ],
         // Admin comptes : Création des comptes et authentification client
         'accadmin' => [
+            'monarc_api_admin_user_reset_password',
             'monarc_api_user_activate_2fa',
             'monarc_api_user_recovery_codes',
             'monarc_api_user_password',

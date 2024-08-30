@@ -85,7 +85,7 @@ class ApiUserTwoFAController extends AbstractRestfulController
     {
         $this->connectedUser->setTwoFactorAuthEnabled(false);
         $this->connectedUser->setSecretKey('');
-        $this->connectedUser->setRecoveryCodes(null);
+        $this->connectedUser->setRecoveryCodes([]);
         $this->userTable->save($this->connectedUser);
 
         $this->getResponse()->setStatusCode(204);

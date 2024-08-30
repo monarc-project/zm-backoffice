@@ -50,7 +50,10 @@ class ApiUserProfileController extends AbstractRestfulController
 
     public function patchList($data)
     {
-        $this->validatePostParams($this->patchProfileDataInputValidator, $data);
+        $this->validatePostParams(
+            $this->patchProfileDataInputValidator->setExcludeFilter(['email' => $this->connectedUser->getEmail()]),
+            $data
+        );
 
         $this->userProfileService->updateMyData($data);
 

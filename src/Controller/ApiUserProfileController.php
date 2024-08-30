@@ -1,36 +1,30 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2023  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2024 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
+use Laminas\Mvc\Controller\AbstractRestfulController;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Entity\UserSuperClass;
 use Monarc\Core\Service\ConnectedUserService;
 use Monarc\Core\Service\UserProfileService;
-use Laminas\Mvc\Controller\AbstractRestfulController;
 use Monarc\Core\Validator\InputValidator\Profile\PatchProfileDataInputValidator;
 
 class ApiUserProfileController extends AbstractRestfulController
 {
     use ControllerRequestResponseHandlerTrait;
 
-    private UserProfileService $userProfileService;
-
-    private PatchProfileDataInputValidator $patchProfileDataInputValidator;
-
     private UserSuperClass $connectedUser;
 
     public function __construct(
-        PatchProfileDataInputValidator $patchProfileDataInputValidator,
-        UserProfileService $userProfileService,
+        private PatchProfileDataInputValidator $patchProfileDataInputValidator,
+        private UserProfileService $userProfileService,
         ConnectedUserService $connectedUserService
     ) {
-        $this->patchProfileDataInputValidator = $patchProfileDataInputValidator;
-        $this->userProfileService = $userProfileService;
         $this->connectedUser = $connectedUserService->getConnectedUser();
     }
 

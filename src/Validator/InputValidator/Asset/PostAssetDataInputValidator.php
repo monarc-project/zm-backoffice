@@ -36,12 +36,14 @@ class PostAssetDataInputValidator extends CorePostAssetDataInputValidator
             [
                 'name' => 'models',
                 'required' => false,
+                'allow_empty' => true,
                 'filters' => [],
                 'validators' => [],
             ],
             [
                 'name' => 'follow',
                 'required' => false,
+                'allow_empty' => true,
                 'filters' => [],
                 'validators' => [],
             ],

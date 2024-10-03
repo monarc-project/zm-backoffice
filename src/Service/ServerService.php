@@ -43,7 +43,7 @@ class ServerService
         return $this->serverTable->countByParams($formattedInputParams);
     }
 
-    public function getServerData(int $id)
+    public function getServerData(int $id): array
     {
         /** @var Server $server */
         $server = $this->serverTable->findById($id);

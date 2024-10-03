@@ -32,7 +32,7 @@ class ApiAdminPasswordsController extends AbstractRestfulController
         if (!empty($data['email']) && empty($data['password'])) {
             try {
                 $this->passwordService->passwordForgotten($data['email']);
-            } catch (Exception $e) {
+            } catch (Exception) {
                 throw new Exception('Password reset error occurred. Please try again later.', 422);
             }
         }

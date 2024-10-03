@@ -87,7 +87,7 @@ class ApiDeliveriesModelsController extends AbstractController
                     $headers->clearHeaders()
                         ->addHeaderLine('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
                         ->addHeaderLine('Content-Disposition', 'attachment; filename="' . utf8_decode($name) . '"')
-                        ->addHeaderLine('Content-Length', strlen($fileContents));
+                        ->addHeaderLine('Content-Length', \strlen($fileContents));
 
                     return $this->response;
                 }

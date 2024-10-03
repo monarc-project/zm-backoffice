@@ -9,7 +9,6 @@ namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
-use Monarc\Core\Exception\Exception;
 use Monarc\Core\Entity\Anr;
 use Monarc\Core\Service\AnrInstanceMetadataFieldService;
 

@@ -61,7 +61,7 @@ class ApiUserProfileController extends AbstractRestfulController
         return $this->getSuccessfulJsonResponse();
     }
 
-    public function deleteList($id)
+    public function deleteList($data)
     {
         $this->userProfileService->deleteMe();
 

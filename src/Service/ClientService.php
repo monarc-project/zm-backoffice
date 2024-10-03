@@ -369,7 +369,7 @@ class ClientService
     /**
      * @throws JsonException|RuntimeException
      */
-    private function createJsonFileWithDataContent($path, array $data): bool
+    private function createJsonFileWithDataContent($path, array $data): void
     {
         if (!is_dir($path) && !mkdir($path, 0750, true) && !is_dir($path)) {
             throw new RuntimeException(
@@ -379,7 +379,7 @@ class ClientService
 
         $filename = $path . date('YmdHis') . '.json';
 
-        return (bool)file_put_contents($filename, json_encode($data, JSON_THROW_ON_ERROR));
+        file_put_contents($filename, json_encode($data, JSON_THROW_ON_ERROR));
     }
 
     private function getPreparedClientData(Client $client): array

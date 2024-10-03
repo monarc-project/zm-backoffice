@@ -52,7 +52,7 @@ class AnrValidationMiddleware implements MiddlewareInterface
         if ($anrId !== 0) {
             try {
                 $anr = $this->anrTable->findById($anrId);
-            } catch (EntityNotFoundException $e) {
+            } catch (EntityNotFoundException) {
                 return $this->responseFactory->createResponse(
                     StatusCodeInterface::STATUS_NOT_FOUND,
                     sprintf('Analysis with ID %s not found.', $anrId)

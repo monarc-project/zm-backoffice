@@ -1,66 +1,69 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
+use Laminas\Mvc\Controller\AbstractRestfulController;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Service\ObjectObjectService;
-use Laminas\View\Model\JsonModel;
+use Monarc\Core\Validator\InputValidator\ObjectComposition\CreateDataInputValidator;
+use Monarc\Core\Validator\InputValidator\ObjectComposition\MovePositionDataInputValidator;
 
-/**
- * TODO: extend AbstractRestfulController and remove AbstractController.
- *
- * Class ApiObjectsObjectsController
- * @package Monarc\BackOffice\Controller
- */
-class ApiObjectsObjectsController extends AbstractController
+class ApiObjectsObjectsController extends AbstractRestfulController
 {
-    public function __construct(ObjectObjectService $objectObjectService)
-    {
-        parent::__construct($objectObjectService);
+    use ControllerRequestResponseHandlerTrait;
+
+    private ObjectObjectService $objectObjectService;
+
+    private CreateDataInputValidator $createDataInputValidator;
+
+    private MovePositionDataInputValidator $movePositionDataInputValidator;
+
+    public function __construct(
+        ObjectObjectService $objectObjectService,
+        CreateDataInputValidator $createDataInputValidator,
+        MovePositionDataInputValidator $movePositionDataInputValidator
+    ) {
+        $this->objectObjectService = $objectObjectService;
+        $this->createDataInputValidator = $createDataInputValidator;
+        $this->movePositionDataInputValidator = $movePositionDataInputValidator;
     }
 
     /**
-     * @inheritdoc
+     * @param array $data
      */
-    public function get($id)
+    public function create($data)
     {
-        return $this->methodNotAllowed();
+        $this->validatePostParams($this->createDataInputValidator, $data);
+
+        $objectComposition = $this->objectObjectService->create($this->createDataInputValidator->getValidData());
+
+        return $this->getSuccessfulJsonResponse(['id' => $objectComposition->getId()]);
     }
 
     /**
-     * @inheritdoc
-     */
-    public function getList()
-    {
-        return $this->methodNotAllowed();
-    }
-
-    /**
-     * @inheritdoc
+     * @param array $data
      */
     public function update($id, $data)
     {
-        // This works a little different that regular PUT calls - here we just expect a parameter "move" with the
-        // value "up" or "down" to move the object. We can't edit any other field anyway.
-        if (isset($data['move']) && in_array($data['move'], ['up', 'down'])) {
-            /** @var ObjectObjectService $service */
-            $service = $this->getService();
-            $service->moveObject($id, $data['move']);
-        }
+        $this->validatePostParams($this->movePositionDataInputValidator, $data);
 
-        return new JsonModel(array("status" => "ok"));
+        $this->objectObjectService->shiftPositionInComposition(
+            (int)$id,
+            $this->movePositionDataInputValidator->getValidData()
+        );
+
+        return $this->getSuccessfulJsonResponse();
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function patch($id, $data)
+    public function delete($id)
     {
-        return $this->methodNotAllowed();
+        $this->objectObjectService->delete((int)$id);
+
+        return $this->getSuccessfulJsonResponse();
     }
 }

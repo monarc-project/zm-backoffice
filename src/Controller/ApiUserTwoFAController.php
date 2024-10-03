@@ -1,68 +1,42 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2022 SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
+use Monarc\Core\Entity\UserSuperClass;
 use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\Providers\Qr\EndroidQrCodeProvider;
-use Monarc\Core\Exception\Exception;
 use Monarc\Core\Service\ConnectedUserService;
-use Monarc\Core\Service\UserService;
 use Monarc\Core\Service\ConfigService;
-use Monarc\Core\Model\Table\UserTable;
+use Monarc\Core\Table\UserTable;
 use Laminas\Mvc\Controller\AbstractRestfulController;
-use Laminas\View\Model\JsonModel;
 
-/**
- * Api User TwoFA Controller
- *
- * Class ApiUserTwoFAController
- *
- * @package Monarc\FrontOffice\Controller
- */
 class ApiUserTwoFAController extends AbstractRestfulController
 {
-    /**
-     * @var ConnectedUserService 
-     */
-    private $connectedUserService;
+    use ControllerRequestResponseHandlerTrait;
 
-    /**
-     * @var UserService 
-     */
-    private $userService;
+    private UserSuperClass $connectedUser;
 
-    /**
-     * @var ConfigService 
-     */
-    private $configService;
+    private ConfigService $configService;
 
-    /**
-     * @var UserTable 
-     */
-    private $userTable;
+    private UserTable $userTable;
 
-    /**
-     * @var TwoFactorAuth 
-     */
-    private $tfa;
+    private TwoFactorAuth $twoFactorAuth;
 
     public function __construct(
         ConfigService $configService,
-        UserService $userService,
         ConnectedUserService $connectedUserService,
         UserTable $userTable
     ) {
         $this->configService = $configService;
-        $this->userService = $userService;
-        $this->connectedUserService = $connectedUserService;
+        $this->connectedUser = $connectedUserService->getConnectedUser();
         $this->userTable = $userTable;
-        $qr = new EndroidQrCodeProvider();
-        $this->tfa = new TwoFactorAuth('MONARC', 6, 30, 'sha1', $qr);
+        $this->twoFactorAuth = new TwoFactorAuth('MONARC', 6, 30, 'sha1', new EndroidQrCodeProvider());
     }
 
     /**
@@ -71,68 +45,51 @@ class ApiUserTwoFAController extends AbstractRestfulController
      */
     public function get($id)
     {
-        $connectedUser = $this->connectedUserService->getConnectedUser();
-        if ($connectedUser === null) {
-            throw new Exception('You are not authorized to do this action', 412);
-        }
-
-        // Create a new secret and generate a QRCode
+        /* Create a new secret and generate a QRCode. */
         $label = 'MONARC BO';
         if ($this->configService->getInstanceName()) {
             $label .= ' ('. $this->configService->getInstanceName() .')';
         }
-        $secret = $this->tfa->createSecret();
-        $qrcode = $this->tfa->getQRCodeImageAsDataUri($label, $secret);
+        $secret = $this->twoFactorAuth->createSecret();
+        $qrcode = $this->twoFactorAuth->getQRCodeImageAsDataUri($label, $secret);
 
-        return new JsonModel(
-            [
-            'id' => $connectedUser->getId(),
+        return $this->getPreparedJsonResponse([
+            'id' => $this->connectedUser->getId(),
             'secret' => $secret,
             'qrcode' => $qrcode,
-            ]
-        );
+        ]);
     }
 
     /**
      * Confirms the newly generated key with a token given by the user.
-     * This is just good practice.
+     *
+     * @param string[] $data
      */
     public function create($data)
     {
-        $connectedUser = $this->connectedUserService->getConnectedUser();
-        $res = $this->tfa->verifyCode($data['secretKey'], $data['verificationCode']);
+        $isValid = $this->twoFactorAuth->verifyCode($data['secretKey'], $data['verificationCode']);
 
-        if ($res) {
-            $connectedUser->setSecretKey($data['secretKey']);
-            $connectedUser->setTwoFactorAuthEnabled(true);
-            $this->userTable->saveEntity($connectedUser);
+        if ($isValid) {
+            $this->connectedUser->setSecretKey($data['secretKey']);
+            $this->connectedUser->setTwoFactorAuthEnabled(true);
+            $this->userTable->save($this->connectedUser);
         }
 
-        return new JsonModel(
-            [
-            'status' => $res,
-            ]
-        );
+        return $this->getPreparedJsonResponse(['status' => $isValid]);
     }
 
     /**
-     * Disable the Two Factor Authentication for the connected user.
-     * Also delete the secret key.
+     * Disables the 2FA for the connected user and deletes the secret key.
      */
     public function delete($id)
     {
-        $connectedUser = $this->connectedUserService->getConnectedUser();
-        if ($connectedUser === null) {
-            throw new Exception('You are not authorized to do this action', 412);
-        }
-
-        $connectedUser->setTwoFactorAuthEnabled(false);
-        $connectedUser->setSecretKey(null);
-        $connectedUser->setRecoveryCodes(null);
-        $this->userTable->saveEntity($connectedUser);
+        $this->connectedUser->setTwoFactorAuthEnabled(false);
+        $this->connectedUser->setSecretKey('');
+        $this->connectedUser->setRecoveryCodes([]);
+        $this->userTable->save($this->connectedUser);
 
         $this->getResponse()->setStatusCode(204);
 
-        return new JsonModel();
+        return $this->getPreparedJsonResponse();
     }
 }

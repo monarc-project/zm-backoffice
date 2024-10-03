@@ -1,7 +1,13 @@
 <?php
+/**
+ * @link      https://github.com/monarc-project for the canonical source repository
+ * @copyright Copyright (c) 2016-2024 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
+ * @license   MONARC is licensed under GNU Affero General Public License version 3
+ */
 
 namespace Monarc\BackOffice;
 
+use Laminas\Stdlib\ResponseInterface;
 use Monarc\Core\Service\ConnectedUserService;
 use Laminas\Console\Request;
 use Laminas\Mvc\ModuleRouteListener;
@@ -20,9 +26,9 @@ class Module
             $moduleRouteListener->attach($eventManager);
             $this->initRbac($e);
 
-            $eventManager->attach(MvcEvent::EVENT_ROUTE, array($this, 'checkRbac'), 0);
-            $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'onDispatchError'), 0);
-            $eventManager->attach(MvcEvent::EVENT_RENDER_ERROR, array($this, 'onRenderError'), 0);
+            $eventManager->attach(MvcEvent::EVENT_ROUTE, [$this, 'checkRbac'], 0);
+            $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, [$this, 'onDispatchError'], 0);
+            $eventManager->attach(MvcEvent::EVENT_RENDER_ERROR, [$this, 'onRenderError'], 0);
         }
     }
 
@@ -49,29 +55,38 @@ class Module
         }
 
         $exception = $e->getParam('exception');
-        $exceptionJson = array();
-        if ($exception) {
-            $exceptionJson = array(
+        $exceptionJson = [];
+        if ($exception !== null) {
+            $exceptionJson = [
                 'class' => get_class($exception),
                 'file' => $exception->getFile(),
                 'line' => $exception->getLine(),
                 'message' => $exception->getMessage(),
-                'stacktrace' => $exception->getTraceAsString()
-            );
+                'stacktrace' => $exception->getTraceAsString(),
+            ];
 
             if ($exception->getCode() >= 400 && $exception->getCode() < 600) {
                 $e->getResponse()->setStatusCode($exception->getCode());
             }
         }
-        $errorJson = array(
-            'message' => $exception ? $exception->getMessage() : 'An error occurred during execution; please try again later.',
+        $errorJson = [
+            'message' => $exception ? $exception->getMessage(
+            ) : 'An error occurred during execution; please try again later.',
             'error' => $error,
             'exception' => $exceptionJson,
-        );
-        if ($error == 'error-router-no-match') {
+        ];
+        if ($error === 'error-router-no-match') {
             $errorJson['message'] = 'Resource not found.';
         }
-        $model = new JsonModel(array('errors' => array($errorJson)));
+
+        if ($exception !== null && $exception->getCode() === 400) {
+            $model = new JsonModel([
+                'errors' => [json_decode($exception->getMessage(), true, 512, JSON_THROW_ON_ERROR)],
+            ]);
+        } else {
+            $model = new JsonModel(['errors' => [$errorJson]]);
+        }
+
         $e->setResult($model);
 
         return $model;
@@ -87,13 +102,12 @@ class Module
         $sm = $e->getApplication()->getServiceManager();
         $config = $sm->get('Config');
 
-        $globalPermissions = isset($config['permissions']) ? $config['permissions'] : array();
+        $globalPermissions = isset($config['permissions']) ? $config['permissions'] : [];
 
-        $rolesPermissions = isset($config['roles']) ? $config['roles'] : array();
+        $rolesPermissions = isset($config['roles']) ? $config['roles'] : [];
 
         $rbac = new Rbac();
         foreach ($rolesPermissions as $role => $permissions) {
-
             $role = new Role($role);
 
             //global permissions
@@ -124,7 +138,6 @@ class Module
 
         //setting to view
         $e->getViewModel()->rbac = $rbac;
-
     }
 
     /**
@@ -132,7 +145,7 @@ class Module
      *
      * @param MvcEvent $e
      *
-     * @return \Laminas\Stdlib\ResponseInterface
+     * @return ResponseInterface|void
      */
     public function checkRbac(MvcEvent $e)
     {
@@ -145,13 +158,14 @@ class Module
 
         $roles[] = 'guest';
         if ($connectedUser !== null) {
-            $roles = $connectedUser->getRoles();
+            $roles = $connectedUser->getRolesArray();
         }
 
         $isGranted = false;
         foreach ($roles as $role) {
             if ($e->getViewModel()->rbac->isGranted($role, $route)) {
                 $isGranted = true;
+                break;
             }
         }
 
@@ -162,5 +176,4 @@ class Module
             return $response;
         }
     }
-
 }

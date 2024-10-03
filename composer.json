@@ -41,16 +41,19 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^8.0",
         "ext-json": "*",
         "ext-pdo": "*",
+        "ext-openssl": "*",
         "doctrine/doctrine-orm-module": "^5.1",
-        "monarc/core": "^2.12.6",
+        "monarc/core": "^2.13.1",
         "robmorgan/phinx": "^0.13.4",
         "laminas/laminas-mvc": "^3.1",
         "laminas/laminas-permissions-rbac": "^3.0",
         "laminas/laminas-di": "^3.1",
-        "laminas/laminas-dependency-plugin": "^2.0"
+        "laminas/laminas-dependency-plugin": "^2.0",
+        "laminas/laminas-mvc-middleware": "^2.2",
+        "robthree/twofactorauth": "^1.8"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest"

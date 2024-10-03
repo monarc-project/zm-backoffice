@@ -1,114 +1,100 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2024 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
+
 namespace Monarc\BackOffice\Service;
 
-use Monarc\BackOffice\Model\Entity\Server;
-use Monarc\BackOffice\Model\Table\ServerTable;
-use Monarc\Core\Service\AbstractService;
+use Monarc\BackOffice\Entity\Server;
+use Monarc\BackOffice\Table\ServerTable;
+use Monarc\Core\InputFormatter\FormattedInputParams;
+use Monarc\Core\Entity\User;
+use Monarc\Core\Service\ConnectedUserService;
 
-/**
- * This class is the service that handles servers.
- *
- * @package Monarc\BackOffice\Service
- */
-class ServerService extends AbstractService
+class ServerService
 {
-    protected $serverTable;
-    protected $serverEntity;
+    private ServerTable $serverTable;
 
-    /**
-     * @inheritdoc
-     */
-    public function getFilteredCount($filter = null, $filterAnd = null)
+    private User $connectedUser;
+
+    public function __construct(ServerTable $serverTable, ConnectedUserService $connectedUserService)
     {
-        /** @var ServerTable $serverTable */
-        $serverTable = $this->get('table');
-
-        return $serverTable->countFiltered(
-            $this->parseFrontendFilter($filter, array('label', 'ip_address', 'fqdn')),
-            $filterAnd
-        );
+        $this->serverTable = $serverTable;
+        $this->connectedUser = $connectedUserService->getConnectedUser();
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getList($page = 1, $limit = 25, $order = null, $filter = null, $filterAnd = null)
+    public function getList(FormattedInputParams $formattedInputParams): array
     {
-        /** @var ServerTable $serverTable */
-        $serverTable = $this->get('table');
+        /** @var Server[] $servers */
+        $servers = $this->serverTable->findByParams($formattedInputParams);
 
-        return $serverTable->fetchAllFiltered(
-            array('id', 'label', 'ip_address', 'fqdn', 'status'),
-            $page,
-            $limit,
-            $this->parseFrontendOrder($order),
-            $this->parseFrontendFilter($filter, array('label', 'ip_address', 'fqdn')),
-            $filterAnd
-        );
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getEntity($id)
-    {
-        return $this->get('table')->get($id);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function create($data, $last = true)
-    {
-        /** @var ServerTable $serverTable */
-        $serverTable = $this->get('table');
-
-        $entity = new Server();
-        $entity->exchangeArray($data);
-
-        $entity->setCreator($this->getConnectedUser()->getFirstname() . ' ' . $this->getConnectedUser()->getLastname());
-
-        $serverTable->save($entity);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function update($id, $data)
-    {
-        /** @var ServerTable $serverTable */
-        $serverTable = $this->get('table');
-
-        /** @var Server $entity */
-        $entity = $serverTable->getEntity($id);
-
-        if ($entity !== null) {
-            $entity->exchangeArray($data);
-            $entity->setUpdater(
-                $this->getConnectedUser()->getFirstname() . ' ' . $this->getConnectedUser()->getLastname()
-            );
-
-            $serverTable->save($entity);
-
-            return true;
+        $serversData = [];
+        foreach ($servers as $server) {
+            $serversData[] = $this->getPreparedServerData($server);
         }
 
-        return false;
+        return $serversData;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function delete($id)
+    public function getFilteredCount(FormattedInputParams $formattedInputParams): int
     {
-        /** @var ServerTable $serverTable */
-        $serverTable = $this->get('table');
+        return $this->serverTable->countByParams($formattedInputParams);
+    }
 
-        $serverTable->delete($id);
+    public function getServerData(int $id): array
+    {
+        /** @var Server $server */
+        $server = $this->serverTable->findById($id);
+
+        return $this->getPreparedServerData($server);
+    }
+
+    public function create(array $data): Server
+    {
+        $server = (new Server($data))->setCreator($this->connectedUser->getEmail());
+
+        $this->serverTable->save($server);
+
+        return $server;
+    }
+
+    public function update(int $id, array $data): Server
+    {
+        /** @var Server $server */
+        $server = $this->serverTable->findById($id);
+
+        $server->setLabel($data['label'])
+            ->setIpAddress($data['ipAddress'])
+            ->setFqdn($data['fqdn'])
+            ->setUpdater($this->connectedUser->getEmail());
+
+        if (isset($data['status'])) {
+            $server->setStatus((bool)$data['status']);
+        }
+
+        $this->serverTable->save($server);
+
+        return $server;
+    }
+
+    public function delete(int $id): void
+    {
+        /** @var Server $server */
+        $server = $this->serverTable->findById($id);
+
+        $this->serverTable->remove($server);
+    }
+
+    private function getPreparedServerData(Server $server): array
+    {
+        return [
+            'id' => $server->getId(),
+            'label' => $server->getLabel(),
+            'ipAddress' => $server->getIpAddress(),
+            'status' => $server->isActive(),
+            'fqdn' => $server->getFqdn(),
+        ];
     }
 }

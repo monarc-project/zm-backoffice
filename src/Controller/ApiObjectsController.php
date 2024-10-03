@@ -1,80 +1,114 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
-use Monarc\Core\Model\Entity\MonarcObject;
+use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
+use Monarc\Core\InputFormatter\Object\GetObjectInputFormatter;
+use Monarc\Core\InputFormatter\Object\GetObjectsInputFormatter;
+use Monarc\Core\Entity\Anr;
 use Monarc\Core\Service\ObjectService;
-use Laminas\View\Model\JsonModel;
+use Monarc\Core\Validator\InputValidator\Object\PostObjectDataInputValidator;
 
-/**
- * TODO: extend AbstractRestfulController and remove AbstractController.
- *
- * Class ApiObjectsController
- * @package Monarc\BackOffice\Controller
- */
-class ApiObjectsController extends AbstractController
+class ApiObjectsController extends AbstractRestfulControllerRequestHandler
 {
-    protected $dependencies = ['category', 'asset', 'rolfTag'];
-    protected $name = 'objects';
+    use ControllerRequestResponseHandlerTrait;
 
-    public function __construct(ObjectService $objectService)
-    {
-        parent::__construct($objectService);
+    private ObjectService $objectService;
+
+    private GetObjectsInputFormatter $getObjectsInputFormatter;
+
+    private GetObjectInputFormatter $getObjectInputFormatter;
+
+    private PostObjectDataInputValidator $postObjectDataInputValidator;
+
+    public function __construct(
+        ObjectService $objectService,
+        GetObjectsInputFormatter $getObjectsInputFormatter,
+        GetObjectInputFormatter $getObjectInputFormatter,
+        PostObjectDataInputValidator $postObjectDataInputValidator
+    ) {
+        $this->objectService = $objectService;
+        $this->getObjectsInputFormatter = $getObjectsInputFormatter;
+        $this->getObjectInputFormatter = $getObjectInputFormatter;
+        $this->postObjectDataInputValidator = $postObjectDataInputValidator;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getList()
     {
-        $page = $this->params()->fromQuery('page');
-        $limit = $this->params()->fromQuery('limit');
-        $order = $this->params()->fromQuery('order');
-        $filter = $this->params()->fromQuery('filter');
-        $asset = $this->params()->fromQuery('asset');
-        $category = (int) $this->params()->fromQuery('category');
-        $model = (int) $this->params()->fromQuery('model');
-        $anr = (int) $this->params()->fromQuery('anr');
-        $lock = $this->params()->fromQuery('lock');
+        $formattedInputParams = $this->getFormattedInputParams($this->getObjectsInputFormatter);
 
-        /** @var ObjectService $service */
-        $service = $this->getService();
-        $objects =  $service->getListSpecific($page, $limit, $order, $filter, $asset, $category, $model, $anr, $lock);
-
-        return new JsonModel(array(
-            'count' => $service->getFilteredCount($filter, $asset, $category, $model, $anr),
-            $this->name => $objects
-        ));
+        return $this->getPreparedJsonResponse([
+            'count' => $this->objectService->getCount($formattedInputParams),
+            'objects' => $this->objectService->getList($formattedInputParams),
+        ]);
     }
 
     /**
-     * @inheritdoc
+     * @param string $id
      */
     public function get($id)
     {
-        /** @var ObjectService $service */
-        $service = $this->getService();
-        $mode = $this->params()->fromQuery('mode');
-        $anr = (int) $this->params()->fromQuery('anr');
-        $object = $service->getCompleteEntity($id, isset($mode) && $mode == MonarcObject::CONTEXT_ANR ? MonarcObject::CONTEXT_ANR : MonarcObject::CONTEXT_BDC, $anr);
+        $formattedInputParams = $this->getFormattedInputParams($this->getObjectInputFormatter);
 
-        if (count($this->dependencies)) {
-            $this->formatDependencies($object, $this->dependencies);
-        }
-
-        $anrs = [];
-        foreach($object['anrs'] as $key => $anr) {
-            $anrs[] = $anr->getJsonArray();
-        }
-        $object['anrs'] = $anrs;
-
-        return new JsonModel($object);
+        return $this->getPreparedJsonResponse($this->objectService->getObjectData($id, $formattedInputParams));
     }
 
+    /**
+     * @param array $data
+     */
+    public function create($data)
+    {
+        $isBatchData = $this->isBatchData($data);
+        $this->validatePostParams($this->postObjectDataInputValidator, $data, $isBatchData);
+
+        $objectsUuids = [];
+        $validatedData = $isBatchData
+            ? $this->postObjectDataInputValidator->getValidDataSets()
+            : [$this->postObjectDataInputValidator->getValidData()];
+        foreach ($validatedData as $validatedDataRow) {
+            $objectsUuids[] = $this->objectService->create($validatedDataRow)->getUuid();
+        }
+
+        return $this->getSuccessfulJsonResponse([
+            'id' => \count($objectsUuids) === 1 ? current($objectsUuids) : $objectsUuids,
+        ]);
+    }
+
+    /**
+     * @param string $id
+     * @param array $data
+     */
+    public function update($id, $data)
+    {
+        $this->validatePostParams($this->postObjectDataInputValidator, $data);
+
+        $this->objectService->update($id, $this->postObjectDataInputValidator->getValidData());
+
+        return $this->getSuccessfulJsonResponse();
+    }
+
+    /**
+     * @param string $id
+     */
+    public function delete($id)
+    {
+        $this->objectService->delete($id);
+
+        return $this->getSuccessfulJsonResponse();
+    }
+
+    public function parentsAction()
+    {
+        /** @var Anr|null $anr */
+        $anr = $this->getRequest()->getAttribute('anr');
+        $objectUuid = $this->params()->fromRoute('id');
+
+        return $this->getPreparedJsonResponse($this->objectService->getParentsInAnr($anr, $objectUuid));
+    }
 }

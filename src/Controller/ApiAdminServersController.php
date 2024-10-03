@@ -1,78 +1,97 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
+use Laminas\Mvc\Controller\AbstractRestfulController;
+use Monarc\BackOffice\InputFormatter\Server\GetServersInputFormatter;
 use Monarc\BackOffice\Service\ServerService;
-use Monarc\Core\Controller\AbstractController;
-use Laminas\View\Model\JsonModel;
+use Monarc\BackOffice\Validator\InputValidator\Server\PostServerDataInputValidator;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
+use Monarc\Core\Entity\User;
+use Monarc\Core\Entity\UserRole;
+use Monarc\Core\Service\ConnectedUserService;
 
-/**
- * TODO: extend AbstractRestfulController and remove AbstractController.
- *
- * Class ApiAdminServersController
- * @package Monarc\BackOffice\Controller
- */
-class ApiAdminServersController extends AbstractController
+class ApiAdminServersController extends AbstractRestfulController
 {
-    protected $name = 'servers';
+    use ControllerRequestResponseHandlerTrait;
 
-    public function __construct(ServerService $serverService)
-    {
-        parent::__construct($serverService);
+    private ServerService $serverService;
+
+    private GetServersInputFormatter $getServersInputFormatter;
+
+    private PostServerDataInputValidator $postServerDataInputValidator;
+
+    private User $connectedUser;
+
+    public function __construct(
+        ServerService $serverService,
+        GetServersInputFormatter $getServersInputFormatter,
+        PostServerDataInputValidator $postServerDataInputValidator,
+        ConnectedUserService $connectedUserService
+    ) {
+        $this->serverService = $serverService;
+        $this->getServersInputFormatter = $getServersInputFormatter;
+        $this->postServerDataInputValidator = $postServerDataInputValidator;
+        $this->connectedUser = $connectedUserService->getConnectedUser();
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getList()
     {
-        $page = $this->params()->fromQuery('page');
-        $limit = $this->params()->fromQuery('limit');
-        $order = $this->params()->fromQuery('order');
-        $filter = $this->params()->fromQuery('filter');
-        $status = $this->params()->fromQuery('status');
-        if ($status === null) {
-            $status = 1;
-        }
+        $formattedInputParams = $this->getFormattedInputParams($this->getServersInputFormatter);
 
-        $filterAnd = $status === 'all' ? null : ['status' => (int) $status];
-
-        $service = $this->getService();
-
-        $entities = $service->getList($page, $limit, $order, $filter, $filterAnd);
-        if (count($this->dependencies)) {
-            foreach ($entities as $key => $entity) {
-                $this->formatDependencies($entities[$key], $this->dependencies);
-            }
-        }
-
-        return new JsonModel(array(
-            'count' => $service->getFilteredCount($filter, $filterAnd),
-            $this->name => $entities
-        ));
+        return $this->getPreparedJsonResponse([
+            'count' => $this->serverService->getFilteredCount($formattedInputParams),
+            'servers' => $this->serverService->getList($formattedInputParams),
+        ]);
     }
 
-    /**
-     * @inheritdoc
-     */
+    public function get($id)
+    {
+        return $this->getPreparedJsonResponse($this->serverService->getServerData((int)$id));
+    }
+
     public function create($data)
     {
-        /** @var ServerService $service */
-        $service = $this->getService();
+        /* Only "sysadmin" can access the endpoint. */
+        if (!$this->connectedUser->hasRole(UserRole::SYS_ADMIN)) {
+            return $this->getResponse()->setStatusCode(403);
+        }
 
-        // Security: Don't allow changing role, password, status and history fields. To clean later.
-        if (isset($data['updatedAt'])) unset($data['updatedAt']);
-        if (isset($data['updater'])) unset($data['updater']);
-        if (isset($data['createdAt'])) unset($data['createdAt']);
-        if (isset($data['creator'])) unset($data['creator']);
+        $this->validatePostParams($this->postServerDataInputValidator, $data);
 
-        $service->create($data);
+        $server = $this->serverService->create($this->postServerDataInputValidator->getValidData());
 
-        return new JsonModel(array('status' => 'ok'));
+        return $this->getSuccessfulJsonResponse(['id' => $server->getId()]);
+    }
+
+    public function update($id, $data)
+    {
+        /* Only "sysadmin" can access the endpoint. */
+        if (!$this->connectedUser->hasRole(UserRole::SYS_ADMIN)) {
+            return $this->getResponse()->setStatusCode(403);
+        }
+
+        $this->validatePostParams($this->postServerDataInputValidator, $data);
+
+        $this->serverService->update((int)$id, $this->postServerDataInputValidator->getValidData());
+
+        return $this->getSuccessfulJsonResponse();
+    }
+
+    public function delete($id)
+    {
+        /* Only "sysadmin" can access the endpoint. */
+        if (!$this->connectedUser->hasRole(UserRole::SYS_ADMIN)) {
+            return $this->getResponse()->setStatusCode(403);
+        }
+
+        $this->serverService->delete((int)$id);
+
+        return $this->getSuccessfulJsonResponse();
     }
 }

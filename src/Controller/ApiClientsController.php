@@ -1,85 +1,91 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
+use Laminas\Mvc\Controller\AbstractRestfulController;
+use Monarc\BackOffice\InputFormatter\Client\GetClientsInputFormatter;
 use Monarc\BackOffice\Service\ClientService;
-use Monarc\Core\Controller\AbstractController;
-use Laminas\View\Model\JsonModel;
+use Monarc\BackOffice\Validator\InputValidator\Client\PostClientInputValidator;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 
-/**
- * TODO: extend AbstractRestfulController and remove AbstractController.
- *
- * Class ApiAClientsController
- * @package Monarc\BackOffice\Controller
- */
-class ApiClientsController extends AbstractController
+class ApiClientsController extends AbstractRestfulController
 {
-    protected $name = 'clients';
+    use ControllerRequestResponseHandlerTrait;
 
-    public function __construct(ClientService $questionService)
+    private ClientService $clientService;
+
+    private GetClientsInputFormatter $getClientsInputFormatter;
+
+    private PostClientInputValidator $clientInputValidator;
+
+    public function __construct(
+        ClientService $clientService,
+        GetClientsInputFormatter $getClientsInputFormatter,
+        PostClientInputValidator $clientInputValidator
+    ) {
+        $this->clientService = $clientService;
+        $this->getClientsInputFormatter = $getClientsInputFormatter;
+        $this->clientInputValidator = $clientInputValidator;
+    }
+
+    public function getList()
     {
-        parent::__construct($questionService);
+        $formattedInputParams = $this->getFormattedInputParams($this->getClientsInputFormatter);
+
+        return $this->getPreparedJsonResponse([
+            'count' => $this->clientService->getCount($formattedInputParams),
+            'clients' => $this->clientService->getList($formattedInputParams),
+        ]);
+    }
+
+    public function get($id)
+    {
+        return $this->getPreparedJsonResponse($this->clientService->getClientData((int)$id));
     }
 
     /**
-     * @inheritdoc
+     * @param array $data
      */
     public function create($data)
     {
-        /** @var ClientService $service */
-        $service = $this->getService();
+        $this->validatePostParams($this->clientInputValidator, $data);
 
-        // Security: Don't allow changing role, password, status and history fields. To clean later.
-        if (isset($data['id'])) {
-            unset($data['id']);
-        }
-        if (isset($data['updatedAt'])) {
-            unset($data['updatedAt']);
-        }
-        if (isset($data['updater'])) {
-            unset($data['updater']);
-        }
-        if (isset($data['createdAt'])) {
-            unset($data['createdAt']);
-        }
-        if (isset($data['creator'])) {
-            unset($data['creator']);
-        }
+        $client = $this->clientService->create($this->clientInputValidator->getValidData());
 
-        $service->create($data);
-
-        return new JsonModel(array('status' => 'ok'));
+        return $this->getSuccessfulJsonResponse(['id' => $client->getId()]);
     }
 
     /**
-     * @inheritdoc
+     * @param array $data
      */
     public function update($id, $data)
     {
-        /** @var ClientService $service */
-        $service = $this->getService();
+        $this->clientInputValidator->setCurrentClientId((int)$id);
+        $this->validatePostParams($this->clientInputValidator, $data);
 
-        // Security: Don't allow changing role, password, status and history fields. To clean later.
-        if (isset($data['updatedAt'])) {
-            unset($data['updatedAt']);
-        }
-        if (isset($data['updater'])) {
-            unset($data['updater']);
-        }
-        if (isset($data['createdAt'])) {
-            unset($data['createdAt']);
-        }
-        if (isset($data['creator'])) {
-            unset($data['creator']);
+        $this->clientService->update((int)$id, $data);
+
+        return $this->getSuccessfulJsonResponse();
+    }
+
+    public function delete($id)
+    {
+        $this->clientService->delete((int)$id);
+
+        return $this->getSuccessfulJsonResponse();
+    }
+
+    public function deleteList($data)
+    {
+        foreach ($data as $id) {
+            $this->clientService->delete((int)$id);
         }
 
-        $service->update($id, $data);
-
-        return new JsonModel(array('status' => 'ok'));
+        return $this->getSuccessfulJsonResponse();
     }
 }

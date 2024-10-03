@@ -1,83 +1,92 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2024 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
+use Laminas\Mvc\Controller\AbstractRestfulController;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
+use Monarc\Core\InputFormatter\Measure\GetMeasuresInputFormatter;
 use Monarc\Core\Service\MeasureService;
-use Laminas\View\Model\JsonModel;
+use Monarc\Core\Validator\InputValidator\Measure\PostMeasureDataInputValidator;
+use Monarc\Core\Validator\InputValidator\Measure\UpdateMeasureDataInputValidator;
 
-/**
- * TODO: extend AbstractRestfulController and remove AbstractController.
- *
- * Class ApiMeasuresController
- * @package Monarc\BackOffice\Controller
- */
-class ApiMeasuresController extends AbstractController
+class ApiMeasuresController extends AbstractRestfulController
 {
-    protected $name = 'measures';
-    protected $dependencies = ['category', 'referential', 'measuresLinked','rolfRisks'];
+    use ControllerRequestResponseHandlerTrait;
 
-    public function __construct(MeasureService $measureService)
+    public function __construct(
+        private MeasureService $measureService,
+        private GetMeasuresInputFormatter $getMeasuresInputFormatter,
+        private PostMeasureDataInputValidator $postMeasureDataInputValidator,
+        private UpdateMeasureDataInputValidator $updateMeasureDataInputValidator
+    ) {
+    }
+
+    public function getList()
     {
-        parent::__construct($measureService);
+        $formattedParams = $this->getFormattedInputParams($this->getMeasuresInputFormatter);
+
+        return $this->getPreparedJsonResponse([
+            'count' => $this->measureService->getCount($formattedParams),
+            'measures' => $this->measureService->getList($formattedParams),
+        ]);
     }
 
     /**
-     * @inheritdoc
+     * @param string $id
      */
-    public function getList()
+    public function get($id)
     {
-        $page = $this->params()->fromQuery('page');
-        $limit = $this->params()->fromQuery('limit');
-        $order = $this->params()->fromQuery('order');
-        $filter = $this->params()->fromQuery('filter');
-        $status = $this->params()->fromQuery('status');
-        $referential = $this->params()->fromQuery('referential');
-        $category = $this->params()->fromQuery('category');
-        $filterAnd = [];
-        if (is_null($status)) {
-            $status = 1;
-        }
-        $filterAnd = ($status == "all") ? null : ['status' => (int) $status] ;
-        if ($referential) {
-          $filterAnd['referential'] = (array)$referential;
-        }
-        if ($category) {
-          $filterAnd['category'] = (int)$category;
-        }
-
-        $service = $this->getService();
-
-        $entities = $service->getList($page, $limit, $order, $filter, $filterAnd);
-        if (count($this->dependencies)) {
-            foreach ($entities as $key => $entity) {
-                $this->formatDependencies($entities[$key], $this->dependencies);
-            }
-        }
-
-        return new JsonModel(array(
-           'count' => $service->getFilteredCount($filter, $filterAnd),
-            $this->name => $entities
-        ));
+        return $this->getPreparedJsonResponse($this->measureService->getMeasureData($id));
     }
 
+    public function create($data)
+    {
+        $isBatchData = $this->isBatchData($data);
+        $this->validatePostParams($this->postMeasureDataInputValidator, $data, $isBatchData);
+
+        if ($this->isBatchData($data)) {
+            return $this->getSuccessfulJsonResponse([
+                'id' => $this->measureService->createList($this->postMeasureDataInputValidator->getValidDataSets()),
+            ]);
+        }
+
+        return $this->getSuccessfulJsonResponse([
+            'id' => $this->measureService->create($this->postMeasureDataInputValidator->getValidData())->getUuid(),
+        ]);
+    }
+
+    /**
+     * @param string $id
+     * @param array $data
+     */
     public function update($id, $data)
     {
-      $data ['referential'] = $data['referential']['uuid']; //all the objects is send but we just need the uuid
-      return parent::update($id,$data);
+        $this->validatePostParams($this->updateMeasureDataInputValidator->setExcludeFilter(['uuid' => $id]), $data);
+
+        $this->measureService->update($id, $this->updateMeasureDataInputValidator->getValidData());
+
+        return $this->getSuccessfulJsonResponse();
+    }
+
+    /**
+     * @param string $id
+     */
+    public function delete($id)
+    {
+        $this->measureService->delete($id);
+
+        return $this->getSuccessfulJsonResponse();
     }
 
     public function deleteList($data)
     {
-      $new_data = [];
-      foreach ($data as $uuid) {
-        $new_data[] = ['uuid' => $uuid];
-      }
-      return parent::deleteList($new_data);
+        $this->measureService->deleteList($data);
+
+        return $this->getSuccessfulJsonResponse();
     }
 }

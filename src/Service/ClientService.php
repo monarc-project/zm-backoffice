@@ -1,119 +1,99 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2024 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Service;
 
-use Monarc\BackOffice\Model\Entity\Client;
-use Monarc\BackOffice\Model\Entity\ClientModel;
-use Monarc\BackOffice\Model\Table\ClientModelTable;
-use Monarc\BackOffice\Model\Table\ClientTable;
-use Monarc\Core\Service\AbstractService;
-use PDO;
+use Doctrine\DBAL\ParameterType;
+use JsonException;
+use Monarc\BackOffice\Entity\Client;
+use Monarc\BackOffice\Entity\ClientModel;
+use Monarc\BackOffice\Entity\Server;
+use Monarc\BackOffice\Table\ClientModelTable;
+use Monarc\BackOffice\Table\ClientTable;
+use Monarc\BackOffice\Table\ServerTable;
+use Monarc\Core\Exception\Exception;
+use Monarc\Core\InputFormatter\FormattedInputParams;
+use Monarc\Core\Entity\Model;
+use Monarc\Core\Entity\User;
+use Monarc\Core\Service\ConnectedUserService;
+use Monarc\Core\Table\ModelTable;
 use RuntimeException;
 
-/**
- * This class is the service that handles clients.
- *
- * @see     \Monarc\BackOffice\Model\Entity\Client
- * @see     \Monarc\BackOffice\Model\Table\ClientTable
- * @package Monarc\BackOffice\Service
- */
-class ClientService extends AbstractService
+class ClientService
 {
-    protected $clientTable;
-    protected $clientEntity;
-    protected $serverEntity;
-    protected $serverTable;
-    protected $clientModelEntity;
-    protected $clientModelTable;
-    protected $config;
+    private ClientTable $clientTable;
 
-    /**
-     * @inheritdoc
-     */
-    public function getFilteredCount($filter = null, $filterAnd = null)
-    {
-        /**
-         *   @var ClientTable $clientTable
-         */
-        $clientTable = $this->get('table');
+    private ServerTable $serverTable;
 
-        return $clientTable->countFiltered(
-            $this->parseFrontendFilter(
-                $filter, array('name', 'first_user_email',
-                'proxyAlias', 'createdAt')
-            )
-        );
-    }
+    private ModelTable $modelTable;
 
-    /**
-     * @inheritdoc
-     */
-    public function getList(
-        $page = 1,
-        $limit = 25,
-        $order = null,
-        $filter = null,
-        $filterAnd = null
+    private ClientModelTable $clientModelTable;
+
+    private User $connectedUser;
+
+    private array $config;
+
+    public function __construct(
+        ClientTable $clientTable,
+        ServerTable $serverTable,
+        ModelTable $modelTable,
+        ClientModelTable $clientModelTable,
+        ConnectedUserService $connectedUserService,
+        array $config
     ) {
-        /**
-         * @var ClientTable $clientTable
-         */
-        $clientTable = $this->get('table');
-
-        return $clientTable->fetchAllFiltered(
-            [
-                'id',
-                'name',
-                'first_user_email',
-                'proxyAlias',
-                'createdAt',
-                'twoFactorAuthEnforced',
-                'isBackgroundImportActive',
-            ],
-            $page,
-            $limit,
-            $this->parseFrontendOrder($order),
-            $this->parseFrontendFilter($filter, ['name', 'first_user_email', 'proxyAlias', 'createdAt'])
-        );
+        $this->clientTable = $clientTable;
+        $this->serverTable = $serverTable;
+        $this->modelTable = $modelTable;
+        $this->clientModelTable = $clientModelTable;
+        $this->connectedUser = $connectedUserService->getConnectedUser();
+        $this->config = $config;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getEntity($id)
+    public function getList(FormattedInputParams $formattedInputParams): array
     {
-        $entity = $this->get('table')->findById($id);
-        $return = $entity->getJsonArray();
-        unset($return['models']); //need to unset to avoid circular issue
-        foreach ($entity->getModels() as $model) {
-            //model_id is asked by FE
-            $return['model_id'][] = $model->getModelId();
+        /** @var Client[] $clients */
+        $clients = $this->clientTable->findByParams($formattedInputParams);
+
+        $clientsData = [];
+        foreach ($clients as $client) {
+            $clientsData[] = $this->getPreparedClientData($client);
         }
-        return $return;
+
+        return $clientsData;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function create($data, $last = true)
+    public function getCount(FormattedInputParams $formattedInputParams): int
     {
-        /**
-         * @var ClientTable $clientTable
-         */
-        $clientTable = $this->get('table');
+        return $this->clientTable->countByParams($formattedInputParams);
+    }
 
-        /**
-         * @var Client $client
-         */
-        $client = $this->get('clientEntity');
-        $client->exchangeArray($data);
+    public function getClientData(int $id): array
+    {
+        /** @var Client $client */
+        $client = $this->clientTable->findById($id);
 
-        $client->setCreator($this->getConnectedUser()->getEmail());
+        return $this->getPreparedClientData($client);
+    }
+
+    public function create(array $data): Client
+    {
+        /** @var Server $server */
+        $server = $this->serverTable->findById((int)$data['serverId']);
+
+        $client = (new Client())
+            ->setName($data['name'])
+            ->setProxyAlias($data['proxyAlias'])
+            ->setFirstUserFirstname($data['firstUserFirstname'])
+            ->setFirstUserLastname($data['firstUserLastname'])
+            ->setFirstUserEmail($data['firstUserEmail'])
+            ->setLogoId($data['logoId'] ?? 0)
+            ->setContactEmail($data['contactEmail'] ?? '')
+            ->setServer($server)
+            ->setCreator($this->connectedUser->getEmail());
 
         if (isset($data['twoFactorAuthEnforced'])) {
             $client->setTwoFactorAuthEnforced((bool)$data['twoFactorAuthEnforced']);
@@ -122,385 +102,323 @@ class ClientService extends AbstractService
             $client->setIsBackgroundImportActive((bool)$data['isBackgroundImportActive']);
         }
 
-        $clientTable->save($client, false);
-        $dataModels = null;
-
-        if (isset($data['model_id'])) {
-            $dataModels = $data['model_id'];
-            unset($data['model_id']);
+        $models = [];
+        if (!empty($data['modelId'])) {
+            /** @var Model[] $models */
+            $models = $this->modelTable->findByIds($data['modelId']);
         }
-        if ($dataModels !== null) {
-            $clientModelTable = $this->get('clientModelTable');
-            //link model
-            foreach ($dataModels as $newModel) {
-                    $clientModel = (new ClientModel())
-                        ->setClient($client)
-                        ->setModelId($newModel)
-                        ->setCreator($this->getConnectedUser()->getEmail());
-                    $clientModelTable->save($clientModel);
-                    $client->getModels()->add($clientModel);
+        foreach ($models as $model) {
+            if (!$model->isActive()) {
+                throw new Exception(sprintf(
+                    'Model ID "%s" is inactive and can\'t be linked',
+                    $model->getLabel($this->connectedUser->getLanguage())
+                ));
             }
+            $clientModel = (new ClientModel())
+                ->setClient($client)
+                ->setModelId($model->getId())
+                ->setCreator($this->connectedUser->getEmail());
+            $this->clientModelTable->save($clientModel, false);
         }
-        $clientTable->save($client);
+
+        $this->clientTable->save($client);
 
         $this->createJson($client);
+
+        return $client;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function update($id, $data)
+    public function update(int $id, array $data): Client
     {
-        //security
-        $this->filterPatchFields($data);
+        /** @var Client $client */
+        $client = $this->clientTable->findById($id);
 
-        /**
-         * @var ClientTable $clientTable
-         */
-        $clientTable = $this->get('table');
+        $client->setName($data['name'])
+            ->setUpdater($this->connectedUser->getEmail());
 
-        /**
-         * @var Client $entity
-         */
-        $entity = $clientTable->getEntity($id);
-
-        if (isset($data['proxy_alias'])) {
-            // Don't allow changing the proxy_alias once set
-            unset($data['proxy_alias']);
+        if (!empty($data['logoId'])) {
+            $client->setLogoId($data['logoId']);
+        }
+        if (!empty($data['contactEmail'])) {
+            $client->setContactEmail($data['contactEmail']);
         }
 
-        if ($entity !== null) {
-            $updateData = [];
-
-            $dataModels = null;
-            if (isset($data['model_id'])) {
-                $dataModels = $data['model_id'];
-                unset($data['model_id']);
-            }
-
-            if ($data['first_user_email'] !== $entity->get('first_user_email')
-                || $data['first_user_firstname'] !== $entity->get('first_user_firstname')
-                || $data['first_user_lastname'] !== $entity->get('first_user_lastname')
-            ) {
-                $updateData['client'] = [
-                    'oldEmail' => $entity->get('first_user_email'),
-                    'email' => $data['first_user_email'],
-                    'firstName' => $data['first_user_firstname'],
-                    'lastName' => $data['first_user_lastname'],
-                ];
-            }
-
-            if (isset($data['twoFactorAuthEnforced'])
-                && (bool)$data['twoFactorAuthEnforced'] !== $entity->isTwoFactorAuthEnforced()
-            ) {
-                $updateData['twoFactorAuthEnforced'] = (bool)$data['twoFactorAuthEnforced'];
-            }
-            if (isset($data['isBackgroundImportActive'])
-                && (bool)$data['isBackgroundImportActive'] !== $entity->isBackgroundImportActive()
-            ) {
-                $updateData['isBackgroundImportActive'] = (bool)$data['isBackgroundImportActive'];
-            }
-            if (!empty($data['resetTwoFactorAuth'])) {
-                $updateData['resetTwoFactorAuth'] = true;
-            }
-
-            $entity->exchangeArray($data, true);
-            $entity->setUpdater($this->getConnectedUser()->getEmail());
-
-            if (isset($data['twoFactorAuthEnforced'])) {
-                $entity->setTwoFactorAuthEnforced((bool)$data['twoFactorAuthEnforced']);
-            }
-            if (!isset($data['isBackgroundImportActive'])) {
-                $entity->setIsBackgroundImportActive((bool)$data['isBackgroundImportActive']);
-            }
-
-            if ($dataModels !== null) {
-                /** @var ClientModelTable $clientModelTable */
-                $clientModelTable = $this->get('clientModelTable');
-
-                $existingModelIds = [];
-                foreach ($entity->getModels() as $model) {
-                    if (\in_array($model->getModelId(), $dataModels, true)) {
-                        $existingModelIds[] = $model->getModelId();
-                    } else {
-                        $updateData['modelIdsToRemove'][] = $model->getModelId();
-                    }
-                }
-                $modelIdsToAdd = array_diff($dataModels, $existingModelIds);
-
-                //link model
-                foreach ($modelIdsToAdd as $newModelId) {
-                    $clientModel = (new ClientModel())
-                        ->setClient($entity)
-                        ->setModelId($newModelId)
-                        ->setCreator($this->getConnectedUser()->getEmail());
-                    $clientModelTable->save($clientModel, false);
-                    $entity->getModels()->add($clientModel);
-
-                    $updateData['modelIdsToAdd'][] = $newModelId;
-                }
-                if (!empty($updateData['modelIdsToRemove'])) {
-                    $clientModelTable->deleteByClientAndModelIds($entity, $updateData['modelIdsToRemove']);
-                }
-            }
-
-            $clientTable->save($entity);
-
-            if (!empty($updateData)) {
-                $this->generateUpdateClientJson($entity, $updateData);
-            }
-
-            return true;
+        $updateData = [];
+        if ($data['firstUserEmail'] !== $client->getFirstUserEmail()
+            || $data['firstUserFirstname'] !== $client->getFirstUserFirstname()
+            || $data['firstUserLastname'] !== $client->getFirstUserLastname()
+        ) {
+            $updateData['clientOldEmail'] = $client->getFirstUserEmail();
+            $client->setFirstUserEmail($data['firstUserEmail'])
+                ->setFirstUserFirstname($data['firstUserFirstname'])
+                ->setFirstUserLastname($data['firstUserLastname']);
+        }
+        if (isset($data['twoFactorAuthEnforced'])
+            && (bool)$data['twoFactorAuthEnforced'] !== $client->isTwoFactorAuthEnforced()
+        ) {
+            $client->setTwoFactorAuthEnforced((bool)$data['twoFactorAuthEnforced']);
+            $updateData['twoFactorAuthEnforced'] = $client->isTwoFactorAuthEnforced();
+        }
+        if (isset($data['isBackgroundImportActive'])
+            && (bool)$data['isBackgroundImportActive'] !== $client->isBackgroundImportActive()
+        ) {
+            $client->setIsBackgroundImportActive((bool)$data['isBackgroundImportActive']);
+            $updateData['isBackgroundImportActive'] = $client->isBackgroundImportActive();
+        }
+        if (!empty($data['resetTwoFactorAuth'])) {
+            $updateData['resetTwoFactorAuth'] = true;
         }
 
-        return false;
+        $linkedModelIds = [];
+        foreach ($client->getClientModels() as $clientModel) {
+            if (\in_array($clientModel->getModelId(), $data['modelId'], true)) {
+                $linkedModelIds[] = $clientModel->getModelId();
+            } else {
+                $client->removeClientModel($clientModel);
+                $this->clientTable->save($client, false);
+
+                $updateData['modelIdsToRemove'][] = $clientModel->getModelId();
+            }
+        }
+        $models = [];
+        if (!empty($data['modelId'])) {
+            /** @var Model[] $models */
+            $models = $this->modelTable->findByIds($data['modelId']);
+        }
+        foreach ($models as $model) {
+            if (!$model->isActive()) {
+                throw new Exception(sprintf(
+                    'Model ID "%s" is inactive and can\'t be linked',
+                    $model->getLabel($this->connectedUser->getLanguage())
+                ));
+            }
+            if (!\in_array($model->getId(), $linkedModelIds, true)) {
+                $clientModel = (new ClientModel())
+                    ->setClient($client)
+                    ->setModelId($model->getId())
+                    ->setCreator($this->connectedUser->getEmail());
+                $this->clientModelTable->save($clientModel, false);
+
+                $updateData['modelIdsToAdd'][] = $model->getId();
+            }
+        }
+
+        $this->clientTable->save($client);
+
+        if (!empty($updateData)) {
+            $this->generateUpdateClientJson($client, $updateData);
+        }
+
+        return $client;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function delete($id)
+    public function delete($id): void
     {
-        /**
-         * @var ClientTable $clientTable
-         */
-        $clientTable = $this->get('table');
+        /** @var Client $client */
+        $client = $this->clientTable->findById($id);
 
-        $entity = $clientTable->getEntity($id);
+        $this->clientTable->remove($client);
 
-        $clientTable->delete($id);
+        $this->deleteJson($client);
+    }
 
-        if ($this->deleteJson($entity)) {
-            return true;
+    public function unlinkModel(int $modelId): void
+    {
+        foreach ($this->clientModelTable->findByModelId($modelId) as $clientModel) {
+            $client = $clientModel->getClient();
+            $client->removeClientModel($clientModel);
+            $this->clientTable->save($client, false);
+            $this->clientModelTable->remove($clientModel);
         }
-
-        return false;
     }
 
     /**
-     * Created the JSON file to build the client environment
-     * on a server and stores it in data/json/.
-     * Then returns the JSON file path.
+     * Creates the JSON file to build the client environment on a server and stores it in data/json/.
      *
-     * @return string The JSON file path
+     * @throws JsonException|Exception
      */
-    private function createJson(Client $client)
+    private function createJson(Client $client): void
     {
-        $serverTable = $this->get('serverTable');
-        $server = $serverTable->getEntity($client->get('server_id'));
-
-        if ($server === null) {
-            return null;
+        if (!isset($this->config['spool_path_create'])) {
+            throw new Exception('The config option "spool_path_create" is required to generate clients creation.', 412);
         }
-        if ($server->get('fqdn') === '') {
-            return null;
+        if ($client->getServer()->getFqdn() === '') {
+            return;
         }
 
-        $pathLocal = getcwd() . "/config/autoload/local.php";
-        $localConf = array();
-        if (file_exists($pathLocal)) {
-            $localConf = require $pathLocal;
-        }
-        $salt = '';
-        if (!empty($localConf['monarc']['salt'])) {
-            $salt = $localConf['monarc']['salt'];
-        }
+        $salt = $this->config['monarc']['salt'] ?: '';
 
-        //users table database client
-        $fieldsUser = array(
+        $sqlBootstrap = '';
+
+        /* Generate an instance admin user's insert. */
+        $listValues = $this->listFieldsAndValuesAsString([
             'id' => 1,
             'status' => 1,
-            'firstname' => $client->get('first_user_firstname'),
-            'lastname' => $client->get('first_user_lastname'),
-            'email' => $client->get('first_user_email'),
+            'firstname' => $client->getFirstUserFirstname(),
+            'lastname' => $client->getFirstUserLastname(),
+            'email' => $client->getFirstUserEmail(),
             'language' => 1,
-            'password' => password_hash(
-                $salt . $client->get('first_user_email'), PASSWORD_BCRYPT
-            ),
+            'password' => password_hash($salt . $client->getFirstUserEmail(), PASSWORD_BCRYPT),
             'creator' => 'System',
-            'created_at' => date('Y-m-d H:i:s')
-        );
-
-        $sqlDumpUsers = '';
-        $listValues = $this->getListValues($fieldsUser, $serverTable);
+            'created_at' => date('Y-m-d H:i:s'),
+        ]);
         if ($listValues !== '') {
-            $sqlDumpUsers = 'INSERT INTO `users` SET ' . $listValues . ';';
+            $sqlBootstrap .= 'INSERT INTO `users` SET ' . $listValues . '; ';
         }
 
-        //users_roles table database client
-        $role1Values = [
+        /* Generate the users_roles table inserts. */
+        $listValues = $this->listFieldsAndValuesAsString([
             'user_id' => 1,
             'role' => 'superadminfo',
             'creator' => 'System',
-            'created_at' => date('Y-m-d H:i:s')
-        ];
-        $role2Values = [
+            'created_at' => date('Y-m-d H:i:s'),
+        ]);
+        if ($listValues !== '') {
+            $sqlBootstrap .= 'INSERT INTO `users_roles` SET ' . $listValues . '; ';
+        }
+        $listValues = $this->listFieldsAndValuesAsString([
             'user_id' => 1,
             'role' => 'userfo',
             'creator' => 'System',
-            'created_at' => date('Y-m-d H:i:s')
-        ];
-        $sqlDumpUsersRoles = '';
-        $listValues = $this->getListValues($role1Values, $serverTable);
+            'created_at' => date('Y-m-d H:i:s'),
+        ]);
         if ($listValues !== '') {
-            $sqlDumpUsersRoles
-                = 'INSERT INTO `users_roles` SET ' . $listValues . ';';
-        }
-        $listValues = $this->getListValues($role2Values, $serverTable);
-        if ($listValues !== '') {
-            $sqlDumpUsersRoles .=
-                ' INSERT INTO `users_roles` SET ' . $listValues . ';';
+            $sqlBootstrap = ' INSERT INTO `users_roles` SET ' . $listValues . '; ';
         }
 
-        //clients table database client
-        $fieldsClient = array(
-            'id' => $client->get('id'),
-           // 'models' => $client->getModels(),
-            'logo_id' => $client->get('logo_id'),
-            'name' => $client->get('name'),
-            'proxy_alias' => $client->get('proxy_alias'),
-            'first_user_firstname' => $client->get('first_user_firstname'),
-            'first_user_lastname' => $client->get('first_user_lastname'),
-            'first_user_email' => $client->get('first_user_email'),
+        /* Generates the clients table insert. */
+        $listValues = $this->listFieldsAndValuesAsString([
+            'id' => $client->getId(),
+            'logo_id' => $client->getLogoId(),
+            'name' => $client->getName(),
+            'proxy_alias' => $client->getProxyAlias(),
+            'first_user_firstname' => $client->getFirstUserFirstname(),
+            'first_user_lastname' => $client->getFirstUserLastname(),
+            'first_user_email' => $client->getFirstUserEmail(),
             'creator' => 'System',
-            'created_at' => date('Y-m-d H:i:s')
-        );
-
-        $sqlDumpClients = '';
-        $listValues = $this->getListValues($fieldsClient, $serverTable);
+            'created_at' => date('Y-m-d H:i:s'),
+        ]);
         if ($listValues !== '') {
-            $sqlDumpClients = 'INSERT INTO `clients` SET ' . $listValues . ';';
+            $sqlBootstrap = 'INSERT INTO `clients` SET ' . $listValues . '; ';
         }
 
-        //clients_models table DB client
-        $fieldsClientsModels = [];
-        foreach ($client->getModels() as $model) {
-            $fieldsClientsModels[] = [
-                'client_id' => $client->get('id'),
-                'model_id' => $model->getModelId(),
+        /* Generates the clients_models table inserts. */
+        foreach ($client->getClientModels() as $clientModel) {
+            $listValues = $this->listFieldsAndValuesAsString([
+                'client_id' => $client->getId(),
+                'model_id' => $clientModel->getModelId(),
                 'creator' => 'System',
                 'created_at' => date('Y-m-d H:i:s'),
-            ];
+            ]);
+            $sqlBootstrap .= 'INSERT INTO `clients_models` SET ' . $listValues . '; ';
         }
 
-        $sqlDumpClientsModels = '';
-        $listValuesModels = $this->getListValues($fieldsClientsModels, $serverTable);
-        if (\is_array($listValuesModels)) {
-            foreach ($listValuesModels as $listValuesModel) {
-                $sqlDumpClientsModels
-                    .= 'INSERT INTO `clients_models` SET ' . $listValuesModel . ';';
-            }
-        } elseif ($listValuesModels !== '') {
-            $sqlDumpClientsModels
-                = 'INSERT INTO `clients_models` SET ' . $listValuesModels . ';';
-        }
-
-        $datas = [
-            'server' => $server->get('fqdn'),
-            'proxy_alias' => $client->get('proxyAlias'),
+        $this->createJsonFileWithDataContent($this->config['spool_path_create'], [
+            'server' => $client->getServer()->getFqdn(),
+            'proxy_alias' => $client->getProxyAlias(),
             'twoFactorAuthEnforced' => $client->isTwoFactorAuthEnforced(),
             'isBackgroundImportActive' => $client->isBackgroundImportActive(),
-            'sql_bootstrap' => $sqlDumpUsers . ' ' .
-                $sqlDumpUsersRoles . ' ' .
-                $sqlDumpClients . ' ' .
-                $sqlDumpClientsModels,
-        ];
-
-        $path = $this->config['spool_path_create'];
-
-        return $this->createJsonFile($path, $datas);
+            'sql_bootstrap' => rtrim($sqlBootstrap),
+        ]);
     }
 
     /**
-     * Created the JSON file to delete the client environment
-     * on a server and stores it in data/json/.
-     * Then returns the JSON file path.
+     * Created the JSON file to delete the client environment on a server and stores it in data/json/.
      *
-     * @return string The JSON file path
+     * @throws JsonException|Exception
      */
-    private function deleteJson(Client $client)
+    private function deleteJson(Client $client): void
     {
-        $serverTable = $this->get('serverTable');
-        $server = $serverTable->getEntity($client->get('server_id'));
-
-        if ($server === null) {
-            return null;
+        if (!isset($this->config['spool_path_delete'])) {
+            throw new Exception('The config option "spool_path_delete" is required to generate clients deletion.', 412);
         }
-        if ($server->get('fqdn') === '') {
-            return null;
+        if ($client->getServer()->getFqdn() === '') {
+            return;
         }
 
-        $datas = array(
-            'server' => $server->get('fqdn'),
-            'proxy_alias' => $client->get('proxyAlias')
-        );
-
-        $path = $this->config['spool_path_delete'];
-
-        return $this->createJsonFile($path, $datas);
+        $this->createJsonFileWithDataContent($this->config['spool_path_delete'], [
+            'server' => $client->getServer()->getFqdn(),
+            'proxy_alias' => $client->getProxyAlias(),
+        ]);
     }
 
     /**
-     * Create a formatted list of data to insert.
+     * Creates a formatted list of data to insert.
      *
-     * @param array $fieldsValues The list of data to be inserted
-     * @param \Monarc\BackOffice\Model\Table\ServerTable $serverTable
-     *
-     * @return string The formatted list of data to insert
+     * @return string The formatted list of data to insert.
      */
-    private function getListValues($fieldsValues, $serverTable)
+    private function listFieldsAndValuesAsString(array $fieldsValues): string
     {
         $listValues = '';
         foreach ($fieldsValues as $key => $value) {
-            if (is_array($value)) {
-                if (!is_array($listValues)) {
-                    $listValues = [];
-                }
-                $listValues[] = $this->getListValues($value, $serverTable);
-            }
-            if (!is_array($value) && $key !== '' && $value !== null) {
+            if ($key !== '' && $value !== null) {
                 if ($listValues !== '') {
                     $listValues .= ', ';
                 }
 
-                if (is_numeric($value)) {
-                    $listValues .= "`$key` = " .
-                        $serverTable->getDb()->quote($value, PDO::PARAM_INT);
-                } else {
-                    $listValues .= "`$key` = " .
-                        $serverTable->getDb()->quote($value, PDO::PARAM_STR);
-                }
+                $listValues .= "`$key` = " . $this->clientTable->quote(
+                    $value,
+                    is_numeric($value) ? ParameterType::INTEGER : ParameterType::STRING
+                );
             }
         }
 
         return $listValues;
     }
 
-    private function createJsonFile($path, array $datas): string
+    /**
+     * @throws JsonException|RuntimeException
+     */
+    private function createJsonFileWithDataContent($path, array $data): void
     {
         if (!is_dir($path) && !mkdir($path, 0750, true) && !is_dir($path)) {
             throw new RuntimeException(
                 sprintf('Directory "%s" was not created', $path)
             );
         }
-        $now = date('YmdHis');
-        $filename = $path . $now . '.json';
-        file_put_contents($filename, json_encode($datas));
 
-        return $filename;
+        $filename = $path . date('YmdHis') . '.json';
+
+        file_put_contents($filename, json_encode($data, JSON_THROW_ON_ERROR));
+    }
+
+    private function getPreparedClientData(Client $client): array
+    {
+        $modelIds = [];
+        foreach ($client->getClientModels() as $clientModel) {
+            $modelIds[] = $clientModel->getModelId();
+        }
+
+        return [
+            'id' => $client->getId(),
+            'name' => $client->getName(),
+            'proxyAlias' => $client->getProxyAlias(),
+            'contactEmail' => $client->getContactEmail(),
+            'firstUserFirstname' => $client->getFirstUserFirstname(),
+            'firstUserLastname' => $client->getFirstUserLastname(),
+            'firstUserEmail' => $client->getFirstUserEmail(),
+            'twoFactorAuthEnforced' => $client->isTwoFactorAuthEnforced(),
+            'isBackgroundImportActive' => $client->isBackgroundImportActive(),
+            'logoId' => $client->getLogoId(),
+            'serverId' => $client->getServer()->getId(),
+            'modelId' => $modelIds,
+            'createdAt' => [
+                'date' => $client->getCreatedAt()->format('Y-m-d H:i'),
+            ],
+        ];
     }
 
     private function generateUpdateClientJson(Client $client, array $updateData)
     {
         $clientUpdateSql = '';
         /* Generate the client and user updates. */
-        if (isset($updateData['client'])) {
+        if (isset($updateData['clientOldEmail'])) {
             $clientUpdateSql = sprintf(
                 'UPDATE `clients` SET `first_user_firstname` = "%s", `first_user_lastname` = "%s", '
                 . '`first_user_email` = "%s" ORDER BY `id` LIMIT 1; ',
-                $updateData['client']['firstName'],
-                $updateData['client']['lastName'],
-                $updateData['client']['email'],
+                $client->getFirstUserFirstname(),
+                $client->getFirstUserLastname(),
+                $client->getFirstUserEmail()
             );
 
             $resetTwoFactorAuthSqlPart = '';
@@ -510,21 +428,21 @@ class ClientService extends AbstractService
             }
 
             $passwordRestSqlPart = '';
-            if ($updateData['client']['oldEmail'] !== $updateData['client']['email']) {
+            if ($updateData['clientOldEmail'] !== $client->getFirstUserEmail()) {
                 $passwordRestSqlPart = ', `password` = "' . password_hash(md5((string)time()), PASSWORD_BCRYPT) . '" ';
             }
 
             $clientUpdateSql .= sprintf(
                 'UPDATE `users` SET `firstname` = "%s", `lastname` = "%s", `email` = "%s" ' . $passwordRestSqlPart
                 . $resetTwoFactorAuthSqlPart . 'WHERE `id` = 1 OR `email` = "%s"; ',
-                $updateData['client']['firstName'],
-                $updateData['client']['lastName'],
-                $updateData['client']['email'],
-                $updateData['client']['oldEmail'],
+                $client->getFirstUserFirstname(),
+                $client->getFirstUserLastname(),
+                $client->getFirstUserEmail(),
+                $updateData['clientOldEmail']
             );
         } elseif (!empty($updateData['resetTwoFactorAuth'])) {
             $clientUpdateSql = 'UPDATE `users` SET `is_two_factor_enabled` = 0, `secret_key` = "", '
-                . '`recovery_codes` = NULL WHERE `id` = 1 OR `email` = "' . $client->get('first_user_email') . '"; ';
+                . '`recovery_codes` = NULL WHERE `id` = 1 OR `email` = "' . $client->getFirstUserEmail() . '"; ';
         }
 
         /* Generate the models_clients inserts. */
@@ -546,12 +464,9 @@ class ClientService extends AbstractService
             );
         }
 
-        $serverTable = $this->get('serverTable');
-        $server = $serverTable->getEntity($client->get('server_id'));
-
         $data = [
-            'server' => $server->get('fqdn'),
-            'proxy_alias' => $client->get('proxyAlias'),
+            'server' => $client->getServer()->getFqdn(),
+            'proxy_alias' => $client->getProxyAlias(),
         ];
 
         if ($clientUpdateSql !== '') {
@@ -566,6 +481,6 @@ class ClientService extends AbstractService
 
         $path = $this->config['spool_path_update'];
 
-        $this->createJsonFile($path, $data);
+        $this->createJsonFileWithDataContent($path, $data);
     }
 }

@@ -54,8 +54,5 @@ class AddSeveralModelsPerClient extends AbstractMigration
         //migrate the datas
         $this->execute('INSERT INTO clients_models (client_id, model_id)
             SELECT id, model_id FROM clients;');
-
-        // TO DO : uncomment the following line
-        // $this->execute('ALTER TABLE clients DROP COLUMN model_id');
     }
 }

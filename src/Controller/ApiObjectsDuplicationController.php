@@ -1,27 +1,23 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
+use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Exception\Exception;
+use Monarc\Core\Entity\Anr;
 use Monarc\Core\Service\ObjectService;
-use Laminas\Mvc\Controller\AbstractRestfulController;
-use Laminas\View\Model\JsonModel;
 
-/**
- * Api Objects Duplication Controller
- *
- * Class ApiObjectsDuplicationController
- * @package Monarc\BackOffice\Controller
- */
-class ApiObjectsDuplicationController extends AbstractRestfulController
+class ApiObjectsDuplicationController extends AbstractRestfulControllerRequestHandler
 {
-    /** @var ObjectService */
-    private $objectService;
+    use ControllerRequestResponseHandlerTrait;
+
+    private ObjectService $objectService;
 
     public function __construct(ObjectService $objectService)
     {
@@ -30,26 +26,15 @@ class ApiObjectsDuplicationController extends AbstractRestfulController
 
     public function create($data)
     {
+        /** @var array $data */
         if (!isset($data['id'])) {
-            throw new Exception('Object ID parameter is required');
+            throw new Exception('Object ID parameter is required.', 412);
         }
+        /** @var Anr|null $anr */
+        $anr = $this->getRequest()->getAttribute('anr');
 
-        $id = $this->objectService->duplicate($data);
+        $object = $this->objectService->duplicate($data, $anr);
 
-        return new JsonModel(
-            array(
-                'status' => 'ok',
-                'id' => $id,
-            )
-        );
-    }
-
-    public function deleteList($data)
-    {
-        if ($this->objectService->deleteList($data)) {
-            return new JsonModel(array('status' => 'ok'));
-        }
-
-        return new JsonModel(array('status' => 'ko'));
+        return $this->getSuccessfulJsonResponse(['id' => $object->getUuid()]);
     }
 }

@@ -1,83 +1,116 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
+use Laminas\Mvc\Controller\AbstractRestfulController;
+use Monarc\BackOffice\Validator\InputValidator\Threat\PostThreatDataInputValidator;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
+use Monarc\Core\InputFormatter\Threat\GetThreatsInputFormatter;
 use Monarc\Core\Service\ThreatService;
-use Laminas\View\Model\JsonModel;
 
-/**
- * TODO: extend AbstractRestfulController and remove AbstractController.
- *
- * Class ApiThreatsController
- * @package Monarc\BackOffice\Controller
- */
-class ApiThreatsController extends AbstractController
+class ApiThreatsController extends AbstractRestfulController
 {
-    protected $dependencies = ['theme'];
-    protected $name = 'threats';
+    use ControllerRequestResponseHandlerTrait;
 
-    public function __construct(ThreatService $threatService)
-    {
-        parent::__construct($threatService);
+    private GetThreatsInputFormatter $getThreatsInputFormatter;
+
+    private PostThreatDataInputValidator $postThreatDataInputValidator;
+
+    private ThreatService $threatService;
+
+    public function __construct(
+        GetThreatsInputFormatter $getThreatsInputFormatter,
+        PostThreatDataInputValidator $postThreatDataInputValidator,
+        ThreatService $threatService
+    ) {
+        $this->getThreatsInputFormatter = $getThreatsInputFormatter;
+        $this->postThreatDataInputValidator = $postThreatDataInputValidator;
+        $this->threatService = $threatService;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getList()
     {
-        $page = $this->params()->fromQuery('page');
-        $limit = $this->params()->fromQuery('limit');
-        $order = $this->params()->fromQuery('order');
-        $filter = $this->params()->fromQuery('filter');
-        $status = $this->params()->fromQuery('status');
-        if ($status === null) {
-            $status = 1;
-        }
-        $filterAnd = $status === 'all' ? null : ['status' => (int)$status];
+        $formattedParams = $this->getFormattedInputParams($this->getThreatsInputFormatter);
 
-        $service = $this->getService();
-
-        $threats = $service->getList($page, $limit, $order, $filter, $filterAnd);
-        foreach ($threats as $key => $threat) {
-            $threat['models']->initialize();
-            $models = $threat['models']->getSnapshot();
-            $threats[$key]['models'] = array();
-            foreach ($models as $model) {
-                $threats[$key]['models'][] = $model->getJsonArray();
-            }
-
-            $this->formatDependencies($threats[$key], $this->dependencies);
-        }
-
-        return new JsonModel(array(
-            'count' => $service->getFilteredCount($filter, $filterAnd),
-            $this->name => $threats
-        ));
+        return $this->getPreparedJsonResponse([
+            'count' => $this->threatService->getCount($formattedParams),
+            'threats' => $this->threatService->getList($formattedParams),
+        ]);
     }
 
     /**
-     * @inheritdoc
+     * @param string $id
      */
     public function get($id)
     {
-        $threat = $this->getService()->getEntity($id);
+        return $this->getPreparedJsonResponse($this->threatService->getThreatData($id));
+    }
 
-        $threat['models']->initialize();
-        $models = $threat['models']->getSnapshot();
-        $threat['models'] = array();
-        foreach ($models as $model) {
-            $threat['models'][] = $model->getJsonArray();
+    /**
+     * @param array $data
+     */
+    public function create($data)
+    {
+        $isBatchData = $this->isBatchData($data);
+        $this->validatePostParams($this->postThreatDataInputValidator, $data, $isBatchData);
+
+        if ($isBatchData) {
+            return $this->getSuccessfulJsonResponse([
+                'id' => $this->threatService->createList($this->postThreatDataInputValidator->getValidDataSets()),
+            ]);
         }
 
-        $this->formatDependencies($threat, $this->dependencies);
+        return $this->getSuccessfulJsonResponse([
+            'id' => $this->threatService->create($this->postThreatDataInputValidator->getValidData())->getUuid(),
+        ]);
+    }
 
-        return new JsonModel($threat);
+    /**
+     * @param string $id
+     * @param array $data
+     */
+    public function update($id, $data)
+    {
+        $this->validatePostParams($this->postThreatDataInputValidator->setExcludeFilter(['uuid' => $id]), $data);
+
+        $this->threatService->update($id, $this->postThreatDataInputValidator->getValidData());
+
+        return $this->getSuccessfulJsonResponse();
+    }
+
+    /**
+     * @param string $id
+     * @param array $data
+     */
+    public function patch($id, $data)
+    {
+        $this->threatService->patch($id, $data);
+
+        return $this->getSuccessfulJsonResponse();
+    }
+
+    /**
+     * @param string $id
+     */
+    public function delete($id)
+    {
+        $this->threatService->delete($id);
+
+        return $this->getSuccessfulJsonResponse();
+    }
+
+    /**
+     * @param array $data
+     */
+    public function deleteList($data)
+    {
+        $this->threatService->deleteList($data);
+
+        return $this->getSuccessfulJsonResponse();
     }
 }

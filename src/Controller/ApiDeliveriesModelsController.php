@@ -7,6 +7,7 @@
 
 namespace Monarc\BackOffice\Controller;
 
+use Laminas\Diactoros\Response;
 use Monarc\Core\Controller\AbstractController;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Exception\Exception;
@@ -75,21 +76,22 @@ class ApiDeliveriesModelsController extends AbstractController
         $entity = $this->getService()->getEntity($id);
         if (!empty($entity)) {
             $lang = $this->params()->fromQuery('lang', 1);
-            if (isset($entity['path' . $lang]) && file_exists($entity['path' . $lang])) {
-                $name = pathinfo($entity['path' . $lang], PATHINFO_BASENAME);
+            $pathModel = getenv('APP_CONF_DIR') ?: '';
+            $currentPath = $pathModel . $entity['path' . $lang];
+            if (isset($entity['path' . $lang]) && file_exists($currentPath)) {
+                $filename = pathinfo($currentPath)['basename'];
 
-                $fileContents = file_get_contents($entity['path' . $lang]);
+                $fileContents = file_get_contents($currentPath);
                 if ($fileContents !== false) {
-                    $response = $this->getResponse();
-                    $response->setContent($fileContents);
+                    $stream = fopen('php://memory', 'rb+');
+                    fwrite($stream, $fileContents);
+                    rewind($stream);
 
-                    $headers = $response->getHeaders();
-                    $headers->clearHeaders()
-                        ->addHeaderLine('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-                        ->addHeaderLine('Content-Disposition', 'attachment; filename="' . utf8_decode($name) . '"')
-                        ->addHeaderLine('Content-Length', \strlen($fileContents));
-
-                    return $this->response;
+                    return new Response($stream, 200, [
+                        'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        'Content-Length' => strlen($fileContents),
+                        'Content-Disposition' => 'attachment; filename="' . utf8_decode($filename) . '"',
+                    ]);
                 }
             }
         }

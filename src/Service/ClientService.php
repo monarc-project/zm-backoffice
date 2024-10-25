@@ -289,7 +289,6 @@ class ClientService
         /* Generates the clients table insert. */
         $listValues = $this->listFieldsAndValuesAsString([
             'id' => $client->getId(),
-            'logo_id' => $client->getLogoId(),
             'name' => $client->getName(),
             'proxy_alias' => $client->getProxyAlias(),
             'first_user_firstname' => $client->getFirstUserFirstname(),

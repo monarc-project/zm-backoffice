@@ -283,7 +283,7 @@ class ClientService
             'created_at' => date('Y-m-d H:i:s'),
         ]);
         if ($listValues !== '') {
-            $sqlBootstrap = ' INSERT INTO `users_roles` SET ' . $listValues . '; ';
+            $sqlBootstrap .= ' INSERT INTO `users_roles` SET ' . $listValues . '; ';
         }
 
         /* Generates the clients table insert. */
@@ -299,7 +299,7 @@ class ClientService
             'created_at' => date('Y-m-d H:i:s'),
         ]);
         if ($listValues !== '') {
-            $sqlBootstrap = 'INSERT INTO `clients` SET ' . $listValues . '; ';
+            $sqlBootstrap .= 'INSERT INTO `clients` SET ' . $listValues . '; ';
         }
 
         /* Generates the clients_models table inserts. */
@@ -441,7 +441,7 @@ class ClientService
                 $updateData['clientOldEmail']
             );
         } elseif (!empty($updateData['resetTwoFactorAuth'])) {
-            $clientUpdateSql = 'UPDATE `users` SET `is_two_factor_enabled` = 0, `secret_key` = "", '
+            $clientUpdateSql .= 'UPDATE `users` SET `is_two_factor_enabled` = 0, `secret_key` = "", '
                 . '`recovery_codes` = NULL WHERE `id` = 1 OR `email` = "' . $client->getFirstUserEmail() . '"; ';
         }
 

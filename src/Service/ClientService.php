@@ -384,7 +384,7 @@ class ClientService
             );
         }
 
-        $filename = $path . date('YmdHisu') . '.json';
+        $filename = $path . date('YmdHisU') . '.json';
 
         file_put_contents($filename, json_encode($data, JSON_THROW_ON_ERROR));
     }

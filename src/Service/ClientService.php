@@ -385,7 +385,7 @@ class ClientService
             );
         }
 
-        $filename = $path . date('YmdHisU') . '.json';
+        $filename = $path . date('YmdHis') . random_int(10000, 100000) . '.json';
 
         file_put_contents($filename, json_encode($data, JSON_THROW_ON_ERROR));
     }

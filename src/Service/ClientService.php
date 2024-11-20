@@ -224,9 +224,10 @@ class ClientService
 
     public function deleteList(array $data): void
     {
+        /** @var Client $client */
         foreach ($this->clientTable->findByIds($data) as $client) {
             $this->clientTable->remove($client);
-
+            $this->generateDeleteJson($client);
         }
     }
 

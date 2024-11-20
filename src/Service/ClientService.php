@@ -123,7 +123,7 @@ class ClientService
 
         $this->clientTable->save($client);
 
-        $this->createJson($client);
+        $this->generateCreationJson($client);
 
         return $client;
     }
@@ -219,7 +219,15 @@ class ClientService
 
         $this->clientTable->remove($client);
 
-        $this->deleteJson($client);
+        $this->generateDeleteJson($client);
+    }
+
+    public function deleteList(array $data): void
+    {
+        foreach ($this->clientTable->findByIds($data) as $client) {
+            $this->clientTable->remove($client);
+
+        }
     }
 
     public function unlinkModel(int $modelId): void
@@ -237,7 +245,7 @@ class ClientService
      *
      * @throws JsonException|Exception
      */
-    private function createJson(Client $client): void
+    private function generateCreationJson(Client $client): void
     {
         if (!isset($this->config['spool_path_create'])) {
             throw new Exception('The config option "spool_path_create" is required to generate clients creation.', 412);
@@ -326,7 +334,7 @@ class ClientService
      *
      * @throws JsonException|Exception
      */
-    private function deleteJson(Client $client): void
+    private function generateDeleteJson(Client $client): void
     {
         if (!isset($this->config['spool_path_delete'])) {
             throw new Exception('The config option "spool_path_delete" is required to generate clients deletion.', 412);
@@ -376,7 +384,7 @@ class ClientService
             );
         }
 
-        $filename = $path . date('YmdHis') . '.json';
+        $filename = $path . date('YmdHisu') . '.json';
 
         file_put_contents($filename, json_encode($data, JSON_THROW_ON_ERROR));
     }

@@ -82,9 +82,7 @@ class ApiClientsController extends AbstractRestfulController
 
     public function deleteList($data)
     {
-        foreach ($data as $id) {
-            $this->clientService->delete((int)$id);
-        }
+        $this->clientService->deleteList($data);
 
         return $this->getSuccessfulJsonResponse();
     }

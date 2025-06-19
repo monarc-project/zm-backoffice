@@ -139,7 +139,7 @@ class Client
     public function removeClientModel(ClientModel $clientModel): self
     {
         if ($this->clientModels->contains($clientModel)) {
-            $this->clientModels->remove($clientModel);
+            $this->clientModels->removeElement($clientModel);
         }
 
         return $this;

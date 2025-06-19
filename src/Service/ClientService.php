@@ -175,6 +175,7 @@ class ClientService
                 $linkedModelIds[] = $clientModel->getModelId();
             } else {
                 $client->removeClientModel($clientModel);
+                $this->clientModelTable->remove($clientModel, false);
                 $this->clientTable->save($client, false);
 
                 $updateData['modelIdsToRemove'][] = $clientModel->getModelId();

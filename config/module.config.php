@@ -964,6 +964,7 @@ return [
             'monarc_api_soacategory',
             'monarc_api_models',
             'monarc_api_admin_users',
+            'monarc_api_admin_user_2fa',
             'monarc_api_admin_users_roles',
             'monarc_api_user_profile',
             'monarc_api_user_activate_2fa',

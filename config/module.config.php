@@ -95,6 +95,19 @@ return [
                 ],
             ],
 
+            'monarc_api_admin_user_2fa' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/admin/users/:id/2fa',
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiAdminUserTwoFAController::class,
+                    ],
+                ],
+            ],
+
             'monarc_api_admin_users_roles' => [
                 'type' => 'segment',
                 'options' => [
@@ -813,6 +826,7 @@ return [
             Controller\ApiAdminPasswordsController::class => AutowireFactory::class,
             Controller\ApiAdminServersController::class => AutowireFactory::class,
             Controller\ApiAdminUsersController::class => AutowireFactory::class,
+            Controller\ApiAdminUserTwoFAController::class => AutowireFactory::class,
             Controller\ApiAdminUsersRolesController::class => AutowireFactory::class,
             Controller\ApiAnrLibraryController::class => AutowireFactory::class,
             Controller\ApiAnrInstancesMetadataFieldsController::class => AutowireFactory::class,

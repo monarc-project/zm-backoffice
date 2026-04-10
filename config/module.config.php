@@ -1063,5 +1063,4 @@ return [
             'monarc_api_user_profile',
         ],
     ],
-    'activeLanguages' => ['fr', 'en', 'de', 'nl'],
 ];

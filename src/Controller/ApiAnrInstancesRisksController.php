@@ -42,6 +42,10 @@ class ApiAnrInstancesRisksController extends AbstractRestfulControllerRequestHan
 
         return $this->getPreparedJsonResponse([
             'id' => $instanceRisk->getId(),
+            'riskSourceId' => $instanceRisk->getRiskSource()?->getId(),
+            'riskSourceLabel' => $instanceRisk->getRiskSource()?->getLabel() ?? '',
+            'lastReviewDate' => $instanceRisk->getLastReviewDate()?->format('Y-m-d'),
+            'reviewFrequency' => $instanceRisk->getReviewFrequency(),
             'threatRate' => $instanceRisk->getThreatRate(),
             'vulnerabilityRate' => $instanceRisk->getVulnerabilityRate(),
             'reductionAmount' => $instanceRisk->getReductionAmount(),

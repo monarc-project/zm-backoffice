@@ -53,22 +53,25 @@ class ApiReassessmentTriggersController extends AbstractRestfulController
 
     public function create($data)
     {
-        $payload = $this->prepareReassessmentTriggerPayload($data);
-        $this->validatePostParams($this->postReassessmentTriggerDataInputValidator, $payload);
+        $this->validatePostParams($this->postReassessmentTriggerDataInputValidator, $data);
 
         return $this->getSuccessfulJsonResponse($this->prepareReassessmentTriggerData(
-            $this->reassessmentTriggerService->create($payload),
+            $this->reassessmentTriggerService->create(
+                $this->postReassessmentTriggerDataInputValidator->getValidData()
+            ),
             true
         ));
     }
 
     public function update($id, $data)
     {
-        $payload = $this->prepareReassessmentTriggerPayload($data);
-        $this->validatePostParams($this->patchReassessmentTriggerDataInputValidator, $payload);
+        $this->validatePostParams($this->patchReassessmentTriggerDataInputValidator, $data);
 
         return $this->getSuccessfulJsonResponse($this->prepareReassessmentTriggerData(
-            $this->reassessmentTriggerService->update((int)$id, $payload),
+            $this->reassessmentTriggerService->update(
+                (int)$id,
+                $this->patchReassessmentTriggerDataInputValidator->getValidData()
+            ),
             true
         ));
     }
@@ -88,6 +91,9 @@ class ApiReassessmentTriggersController extends AbstractRestfulController
             'id' => $reassessmentTrigger->getId(),
             'triggerType' => $this->reassessmentTriggerService->getDisplayTriggerType($reassessmentTrigger),
             'description' => $this->reassessmentTriggerService->getDisplayDescription($reassessmentTrigger),
+            'monitoringApproach' => $this->reassessmentTriggerService->getDisplayMonitoringApproach(
+                $reassessmentTrigger
+            ),
             'isActive' => $reassessmentTrigger->isActive(),
             'position' => $reassessmentTrigger->getPosition(),
         ];
@@ -97,66 +103,10 @@ class ApiReassessmentTriggersController extends AbstractRestfulController
                 ->getTriggerTypes($reassessmentTrigger);
             $reassessmentTriggerData['descriptions'] = $this->reassessmentTriggerService
                 ->getDescriptions($reassessmentTrigger);
+            $reassessmentTriggerData['monitoringApproaches'] = $this->reassessmentTriggerService
+                ->getMonitoringApproaches($reassessmentTrigger);
         }
 
         return $reassessmentTriggerData;
-    }
-
-    private function prepareReassessmentTriggerPayload(array $sourceData): array
-    {
-        $payload = [];
-        if (array_key_exists('id', $sourceData)) {
-            $payload['id'] = (int)$sourceData['id'];
-        }
-        if (array_key_exists('triggerType', $sourceData)) {
-            $payload['triggerType'] = trim((string)$sourceData['triggerType']);
-        }
-        if (array_key_exists('description', $sourceData)) {
-            $payload['description'] = trim((string)$sourceData['description']);
-        }
-        if (array_key_exists('isActive', $sourceData)) {
-            $payload['isActive'] = $sourceData['isActive'];
-        }
-        if (array_key_exists('position', $sourceData)) {
-            $payload['position'] = $sourceData['position'];
-        }
-
-        $triggerTypes = $this->normalizeTranslations($sourceData['triggerTypes'] ?? null);
-        if ($triggerTypes !== []) {
-            $payload['triggerTypes'] = $triggerTypes;
-            if (empty($payload['triggerType'])) {
-                $payload['triggerType'] = (string)reset($triggerTypes);
-            }
-        }
-
-        $descriptions = $this->normalizeTranslations($sourceData['descriptions'] ?? null);
-        if ($descriptions !== []) {
-            $payload['descriptions'] = $descriptions;
-            if (empty($payload['description'])) {
-                $payload['description'] = (string)reset($descriptions);
-            }
-        }
-
-        return $payload;
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function normalizeTranslations(mixed $translations): array
-    {
-        if (!is_array($translations)) {
-            return [];
-        }
-
-        $normalizedTranslations = [];
-        foreach ($translations as $languageCode => $value) {
-            $trimmedValue = trim((string)$value);
-            if ($trimmedValue !== '') {
-                $normalizedTranslations[(string)$languageCode] = $trimmedValue;
-            }
-        }
-
-        return $normalizedTranslations;
     }
 }

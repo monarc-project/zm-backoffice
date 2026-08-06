@@ -85,7 +85,7 @@ class ApiReassessmentTriggersController extends AbstractRestfulController
 
     private function prepareReassessmentTriggerData(
         ReassessmentTrigger $reassessmentTrigger,
-        bool $includeTranslations
+        bool $includeTranslations = false
     ): array {
         $reassessmentTriggerData = [
             'id' => $reassessmentTrigger->getId(),

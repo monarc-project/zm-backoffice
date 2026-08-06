@@ -55,11 +55,10 @@ class ApiRiskSourcesController extends AbstractRestfulController
 
     public function create($data)
     {
-        $this->validatePostParams($this->postRiskSourceDataInputValidator, $data);
-        $riskSourceData = $this->prepareRiskSourcePayload($data, $this->postRiskSourceDataInputValidator->getValidData());
+        $this->validatePostParams($this->postRiskSourceDataInputValidator, $data);;
 
         return $this->getSuccessfulJsonResponse($this->prepareRiskSourceData(
-            $this->riskSourceService->create($riskSourceData),
+            $this->riskSourceService->create($ $this->postRiskSourceDataInputValidator->getValidData()),
             true
         ));
     }
@@ -67,10 +66,9 @@ class ApiRiskSourcesController extends AbstractRestfulController
     public function update($id, $data)
     {
         $this->validatePostParams($this->patchRiskSourceDataInputValidator, $data);
-        $riskSourceData = $this->prepareRiskSourcePayload($data, $this->patchRiskSourceDataInputValidator->getValidData());
 
         return $this->getSuccessfulJsonResponse($this->prepareRiskSourceData(
-            $this->riskSourceService->update((int)$id, $riskSourceData),
+            $this->riskSourceService->update((int)$id, $this->patchRiskSourceDataInputValidator->getValidData()),
             true
         ));
     }
@@ -100,26 +98,5 @@ class ApiRiskSourcesController extends AbstractRestfulController
         }
 
         return $riskSourceData;
-    }
-
-    private function prepareRiskSourcePayload(array $sourceData, array $validatedData): array
-    {
-        if (!isset($sourceData['labels']) || !is_array($sourceData['labels'])) {
-            return $validatedData;
-        }
-
-        $labels = [];
-        foreach ($sourceData['labels'] as $languageCode => $label) {
-            $trimmedLabel = trim((string)$label);
-            if ($trimmedLabel !== '') {
-                $labels[(string)$languageCode] = $trimmedLabel;
-            }
-        }
-
-        if ($labels !== []) {
-            $validatedData['labels'] = $labels;
-        }
-
-        return $validatedData;
     }
 }

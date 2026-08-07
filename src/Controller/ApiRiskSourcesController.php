@@ -55,10 +55,10 @@ class ApiRiskSourcesController extends AbstractRestfulController
 
     public function create($data)
     {
-        $this->validatePostParams($this->postRiskSourceDataInputValidator, $data);;
+        $this->validatePostParams($this->postRiskSourceDataInputValidator, $data);
 
         return $this->getSuccessfulJsonResponse($this->prepareRiskSourceData(
-            $this->riskSourceService->create($ $this->postRiskSourceDataInputValidator->getValidData()),
+            $this->riskSourceService->create($this->postRiskSourceDataInputValidator->getValidData()),
             true
         ));
     }

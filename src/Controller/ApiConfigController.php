@@ -22,6 +22,13 @@ class ApiConfigController extends AbstractRestfulController
 
     public function getList()
     {
-        return new JsonModel(array_merge($this->configService->getAppVersion(), $this->configService->getLanguage()));
+        return new JsonModel(array_merge(
+            $this->configService->getAppVersion(),
+            $this->configService->getLanguage(),
+            [
+                'activeLanguageCodes' => $this->configService->getActiveLanguageCodes(),
+                'uiLanguageCodes' => $this->configService->getUiLanguageCodes(),
+            ]
+        ));
     }
 }

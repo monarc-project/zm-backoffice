@@ -256,8 +256,6 @@ class ClientService
             return;
         }
 
-        $salt = $this->config['monarc']['salt'] ?: '';
-
         $sqlBootstrap = '';
 
         /* Generate an instance admin user's insert. */
@@ -268,7 +266,7 @@ class ClientService
             'lastname' => $client->getFirstUserLastname(),
             'email' => $client->getFirstUserEmail(),
             'language' => 1,
-            'password' => password_hash($salt . $client->getFirstUserEmail(), PASSWORD_BCRYPT),
+            'password' => password_hash($client->getFirstUserEmail(), PASSWORD_BCRYPT),
             'creator' => 'System',
             'created_at' => date('Y-m-d H:i:s'),
         ]);

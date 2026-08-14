@@ -316,6 +316,31 @@ return [
                 ],
             ],
 
+            'monarc_api_risk_sources' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/risk-sources[/:id]',
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiRiskSourcesController::class,
+                    ],
+                ],
+            ],
+            'monarc_api_reassessment_triggers' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/reassessment-triggers[/:id]',
+                    'constraints' => [
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ApiReassessmentTriggersController::class,
+                    ],
+                ],
+            ],
+
             'monarc_api_measures' => [
                 'type' => 'segment',
                 'options' => [
@@ -855,7 +880,9 @@ return [
             Controller\ApiOperationalRisksScalesCommentsController::class => AutowireFactory::class,
             Controller\ApiQuestionsController::class => AutowireFactory::class,
             Controller\ApiQuestionsChoicesController::class => AutowireFactory::class,
+            Controller\ApiReassessmentTriggersController::class => AutowireFactory::class,
             Controller\ApiReferentialsController::class => AutowireFactory::class,
+            Controller\ApiRiskSourcesController::class => AutowireFactory::class,
             Controller\ApiRolfRisksController::class => AutowireFactory::class,
             Controller\ApiRolfTagsController::class => AutowireFactory::class,
             Controller\ApiAnrRisksController::class => AutowireFactory::class,
@@ -988,7 +1015,9 @@ return [
             'monarc_api_anr/library',
             'monarc_api_anr/library_category',
             'monarc_api_anr/objects',
+            'monarc_api_reassessment_triggers',
             'monarc_api_referentials',
+            'monarc_api_risk_sources',
             'monarc_api_measures',
             'monarc_api_measuremeasure',
             'monarc_api_questions',

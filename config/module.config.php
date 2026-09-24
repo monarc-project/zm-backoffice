@@ -12,6 +12,7 @@ use Laminas\Mvc\Middleware\PipeSpec;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Monarc\BackOffice\Controller;
 use Monarc\BackOffice\Middleware\AnrValidationMiddleware;
+use Monarc\BackOffice\Scenario;
 use Monarc\BackOffice\Table\ClientModelTable;
 use Monarc\BackOffice\Table\ClientTable;
 use Monarc\BackOffice\Table\ServerTable;
@@ -28,10 +29,106 @@ use Monarc\Core\Table\Factory\ClientEntityManagerFactory;
 use Monarc\Core\Table\ThreatTable;
 use Monarc\Core\Table\VulnerabilityTable;
 use Monarc\Core\Validator\InputValidator\InputValidationTranslator;
+use Monarc\Core\Scenario\Feature\ScenarioCapability;
+use Monarc\Core\Scenario\Service\ScenarioAuthenticationService;
 
 return [
     'router' => [
         'routes' => [
+            'scenario_v1_catalog_event_versions' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/scenario/v1/backoffice/catalog/events/:id/versions',
+                    'constraints' => ['id' => '[0-9a-fA-F-]{36}'],
+                    'defaults' => ['controller' => Scenario\Controller\ApiScenarioCatalogController::class, 'catalogKind' => 'events', 'catalogAction' => 'versions'],
+                ],
+            ],
+            'scenario_v1_catalog_template_versions' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/scenario/v1/backoffice/catalog/templates/:id/versions',
+                    'constraints' => ['id' => '[0-9a-fA-F-]{36}'],
+                    'defaults' => ['controller' => Scenario\Controller\ApiScenarioCatalogController::class, 'catalogKind' => 'templates', 'catalogAction' => 'versions'],
+                ],
+            ],
+            'scenario_v1_catalog_event_action' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/scenario/v1/backoffice/catalog/events/:id/:catalogAction',
+                    'constraints' => ['id' => '[0-9a-fA-F-]{36}', 'catalogAction' => 'review|publish|deprecate'],
+                    'defaults' => ['controller' => Scenario\Controller\ApiScenarioCatalogController::class, 'catalogKind' => 'events'],
+                ],
+            ],
+            'scenario_v1_catalog_template_action' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/scenario/v1/backoffice/catalog/templates/:id/:catalogAction',
+                    'constraints' => ['id' => '[0-9a-fA-F-]{36}', 'catalogAction' => 'review|publish|deprecate'],
+                    'defaults' => ['controller' => Scenario\Controller\ApiScenarioCatalogController::class, 'catalogKind' => 'templates'],
+                ],
+            ],
+            'scenario_v1_catalog_events' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/scenario/v1/backoffice/catalog/events[/:id]',
+                    'constraints' => ['id' => '[0-9a-fA-F-]{36}'],
+                    'defaults' => ['controller' => Scenario\Controller\ApiScenarioCatalogController::class, 'catalogKind' => 'events'],
+                ],
+            ],
+            'scenario_v1_catalog_templates' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/api/scenario/v1/backoffice/catalog/templates[/:id]',
+                    'constraints' => ['id' => '[0-9a-fA-F-]{36}'],
+                    'defaults' => ['controller' => Scenario\Controller\ApiScenarioCatalogController::class, 'catalogKind' => 'templates'],
+                ],
+            ],
+            'scenario_v1_health' => [
+                'type' => 'literal',
+                'options' => [
+                    'route' => '/api/scenario/v1/health',
+                    'defaults' => [
+                        'controller' => Scenario\Controller\ApiScenarioHealthController::class,
+                    ],
+                ],
+            ],
+            'scenario_v1_ready' => [
+                'type' => 'literal',
+                'options' => [
+                    'route' => '/api/scenario/v1/ready',
+                    'defaults' => [
+                        'controller' => Scenario\Controller\ApiScenarioReadyController::class,
+                    ],
+                ],
+            ],
+            'scenario_v1_auth_bridge_issue' => [
+                'type' => 'literal',
+                'options' => [
+                    'route' => '/api/scenario/v1/auth/bridge/issue',
+                    'defaults' => ['controller' => Scenario\Controller\ApiScenarioAuthBridgeController::class],
+                ],
+            ],
+            'scenario_v1_auth_bridge_consume' => [
+                'type' => 'literal',
+                'options' => [
+                    'route' => '/api/scenario/v1/auth/bridge/consume',
+                    'defaults' => ['controller' => Scenario\Controller\ApiScenarioAuthBridgeController::class],
+                ],
+            ],
+            'scenario_v1_auth_session_resolve' => [
+                'type' => 'literal',
+                'options' => [
+                    'route' => '/api/scenario/v1/auth/session/resolve',
+                    'defaults' => ['controller' => Scenario\Controller\ApiScenarioAuthBridgeController::class],
+                ],
+            ],
+            'scenario_v1_auth_session_revoke' => [
+                'type' => 'literal',
+                'options' => [
+                    'route' => '/api/scenario/v1/auth/session/revoke',
+                    'defaults' => ['controller' => Scenario\Controller\ApiScenarioAuthBridgeController::class],
+                ],
+            ],
             'monarc_api_models_duplication' => [
                 'type' => 'segment',
                 'options' => [
@@ -846,6 +943,12 @@ return [
     'controllers' => [
         'invokables' => [],
         'factories' => [
+            Scenario\Controller\ApiScenarioHealthController::class => static function ($container) {
+                return new Scenario\Controller\ApiScenarioHealthController($container->get(ScenarioCapability::class));
+            },
+            Scenario\Controller\ApiScenarioReadyController::class => AutowireFactory::class,
+            Scenario\Controller\ApiScenarioAuthBridgeController::class => AutowireFactory::class,
+            Scenario\Controller\ApiScenarioCatalogController::class => AutowireFactory::class,
             Controller\ApiModelsDuplicationController::class => AutowireFactory::class,
             Controller\ApiAdminHistoricalController::class => AutowireFactory::class,
             Controller\ApiAdminPasswordsController::class => AutowireFactory::class,
@@ -907,6 +1010,34 @@ return [
             ServerTable::class => ClientEntityManagerFactory::class,
             ClientTable::class => ClientEntityManagerFactory::class,
             ClientModelTable::class => ClientEntityManagerFactory::class,
+            Scenario\Table\LegacyBridgeTable::class => ClientEntityManagerFactory::class,
+
+            Scenario\Service\LegacyBridgeService::class => static function ($container) {
+                $config = $container->get('config');
+                $scenarioConfig = $config['scenario'] ?? [];
+
+                return new Scenario\Service\LegacyBridgeService(
+                    $container->get(Scenario\Table\LegacyBridgeTable::class),
+                    $container->get(\Monarc\Core\Table\UserTokenTable::class),
+                    $container->get(ScenarioCapability::class),
+                    $scenarioConfig,
+                    (int) ($config['monarc']['ttl'] ?? 20)
+                );
+            },
+            ScenarioAuthenticationService::class => static function ($container) {
+                return new Scenario\Service\ScenarioAuthenticationService(
+                    $container->get(Scenario\Service\LegacyBridgeService::class),
+                    $container->get(ScenarioCapability::class)
+                );
+            },
+            Scenario\Service\ScenarioReadinessService::class => AutowireFactory::class,
+            Scenario\Service\CatalogAuthorizationService::class => AutowireFactory::class,
+            Scenario\Service\CatalogService::class => static function ($container) {
+                return new Scenario\Service\CatalogService(
+                    $container->get(\Monarc\Core\Scenario\Table\CatalogTable::class),
+                    $container->get(Scenario\Service\CatalogAuthorizationService::class)
+                );
+            },
 
             ServerService::class => AutowireFactory::class,
             ClientService::class => ReflectionBasedAbstractFactory::class,
@@ -979,9 +1110,31 @@ return [
         ],
     ],
 
+    'permissions' => [
+        // These routes authenticate within ApiScenarioAuthBridgeController. They
+        // bypass route-level RBAC so the legacy token or private service token
+        // can be evaluated by the bridge itself.
+        'scenario_v1_auth_bridge_issue',
+        'scenario_v1_auth_bridge_consume',
+        'scenario_v1_auth_session_resolve',
+        'scenario_v1_auth_session_revoke',
+        'scenario_v1_catalog_event_action',
+        'scenario_v1_catalog_template_action',
+        'scenario_v1_catalog_event_versions',
+        'scenario_v1_catalog_template_versions',
+        'scenario_v1_catalog_events',
+        'scenario_v1_catalog_templates',
+    ],
+
     'roles' => [
         // Super Admin : Gestion des droits des utilisateurs uniquement (Carnet d’adresses)
         'superadmin' => [
+            'scenario_v1_catalog_event_action',
+            'scenario_v1_catalog_template_action',
+            'scenario_v1_catalog_event_versions',
+            'scenario_v1_catalog_template_versions',
+            'scenario_v1_catalog_events',
+            'scenario_v1_catalog_templates',
             'monarc_api_user_password',
             'monarc_api_admin_user_reset_password',
             'monarc_api_guides',
@@ -999,6 +1152,12 @@ return [
         ],
         // Admin DB : Gestion des bases de connaissances (paramètres généraux)
         'dbadmin' => [
+            'scenario_v1_catalog_event_action',
+            'scenario_v1_catalog_template_action',
+            'scenario_v1_catalog_event_versions',
+            'scenario_v1_catalog_template_versions',
+            'scenario_v1_catalog_events',
+            'scenario_v1_catalog_templates',
             'monarc_api_user_password',
             'monarc_api_amvs',
             'monarc_api_assets',

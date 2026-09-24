@@ -56,7 +56,8 @@
         "robthree/twofactorauth": "^1.8"
     },
     "require-dev": {
-        "roave/security-advisories": "dev-latest"
+        "roave/security-advisories": "dev-latest",
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {
@@ -70,5 +71,8 @@
             "ocramius/package-versions": true,
             "laminas/laminas-dependency-plugin": true
         }
+    },
+    "scripts": {
+        "tests": "vendor/bin/phpunit"
     }
 }

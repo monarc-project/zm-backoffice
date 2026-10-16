@@ -9,17 +9,16 @@ final class CatalogRequestValidator
 {
     public static function write(array $data, string $kind): void
     {
-        if (!isset($data['provenance'], $data['translations']) || !is_string($data['provenance'])
-            || !is_array($data['translations']) || $data['translations'] === []
+        if (!isset($data['translations']) || !is_array($data['translations']) || $data['translations'] === []
         ) {
-            throw new InvalidArgumentException('Catalog provenance and translations are required.');
+            throw new InvalidArgumentException('Catalog translations are required.');
         }
 
         foreach ($data['translations'] as $locale => $translation) {
             if (!is_string($locale) || !preg_match('/^[a-z]{2,3}(-[A-Z]{2})?$/', $locale)
-                || !is_array($translation) || !isset($translation['title'], $translation['description'])
+                || !is_array($translation) || !isset($translation['title'])
                 || !is_string($translation['title']) || trim($translation['title']) === ''
-                || !is_string($translation['description'])
+                || (isset($translation['description']) && !is_string($translation['description']))
             ) {
                 throw new InvalidArgumentException('Invalid catalog translation.');
             }

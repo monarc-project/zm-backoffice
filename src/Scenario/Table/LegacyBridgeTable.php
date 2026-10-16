@@ -142,8 +142,7 @@ final class LegacyBridgeTable
     public function refreshActiveSession(
         string $session,
         string $legacyTokenExpiresAt,
-        string $scenarioCurrentAt,
-        string $legacyCurrentAt
+        string $scenarioCurrentAt
     ): ?array {
         $transactionStarted = false;
         try {
@@ -156,9 +155,9 @@ final class LegacyBridgeTable
                 . 'INNER JOIN user_tokens ut ON ut.user_id = u.id '
                 . 'AND SHA2(ut.token, 256) = ss.legacy_token_digest '
                 . 'WHERE ss.session_digest = ? AND ss.revoked_at IS NULL '
-                . 'AND ss.expires_at > ? AND ut.date_end > ? '
+                . 'AND ss.expires_at > ? '
                 . 'LIMIT 1 FOR UPDATE',
-                [hash('sha256', $session), $scenarioCurrentAt, $legacyCurrentAt]
+                [hash('sha256', $session), $scenarioCurrentAt]
             );
             if (!$row) {
                 $this->connection->rollBack();

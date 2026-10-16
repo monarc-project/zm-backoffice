@@ -3,7 +3,6 @@
 /** Synthetic, deterministic fixture only; it is not an approved production template. */
 return [
     'event' => [
-        'provenance' => 'test-fixture',
         'category' => 'service-disruption',
         'translations' => [
             'en' => ['title' => 'Generic service interruption', 'description' => 'A generic test event.'],
@@ -11,7 +10,6 @@ return [
         ],
     ],
     'template' => [
-        'provenance' => 'test-fixture',
         'translations' => [
             'en' => ['title' => 'Generic interruption scenario', 'description' => 'A generic test template.'],
             'fr' => ['title' => 'Scénario générique d’interruption', 'description' => 'Un modèle de test générique.'],

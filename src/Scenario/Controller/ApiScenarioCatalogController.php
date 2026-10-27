@@ -81,7 +81,7 @@ final class ApiScenarioCatalogController extends AbstractRestfulController
 
             return $this->getSuccessfulJsonResponse($result);
         } catch (\InvalidArgumentException $exception) {
-            $this->getResponse()->setStatusCode(400);
+            $this->getResponse()->setStatusCode(422);
             return $this->getPreparedJsonResponse([
                 'error' => [
                     'code' => 'validation_error',
@@ -117,7 +117,7 @@ final class ApiScenarioCatalogController extends AbstractRestfulController
                 $this->requestHeaders()['x-correlation-id'] ?? ''
             ));
         } catch (\InvalidArgumentException $exception) {
-            $this->getResponse()->setStatusCode(400);
+            $this->getResponse()->setStatusCode(422);
             return $this->getPreparedJsonResponse([
                 'error' => [
                     'code' => 'validation_error',

@@ -21,7 +21,10 @@ final class CatalogService
         $page = max(1, min(10000, (int) ($query['page'] ?? 1)));
         $pageSize = max(1, min(100, (int) ($query['pageSize'] ?? 25)));
         $locale = $this->locale($query['locale'] ?? null);
-        $where = 'c.lifecycle IN (\'published\', \'deprecated\')';
+        // The BackOffice library is an authoring workspace. Its default list
+        // must include draft and review versions so an interrupted workflow
+        // can be resumed after a browser refresh.
+        $where = '1 = 1';
         $parameters = [];
         if (isset($query['lifecycle'])
             && in_array(
@@ -63,6 +66,9 @@ final class CatalogService
             $translations
         );
         $resource['translation'] = $this->resolveTranslation($translations, $locale);
+        if ($kind === 'template') {
+            $resource['risk_scenario_models'] = $this->catalogTable->findTemplateRiskModels((int) $resource['id']);
+        }
 
         return $this->presentResource($resource);
     }
@@ -78,6 +84,9 @@ final class CatalogService
         foreach ($versions as $version) {
             $translations = $this->catalogTable->findTranslations($kind, (int) $version['id']);
             $version['translation'] = $this->resolveTranslation($translations, $locale);
+            if ($kind === 'template') {
+                $version['risk_scenario_models'] = $this->catalogTable->findTemplateRiskModels((int) $version['id']);
+            }
             $result[] = $this->presentResource($version);
         }
         if ($result === []) {
@@ -105,6 +114,19 @@ final class CatalogService
         }
         if ($current['lifecycle'] !== 'draft') {
             // Immutable published/reviewed content is copied into the next draft version.
+            // Model UUIDs are deliberately version-local, so a successor gets
+            // fresh identities even when its visible structure is unchanged.
+            $data = $this->successorDraftData($kind, $current, $data);
+            if ($kind === 'template' && isset($data['riskScenarioModels'])) {
+                $data['riskScenarioModels'] = array_map(
+                    static function (array $model): array {
+                        unset($model['stableUuid']);
+
+                        return $model;
+                    },
+                    $data['riskScenarioModels']
+                );
+            }
             return $this->insertDraft(
                 $kind,
                 $uuid,
@@ -148,7 +170,13 @@ final class CatalogService
         ) {
             throw new RuntimeException('Scenario catalog lifecycle conflict.');
         }
+        if ($kind === 'template' && in_array($action, ['review', 'publish'], true)) {
+            $this->catalogTable->assertTemplateEventLinksPublishable((int) $current['id']);
+        }
         $lifecycle = $action === 'review' ? 'review' : ($action === 'publish' ? 'published' : 'deprecated');
+        $warnings = $kind === 'template' && $action === 'publish'
+            ? $this->catalogTable->templateModelEventWarnings((int) $current['id'])
+            : [];
         $this->catalogTable->transactional(function () use (
             $kind,
             $current,
@@ -156,7 +184,8 @@ final class CatalogService
             $userId,
             $revision,
             $uuid,
-            $correlationId
+            $correlationId,
+            $warnings
         ): void {
             if (!$this->catalogTable->transition(
                 $kind,
@@ -167,10 +196,25 @@ final class CatalogService
             )) {
                 throw new RuntimeException('Scenario catalog lifecycle conflict.');
             }
-            $this->audit($kind, $uuid, (int) $current['version'], $lifecycle, $userId, $correlationId);
+            $this->audit(
+                $kind,
+                $uuid,
+                (int) $current['version'],
+                $lifecycle,
+                $userId,
+                $correlationId,
+                $warnings === [] ? [] : ['modelsWithoutAvailableEvents' => $warnings]
+            );
         });
 
-        return $this->read($kind, $uuid, 'en');
+        $result = $this->read($kind, $uuid, 'en');
+        if ($warnings !== []) {
+            $result['publicationWarnings'] = [
+                'modelsWithoutAvailableEvents' => $warnings,
+            ];
+        }
+
+        return $result;
     }
 
     private function insertDraft(
@@ -203,11 +247,79 @@ final class CatalogService
         $this->catalogTable->replaceTranslations($kind, $id, $translations);
     }
 
+    /** @param array<string, mixed> $current @param array<string, mixed> $data @return array<string, mixed> */
+    private function successorDraftData(string $kind, array $current, array $data): array
+    {
+        $id = (int) $current['id'];
+        $data['semanticVersion'] ??= $current['semantic_version'];
+        if ($kind === 'event') {
+            $data['category'] ??= $current['category'];
+            $data['guidance'] ??= $current['guidance'];
+        } else {
+            $data['assessmentGuidance'] ??= $current['assessment_guidance'];
+        }
+
+        $data['translations'] = array_replace(
+            $this->writeTranslations($kind, $id),
+            $data['translations']
+        );
+        $data['tags'] ??= $this->catalogTable->findTags($kind, $id);
+        $data['references'] ??= $this->catalogTable->findReferences($kind, $id);
+        $data['suggestions'] ??= $this->catalogTable->findSuggestions($kind, $id);
+        if ($kind === 'template') {
+            $data['eventRefs'] ??= $this->catalogTable->findTemplateEventReferences($id);
+            $data['riskScenarioModels'] ??= array_map(
+                static fn (array $model): array => [
+                    'title' => $model['title'],
+                    'description' => $model['description'],
+                    'eventLinks' => array_map(
+                        static fn (array $event): array => [
+                            'stableUuid' => $event['stable_uuid'],
+                            'version' => (int) $event['event_version'],
+                            'guidance' => $event['guidance'],
+                        ],
+                        $model['events']
+                    ),
+                ],
+                $this->catalogTable->findTemplateRiskModels($id)
+            );
+        }
+
+        return $data;
+    }
+
+    /** @return array<string, array<string, mixed>> */
+    private function writeTranslations(string $kind, int $id): array
+    {
+        $translations = [];
+        foreach ($this->catalogTable->findTranslations($kind, $id) as $translation) {
+            $translations[$translation['locale']] = [
+                'title' => $translation['title'],
+                'description' => $translation['description'],
+                'riskSourceGuidance' => $translation['risk_source_guidance'] ?? null,
+                'causeGuidance' => $translation['cause_guidance'] ?? null,
+                'consequenceGuidance' => $translation['consequence_guidance'] ?? null,
+                'subjectGuidance' => $translation['subject_guidance'] ?? null,
+                'controlGuidance' => $translation['control_guidance'] ?? null,
+                'monitoringGuidance' => $translation['monitoring_guidance'] ?? null,
+            ];
+        }
+
+        return $translations;
+    }
+
     /** @param array<string, mixed> $resource @return array<string, mixed> */
     private function presentListedResource(string $kind, array $resource, string $locale): array
     {
         $translations = $this->catalogTable->findTranslations($kind, (int) $resource['id']);
+        $resource['translations'] = array_map(
+            fn (array $translation): array => $this->presentTranslation($translation),
+            $translations
+        );
         $resource['translation'] = $this->resolveTranslation($translations, $locale);
+        if ($kind === 'template') {
+            $resource['risk_scenario_models'] = $this->catalogTable->findTemplateRiskModels((int) $resource['id']);
+        }
 
         return $this->presentResource($resource);
     }
@@ -227,7 +339,8 @@ final class CatalogService
         int $version,
         string $action,
         int $userId,
-        string $correlationId
+        string $correlationId,
+        array $payload = []
     ): void {
         $this->catalogTable->audit(
             $kind,
@@ -236,7 +349,7 @@ final class CatalogService
             $action,
             $userId,
             $correlationId,
-            ['action' => $action]
+            ['action' => $action] + $payload
         );
     }
 
@@ -319,6 +432,28 @@ final class CatalogService
         }
         if (isset($resource['translations'])) {
             $result['translations'] = $resource['translations'];
+        }
+        if (isset($resource['risk_scenario_models'])) {
+            $result['riskScenarioModels'] = array_map(
+                static fn (array $model): array => [
+                    'stableUuid' => $model['stable_uuid'],
+                    'title' => $model['title'],
+                    'description' => $model['description'],
+                    'position' => (int) $model['position'],
+                    'revision' => (int) $model['revision'],
+                    'eventLinks' => array_map(
+                        static fn (array $event): array => [
+                            'stableUuid' => $event['stable_uuid'],
+                            'version' => (int) $event['event_version'],
+                            'title' => $event['event_title_snapshot'],
+                            'guidance' => $event['guidance'],
+                            'position' => (int) $event['position'],
+                        ],
+                        $model['events']
+                    ),
+                ],
+                $resource['risk_scenario_models']
+            );
         }
 
         return $result;

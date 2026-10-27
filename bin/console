@@ -1,0 +1,36 @@
+#!/usr/bin/env php
+<?php declare(strict_types=1);
+
+// Composer runs this package binary through a proxy. Retain the host
+// application's root so the configured BackOffice modules are available.
+$autoloadPath = $GLOBALS['_composer_autoload_path'] ?? null;
+if (is_string($autoloadPath) && is_file($autoloadPath) && ($projectRoot = realpath(dirname($autoloadPath) . '/..'))) {
+    define('PROJECT_ROOT', rtrim($projectRoot, '/') . '/');
+} else {
+    $projectRoot = realpath(getcwd());
+    if ($projectRoot === false
+        || !is_file($projectRoot . '/vendor/autoload.php')
+        || !is_file($projectRoot . '/config/application.config.php')
+    ) {
+        throw new RuntimeException('Run this command from the MONARC BackOffice application root.');
+    }
+
+    define('PROJECT_ROOT', rtrim($projectRoot, '/') . '/');
+}
+
+require PROJECT_ROOT . 'vendor/autoload.php';
+
+use Laminas\Mvc\Application as LaminasApp;
+use Monarc\BackOffice\Command\GenerateDoctrineProxiesCommand;
+use Monarc\Core\Service\DoctrineProxyGenerator;
+use Symfony\Component\Console\Application as ConsoleApp;
+
+$appConfig = require PROJECT_ROOT . 'config/application.config.php';
+$laminasApp = LaminasApp::init($appConfig);
+
+$consoleApp = new ConsoleApp();
+$consoleApp->add(new GenerateDoctrineProxiesCommand(
+    $laminasApp->getServiceManager()->get('doctrine.entitymanager.orm_default'),
+    new DoctrineProxyGenerator()
+));
+$consoleApp->run();

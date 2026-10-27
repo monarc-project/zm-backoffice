@@ -53,6 +53,7 @@
         "laminas/laminas-di": "^3.1",
         "laminas/laminas-dependency-plugin": "^2.0",
         "laminas/laminas-mvc-middleware": "^2.2",
+        "symfony/console": "^5.0 || ^6.0",
         "robthree/twofactorauth": "^1.8"
     },
     "require-dev": {
@@ -72,6 +73,7 @@
             "laminas/laminas-dependency-plugin": true
         }
     },
+    "bin": ["bin/console"],
     "scripts": {
         "tests": "vendor/bin/phpunit"
     }

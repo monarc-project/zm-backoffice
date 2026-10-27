@@ -1038,7 +1038,6 @@ return [
                     $container->get(Scenario\Service\CatalogAuthorizationService::class)
                 );
             },
-
             ServerService::class => AutowireFactory::class,
             ClientService::class => ReflectionBasedAbstractFactory::class,
 

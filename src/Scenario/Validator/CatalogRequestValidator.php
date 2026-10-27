@@ -68,21 +68,86 @@ final class CatalogRequestValidator
             throw new InvalidArgumentException('Invalid catalog semantic version.');
         }
 
-        if ($kind !== 'template' && isset($data['eventRefs'])) {
+        if ($kind !== 'template' && (isset($data['eventRefs']) || isset($data['riskScenarioModels']))) {
             throw new InvalidArgumentException('Only templates may contain event definitions.');
         }
 
         foreach ($data['eventRefs'] ?? [] as $eventReference) {
-            if (!is_array($eventReference)
-                || !isset($eventReference['stableUuid'], $eventReference['version'])
-                || !is_string($eventReference['stableUuid'])
-                || !preg_match('/^[0-9a-fA-F-]{36}$/', $eventReference['stableUuid'])
-                || !is_int($eventReference['version'])
-                || $eventReference['version'] < 1
-            ) {
+            if (!self::isValidEventReference($eventReference)) {
                 throw new InvalidArgumentException('Invalid template event definition.');
             }
         }
+
+        if (!array_key_exists('riskScenarioModels', $data)) {
+            return;
+        }
+
+        self::validateRiskScenarioModels($data['riskScenarioModels'], $kind);
+    }
+
+    private static function validateRiskScenarioModels(mixed $models, string $kind): void
+    {
+        if ($kind !== 'template' || !is_array($models) || count($models) > 100) {
+            throw new InvalidArgumentException('Invalid template risk-scenario models.');
+        }
+
+        foreach ($models as $model) {
+            self::validateRiskScenarioModel($model);
+        }
+    }
+
+    private static function validateRiskScenarioModel(mixed $model): void
+    {
+        if (!is_array($model)
+            || !isset($model['title'], $model['eventLinks'])
+            || !is_string($model['title'])
+            || trim($model['title']) === ''
+            || mb_strlen($model['title']) > 255
+            || !is_array($model['eventLinks'])
+            || count($model['eventLinks']) > 100
+            || (isset($model['description'])
+                && (!is_string($model['description']) || mb_strlen($model['description']) > 65535))
+            || (isset($model['stableUuid']) && !self::isUuid($model['stableUuid']))
+        ) {
+            throw new InvalidArgumentException('Invalid template risk-scenario model.');
+        }
+
+        $linkedEventStableUuids = [];
+        foreach ($model['eventLinks'] as $eventLink) {
+            self::validateModelEventLink($eventLink, $linkedEventStableUuids);
+        }
+    }
+
+    /** @param array<string, true> $linkedEventStableUuids */
+    private static function validateModelEventLink(mixed $eventLink, array &$linkedEventStableUuids): void
+    {
+        if (!self::isValidEventReference($eventLink)
+            || (isset($eventLink['guidance'])
+                && (!is_string($eventLink['guidance']) || mb_strlen($eventLink['guidance']) > 65535))
+        ) {
+            throw new InvalidArgumentException('Invalid template model event definition.');
+        }
+
+        $eventStableUuid = strtolower($eventLink['stableUuid']);
+        if (isset($linkedEventStableUuids[$eventStableUuid])) {
+            throw new InvalidArgumentException('Duplicate template model event definition.');
+        }
+
+        $linkedEventStableUuids[$eventStableUuid] = true;
+    }
+
+    private static function isValidEventReference(mixed $eventReference): bool
+    {
+        return is_array($eventReference)
+            && isset($eventReference['stableUuid'], $eventReference['version'])
+            && self::isUuid($eventReference['stableUuid'])
+            && is_int($eventReference['version'])
+            && $eventReference['version'] > 0;
+    }
+
+    private static function isUuid(mixed $value): bool
+    {
+        return is_string($value) && preg_match('/^[0-9a-fA-F-]{36}$/', $value) === 1;
     }
 
     public static function revision(array $headers): int

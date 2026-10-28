@@ -90,7 +90,7 @@ class ApiDeliveriesModelsController extends AbstractController
                     return new Response($stream, 200, [
                         'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                         'Content-Length' => strlen($fileContents),
-                        'Content-Disposition' => 'attachment; filename="' . utf8_decode($filename) . '"',
+                        'Content-Disposition' => 'attachment; filename="' . mb_convert_encoding($filename, 'ISO-8859-1', 'UTF-8') . '"',
                     ]);
                 }
             }

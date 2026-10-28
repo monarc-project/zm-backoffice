@@ -41,17 +41,16 @@
         }
     ],
     "require": {
-        "php": "^8.0",
+        "php": ">=8.4.27 <8.5.0",
         "ext-json": "*",
         "ext-pdo": "*",
         "ext-openssl": "*",
-        "doctrine/doctrine-orm-module": "^5.1",
-        "monarc/core": "^2.13.1",
+        "doctrine/doctrine-orm-module": "^6.3",
+        "monarc/core": "^2.15@dev",
         "robmorgan/phinx": "^0.13.4",
         "laminas/laminas-mvc": "^3.1",
         "laminas/laminas-permissions-rbac": "^3.0",
         "laminas/laminas-di": "^3.1",
-        "laminas/laminas-dependency-plugin": "^2.0",
         "laminas/laminas-mvc-middleware": "^2.2",
         "robthree/twofactorauth": "^1.8"
     },
@@ -63,12 +62,19 @@
             "Monarc\\BackOffice\\": "/src"
         }
     },
+    "extra": {
+        "branch-alias": {
+            "dev-feature/php84": "2.15.x-dev"
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
+        "platform": {
+            "php": "8.4.27"
+        },
         "allow-plugins": {
-            "ocramius/package-versions": true,
-            "laminas/laminas-dependency-plugin": true
+            "ocramius/package-versions": true
         }
     }
 }

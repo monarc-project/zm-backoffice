@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2024 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2026 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
@@ -961,19 +961,15 @@ return [
 
     'doctrine' => [
         'driver' => [
-            'Monarc_cli_driver' => [
+            'Monarc_backoffice_driver' => [
                 'class' => AnnotationDriver::class,
                 'cache' => 'array',
-                'paths' => [
-                    __DIR__ . '/../src/Model/Entity',
-                    __DIR__ . '/../../core/src/Model/Entity',
-                    __DIR__ . '/../../backoffice/src/Entity',
-                ],
+                'paths' => [__DIR__ . '/../src/Entity'],
             ],
             'orm_cli' => [
                 'class' => MappingDriverChain::class,
                 'drivers' => [
-                    'Monarc\BackOffice\Entity' => 'Monarc_cli_driver',
+                    'Monarc\BackOffice\Entity' => 'Monarc_backoffice_driver',
                 ],
             ],
         ],

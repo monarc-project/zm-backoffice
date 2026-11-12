@@ -38,7 +38,7 @@ class ApiQuestionsController extends AbstractRestfulControllerRequestHandler
     {
         $id = $this->questionDataInputValidator->validateIds([$id])[0];
 
-        return $this->getPreparedJsonResponse($this->questionService->getEntity($id));
+        return $this->getPreparedJsonResponse($this->questionService->getQuestionData($id));
     }
 
     public function create($data)

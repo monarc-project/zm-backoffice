@@ -38,7 +38,7 @@ class ApiGuidesController extends AbstractRestfulControllerRequestHandler
     {
         $id = $this->guideDataInputValidator->validateIds([$id])[0];
 
-        return $this->getPreparedJsonResponse($this->guideService->getEntity($id));
+        return $this->getPreparedJsonResponse($this->guideService->getGuideData($id));
     }
 
     public function create($data)

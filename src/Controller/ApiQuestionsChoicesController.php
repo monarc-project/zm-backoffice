@@ -38,7 +38,7 @@ class ApiQuestionsChoicesController extends AbstractRestfulControllerRequestHand
     {
         $id = $this->questionChoiceDataInputValidator->validateIds([$id])[0];
 
-        return $this->getPreparedJsonResponse($this->questionChoiceService->getEntity($id));
+        return $this->getPreparedJsonResponse($this->questionChoiceService->getQuestionChoiceData($id));
     }
 
     public function create($data)

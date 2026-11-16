@@ -298,7 +298,8 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiGuidesTypesController::class,
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(Controller\ApiGuidesTypesController::class),
                     ],
                 ],
             ],

@@ -8,30 +8,28 @@
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Service\GuideService;
-use Laminas\Mvc\Controller\AbstractRestfulController;
-use Laminas\View\Model\JsonModel;
-use Monarc\Core\Validator\InputValidator\Guide\GuideDataInputValidator;
+use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 
-class ApiGuidesTypesController extends AbstractRestfulController
+class ApiGuidesTypesController extends AbstractRestfulControllerRequestHandler
 {
-    private GuideService $guideService;
+    use ControllerRequestResponseHandlerTrait;
 
-    public function __construct(GuideService $guideService, private GuideDataInputValidator $guideDataInputValidator)
+    public function __construct(private GuideService $guideService)
     {
-        $this->guideService = $guideService;
     }
 
     public function getList()
     {
-        return new JsonModel([
+        return $this->getPreparedJsonResponse([
             'type' => $this->guideService->getTypes(),
         ]);
     }
 
     public function deleteList($data)
     {
-        $this->guideService->deleteList($this->guideDataInputValidator->validateIds($data));
+        $this->guideService->deleteList($data);
 
-        return new JsonModel(['status' => 'ok']);
+        return $this->getSuccessfulJsonResponse();
     }
 }

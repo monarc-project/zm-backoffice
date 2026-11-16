@@ -36,49 +36,45 @@ class ApiGuidesController extends AbstractRestfulControllerRequestHandler
 
     public function get($id)
     {
-        $id = $this->guideDataInputValidator->validateIds([$id])[0];
-
-        return $this->getPreparedJsonResponse($this->guideService->getGuideData($id));
+        return $this->getPreparedJsonResponse($this->guideService->getGuideData((int)$id));
     }
 
     public function create($data)
     {
-        $validData = $this->guideDataInputValidator->validate($data);
-        $id = $this->guideService->create($validData);
+        $this->validatePostParams($this->guideDataInputValidator, $data);
+        $validData = $this->guideDataInputValidator->getValidData();
 
-        return $this->getSuccessfulJsonResponse(['id' => $id]);
+        return $this->getSuccessfulJsonResponse([
+            'id' => $this->guideService->create($validData)->getId(),
+        ]);
     }
 
     public function update($id, $data)
     {
-        $id = $this->guideDataInputValidator->validateIds([$id])[0];
-        $validData = $this->guideDataInputValidator->validate($data);
-        $this->guideService->update($id, $validData);
+        $this->validatePostParams($this->guideDataInputValidator, $data);
+        $this->guideService->update((int)$id, $this->guideDataInputValidator->getValidData());
 
         return $this->getSuccessfulJsonResponse();
     }
 
     public function patch($id, $data)
     {
-        $id = $this->guideDataInputValidator->validateIds([$id])[0];
-        $validData = $this->guideDataInputValidator->validate($data, true);
-        $this->guideService->update($id, $validData);
+        $this->validatePostParams($this->guideDataInputValidator, $data, partial: true);
+        $this->guideService->update((int)$id, $this->guideDataInputValidator->getValidData());
 
         return $this->getSuccessfulJsonResponse();
     }
 
     public function delete($id)
     {
-        $id = $this->guideDataInputValidator->validateIds([$id])[0];
-        $this->guideService->delete($id);
+        $this->guideService->delete((int)$id);
 
         return $this->getSuccessfulJsonResponse();
     }
 
     public function deleteList($data)
     {
-        $ids = $this->guideDataInputValidator->validateIds($data);
-        $this->guideService->deleteList($ids);
+        $this->guideService->deleteList($data);
 
         return $this->getSuccessfulJsonResponse();
     }

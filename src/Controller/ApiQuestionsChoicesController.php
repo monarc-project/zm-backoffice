@@ -36,57 +36,52 @@ class ApiQuestionsChoicesController extends AbstractRestfulControllerRequestHand
 
     public function get($id)
     {
-        $id = $this->questionChoiceDataInputValidator->validateIds([$id])[0];
-
-        return $this->getPreparedJsonResponse($this->questionChoiceService->getQuestionChoiceData($id));
+        return $this->getPreparedJsonResponse($this->questionChoiceService->getQuestionChoiceData((int)$id));
     }
 
     public function create($data)
     {
-        $validData = $this->questionChoiceDataInputValidator->validate($data);
-        $id = $this->questionChoiceService->create($validData);
+        $this->validatePostParams($this->questionChoiceDataInputValidator, $data);
+        $validData = $this->questionChoiceDataInputValidator->getValidData();
 
-        return $this->getSuccessfulJsonResponse(['id' => $id]);
+        return $this->getSuccessfulJsonResponse([
+            'id' => $this->questionChoiceService->create($validData)->getId(),
+        ]);
     }
 
     public function update($id, $data)
     {
-        $id = $this->questionChoiceDataInputValidator->validateIds([$id])[0];
-        $validData = $this->questionChoiceDataInputValidator->validate($data);
-        $this->questionChoiceService->update($id, $validData);
+        $this->validatePostParams($this->questionChoiceDataInputValidator, $data);
+        $this->questionChoiceService->update((int)$id, $this->questionChoiceDataInputValidator->getValidData());
 
         return $this->getSuccessfulJsonResponse();
     }
 
     public function patch($id, $data)
     {
-        $id = $this->questionChoiceDataInputValidator->validateIds([$id])[0];
-        $validData = $this->questionChoiceDataInputValidator->validate($data, true);
-        $this->questionChoiceService->update($id, $validData);
+        $this->validatePostParams($this->questionChoiceDataInputValidator, $data, partial: true);
+        $this->questionChoiceService->update((int)$id, $this->questionChoiceDataInputValidator->getValidData());
 
         return $this->getSuccessfulJsonResponse();
     }
 
     public function delete($id)
     {
-        $id = $this->questionChoiceDataInputValidator->validateIds([$id])[0];
-        $this->questionChoiceService->delete($id);
+        $this->questionChoiceService->delete((int)$id);
 
         return $this->getSuccessfulJsonResponse();
     }
 
     public function deleteList($data)
     {
-        $ids = $this->questionChoiceDataInputValidator->validateIds($data);
-        $this->questionChoiceService->deleteList($ids);
+        $this->questionChoiceService->deleteList($data);
 
         return $this->getSuccessfulJsonResponse();
     }
 
     public function replaceList($data)
     {
-        $validData = $this->questionChoiceDataInputValidator->validateReplacement($data);
-        $this->questionChoiceService->replaceList($validData);
+        $this->questionChoiceService->replaceList($data);
 
         return $this->getSuccessfulJsonResponse();
     }

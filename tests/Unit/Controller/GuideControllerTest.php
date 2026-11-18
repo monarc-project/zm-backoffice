@@ -7,7 +7,6 @@
 
 namespace MonarcBackOfficeTests\Unit\Controller;
 
-use Doctrine\ORM\EntityNotFoundException;
 use Monarc\Core\Tests\Fixture\GuideControllerAssertionsTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -60,7 +59,7 @@ class GuideControllerTest extends TestCase
         self::assertNull($module->checkRbac($event));
     }
 
-    public function testTypesEndpointPreservesItsTypeMapAndRejectsMissingDeletionIds(): void
+    public function testTypesEndpointPreservesItsTypeMapAndRejectsWritesWithoutDeletingGuides(): void
     {
         $controller = new \Monarc\BackOffice\Controller\ApiGuidesTypesController(
             $this->env->guideService
@@ -74,14 +73,18 @@ class GuideControllerTest extends TestCase
         $id = $this->env->guideService->create(
             $this->env->guideValidator->validate(['type' => 1, 'isWithItems' => 1])
         )->getId();
-        try {
-            $this->request($controller, 'DELETE', data: [$id, 999]);
-            self::fail('Missing identifier must fail deletion');
-        } catch (EntityNotFoundException $error) {
-            self::assertStringContainsString('was not found', $error->getMessage());
+        foreach (['POST', 'PUT', 'PATCH', 'DELETE'] as $method) {
+            foreach ([null, $id] as $resourceId) {
+                $request = (new \Laminas\Diactoros\ServerRequest([], [], '/api/guides-types', $method))
+                    ->withAttribute(
+                        \Laminas\Router\RouteMatch::class,
+                        new \Laminas\Router\RouteMatch($resourceId === null ? [] : ['id' => $resourceId])
+                    )
+                    ->withHeader('Content-Type', 'application/json')
+                    ->withBody((new \Laminas\Diactoros\StreamFactory())->createStream(json_encode([$id])));
+                self::assertSame(405, $controller->handle($request)->getStatusCode());
+            }
         }
         self::assertSame(1, $this->env->guides->countAll());
-        self::assertSame('ok', $this->request($controller, 'DELETE', data: [$id])['status']);
-        self::assertSame(0, $this->env->guides->countAll());
     }
 }

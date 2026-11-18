@@ -25,11 +25,4 @@ class ApiGuidesTypesController extends AbstractRestfulControllerRequestHandler
             'type' => $this->guideService->getTypes(),
         ]);
     }
-
-    public function deleteList($data)
-    {
-        $this->guideService->deleteList($data);
-
-        return $this->getSuccessfulJsonResponse();
-    }
 }

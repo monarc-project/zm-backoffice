@@ -7,7 +7,9 @@
 
 namespace MonarcBackOfficeTests\Unit;
 
+use Doctrine\ORM\Tools\SchemaValidator;
 use Laminas\Stdlib\ArrayUtils;
+use Monarc\Core\Tests\Fixture\MappingTestEnvironment;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -25,6 +27,42 @@ class MappingConfigurationTest extends TestCase
         foreach ($drivers as $driver) {
             foreach ($driver['paths'] ?? [] as $path) {
                 self::assertDirectoryExists($path);
+            }
+        }
+    }
+    public function testEveryDeclaredChainHasStrictMappingsAndPreservesItsPhysicalSchema(): void
+    {
+        require_once dirname(__DIR__, 3) . '/zm-core/tests/Fixture/MappingTestEnvironment.php';
+        $core = require dirname(__DIR__, 3) . '/zm-core/config/module.config.php';
+        $office = require dirname(__DIR__, 2) . '/config/module.config.php';
+        $drivers = ArrayUtils::merge($core['doctrine']['driver'], $office['doctrine']['driver']);
+        $applicationDir = getenv('MONARC_TEST_APP_DIR') ?: dirname(__DIR__, 3) . '/MonarcAppBO';
+        $baseline = json_decode(
+            file_get_contents($applicationDir . '/tests/Fixture/php84-08-mapping-fingerprints.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR
+        );
+        // orm_cli_fo is a reusable driver chain, not an independently configured entity manager.
+        foreach (['orm_default', 'orm_cli', 'orm_cli_fo'] as $name) {
+            $manager = MappingTestEnvironment::create($drivers, $name);
+            try {
+                $metadata = $manager->getMetadataFactory()->getAllMetadata();
+                self::assertCount($baseline[$name]['metadataCount'], $metadata);
+                self::assertSame([], (new SchemaValidator($manager))->validateMapping(), $name);
+                self::assertSame(
+                    $baseline[$name]['physicalMappingSha256'],
+                    MappingTestEnvironment::physicalMappingFingerprint($metadata),
+                    $name . ' physical schema, ownership and persistence options'
+                );
+                foreach ($metadata as $mapping) {
+                    self::assertFalse(method_exists($mapping->name, 'getDbAdapter'));
+                    self::assertFalse(method_exists($mapping->name, '__get'));
+                    self::assertFalse(method_exists($mapping->name, '__set'));
+                }
+                $manager->getProxyFactory()->generateProxyClasses($metadata);
+            } finally {
+                $manager->close();
             }
         }
     }

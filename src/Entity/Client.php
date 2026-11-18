@@ -41,7 +41,7 @@ class Client
     /**
      * @var Server
      *
-     * @ORM\ManyToOne(targetEntity="Server", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Server", inversedBy="clients", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="server_id", referencedColumnName="id", nullable=false)
      * })

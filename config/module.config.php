@@ -53,7 +53,8 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ApiAdminHistoricalController::class,
+                        'controller' => PipeSpec::class,
+                        'middleware' => new PipeSpec(Controller\ApiAdminHistoricalController::class),
                     ],
                 ],
             ],

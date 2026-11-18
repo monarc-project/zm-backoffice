@@ -36,22 +36,23 @@ class GuideRuntimeChecks
         $templates = $container->get('doctrine.entitymanager.orm_cli');
         $templateClass = \Monarc\Core\Entity\DeliveriesModels::class;
         $templateService = $container->get(\Monarc\Core\Service\DeliveriesModelsService::class);
-        self::assert($container->get($templateClass) instanceof $templateClass, 'registered delivery model entity');
-        self::assert($templateService->get('entity') instanceof $templateClass, 'delivery service entity');
-        self::assert($templateService->get('table')->getEntityClass() === $templateClass, 'delivery table entity');
+        $templateTable = $container->get(\Monarc\Core\Table\DeliveriesModelsTable::class);
+        self::assert($templateTable->getEntityName() === $templateClass, 'delivery table entity');
         $templateMetadata = $templates->getClassMetadata($templateClass);
         $templateColumns = $templates->getConnection()->createSchemaManager()->listTableColumns('deliveries_models');
         self::assert(!$templateMetadata->hasAssociation('anr'), 'delivery templates have no analysis association');
         self::assert(!isset($templateColumns['anr_id']), 'delivery templates have no analysis column');
-        $phase = 'legacy delivery model read';
-        $templateData = $templateService->getList(1, 1);
+        $phase = 'modern delivery model read';
+        $templateData = $templateService->getList(
+            (new \Monarc\Core\InputFormatter\DeliveryModel\GetDeliveryModelsInputFormatter())->format(['limit' => 1])
+        );
         $prefix = 'Monarc\\BackOffice';
         $guides = $container->get(GuideService::class);
         $items = $container->get(GuideItemService::class);
         $guideController = $container->get('ControllerManager')->get($prefix . '\\Controller\\ApiGuidesController');
         $itemController = $container->get('ControllerManager')->get($prefix . '\\Controller\\ApiGuidesItemsController');
         $container->get('ControllerManager')->get($prefix . '\\Controller\\ApiGuidesTypesController');
-        // Check the next migrated domain alongside the retained legacy delivery path.
+        // Check the next migrated domain alongside the modern delivery path.
         $phase = 'modern question read';
         $params = (new \Monarc\Core\InputFormatter\Question\GetQuestionsInputFormatter())->format(['limit' => 1]);
         $questionsRead = $container->get(QuestionService::class)->getList($params);
@@ -137,7 +138,7 @@ class GuideRuntimeChecks
             'deliveryModelAnalysisColumn' => 'absent',
             'deliveryModelEntity' => $templateClass,
             'generatedDeliveryAnalysisColumn' => 'not applicable',
-            'legacyDeliveryModelReadCount' => count($templateData),
+            'deliveryModelReadCount' => count($templateData),
             'questionReadCount' => count($questionsRead),
         ];
     }

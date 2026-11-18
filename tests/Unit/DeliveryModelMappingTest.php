@@ -27,11 +27,11 @@ class DeliveryModelMappingTest extends TestCase
             self::assertSame([], $metadata->table['indexes'] ?? []);
             (new SchemaTool($manager))->createSchema([$metadata]);
             $template = new DeliveriesModels();
-            $template->set('category', 1)->set('editable', true)
+            $template->setCategory(1)->setEditable(true)
                 ->setDescriptions(['description1' => 'Existing template']);
             $manager->persist($template);
             $manager->flush();
-            $id = $template->get('id');
+            $id = $template->getId();
             $manager->clear();
             self::assertSame('Existing template', $manager->find(DeliveriesModels::class, $id)->getDescription(1));
             self::assertArrayNotHasKey('anr_id', $manager->getConnection()->createSchemaManager()

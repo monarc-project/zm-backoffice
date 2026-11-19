@@ -6,7 +6,7 @@
  */
 
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Interop\Container\Containerinterface;
 use Laminas\Mvc\Middleware\PipeSpec;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
@@ -964,8 +964,7 @@ return [
     'doctrine' => [
         'driver' => [
             'Monarc_backoffice_driver' => [
-                'class' => AnnotationDriver::class,
-                'cache' => 'array',
+                'class' => AttributeDriver::class,
                 'paths' => [__DIR__ . '/../src/Entity'],
             ],
             'orm_cli' => [

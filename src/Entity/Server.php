@@ -12,11 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Monarc\Core\Entity\Traits\CreateEntityTrait;
 use Monarc\Core\Entity\Traits\UpdateEntityTrait;
 
-/**
- * @ORM\Table(name="servers")
- * @ORM\Entity
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Table(name: 'servers')]
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class Server
 {
     use CreateEntityTrait;
@@ -26,46 +24,40 @@ class Server
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
+    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     protected $id;
 
     /**
      * @var ArrayCollection|Client[]
-     *
-     * @ORM\OneToMany(targetEntity="Client", mappedBy="server")
      */
+    #[ORM\OneToMany(targetEntity: 'Client', mappedBy: 'server')]
     protected $clients;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="label", type="string", length=255)
      */
+    #[ORM\Column(name: 'label', type: 'string', length: 255)]
     protected $label;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ip_address", type="string", length=64)
      */
+    #[ORM\Column(name: 'ip_address', type: 'string', length: 64)]
     protected $ipAddress = '';
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="fqdn", type="string", length=255)
      */
+    #[ORM\Column(name: 'fqdn', type: 'string', length: 255)]
     protected $fqdn = '';
 
     /**
      * @var bool
-     *
-     * @ORM\Column(name="status", type="boolean", nullable=true)
      */
+    #[ORM\Column(name: 'status', type: 'boolean', nullable: true)]
     protected $status = self::STATUS_ACTIVE;
 
     public function __construct(array $data)

@@ -12,11 +12,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Monarc\Core\Entity\Traits\CreateEntityTrait;
 use Monarc\Core\Entity\Traits\UpdateEntityTrait;
 
-/**
- * @ORM\Table(name="clients")
- * @ORM\Entity
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Table(name: 'clients')]
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class Client
 {
     use CreateEntityTrait;
@@ -24,91 +22,87 @@ class Client
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
+    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     protected $id;
 
     /**
      * @var ArrayCollection|ClientModel[]
-     *
-     * @ORM\OneToMany(targetEntity="ClientModel", mappedBy="client")
      */
+    #[ORM\OneToMany(targetEntity: 'ClientModel', mappedBy: 'client')]
     protected $clientModels;
 
     /**
      * @var Server
-     *
-     * @ORM\ManyToOne(targetEntity="Server", cascade={"persist"})
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="server_id", referencedColumnName="id", nullable=false)
-     * })
      */
+    #[ORM\ManyToOne(targetEntity: 'Server', inversedBy: 'clients', cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'server_id', referencedColumnName: 'id', nullable: false)]
     protected $server;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="logo_id", type="integer", nullable=false)
      */
+    #[ORM\Column(name: 'logo_id', type: 'integer', nullable: false)]
     protected $logoId = 0;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'name', type: 'string', length: 255, nullable: false)]
     protected $name;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="proxy_alias", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'proxy_alias', type: 'string', length: 255, nullable: false)]
     protected $proxyAlias = '';
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="contact_email", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'contact_email', type: 'string', length: 255, nullable: false)]
     protected $contactEmail = '';
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="first_user_firstname", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'first_user_firstname', type: 'string', length: 255, nullable: false)]
     protected $firstUserFirstname = '';
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="first_user_lastname", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'first_user_lastname', type: 'string', length: 255, nullable: false)]
     protected $firstUserLastname = '';
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="first_user_email", type="string", length=255, nullable=false)
      */
+    #[ORM\Column(name: 'first_user_email', type: 'string', length: 255, nullable: false)]
     protected $firstUserEmail = '';
 
     /**
      * @var bool
-     *
-     * @ORM\Column(name="is_two_factor_auth_enforced", type="boolean", nullable=false, options={"default":true})
      */
+    #[ORM\Column(
+        name: 'is_two_factor_auth_enforced',
+        type: 'boolean',
+        nullable: false,
+        options: ['default' => true]
+    )]
     protected $twoFactorAuthEnforced = true;
 
     /**
      * @var bool
-     *
-     * @ORM\Column(name="is_background_import_active", type="boolean", nullable=false, options={"default":false})
      */
+    #[ORM\Column(
+        name: 'is_background_import_active',
+        type: 'boolean',
+        nullable: false,
+        options: ['default' => false]
+    )]
     protected $isBackgroundImportActive = false;
 
     public function __construct()

@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2026 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
@@ -10,6 +10,7 @@ namespace Monarc\BackOffice\Controller;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 use Monarc\Core\Entity\UserSuperClass;
 use RobThree\Auth\TwoFactorAuth;
+use RobThree\Auth\Algorithm;
 use RobThree\Auth\Providers\Qr\EndroidQrCodeProvider;
 use Monarc\Core\Service\ConnectedUserService;
 use Monarc\Core\Service\ConfigService;
@@ -36,7 +37,7 @@ class ApiUserTwoFAController extends AbstractRestfulController
         $this->configService = $configService;
         $this->connectedUser = $connectedUserService->getConnectedUser();
         $this->userTable = $userTable;
-        $this->twoFactorAuth = new TwoFactorAuth('MONARC', 6, 30, 'sha1', new EndroidQrCodeProvider());
+        $this->twoFactorAuth = new TwoFactorAuth(new EndroidQrCodeProvider(), 'MONARC', 6, 30, Algorithm::Sha1);
     }
 
     /**

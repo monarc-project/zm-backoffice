@@ -41,7 +41,7 @@
         }
     ],
     "require": {
-        "php": ">=8.4.27 <8.5.0",
+        "php": ">=8.4.28 <8.5.0",
         "ext-json": "*",
         "ext-pdo": "*",
         "ext-openssl": "*",
@@ -69,9 +69,6 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
-        "platform": {
-            "php": "8.4.27"
-        },
         "allow-plugins": {
             "ocramius/package-versions": true
         }

@@ -1,56 +1,81 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2019  SMILE GIE Securitymadein.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2026 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
-use Monarc\Core\Controller\AbstractController;
+use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
 use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
+use Monarc\Core\InputFormatter\Guide\GetGuideItemsInputFormatter;
 use Monarc\Core\Service\GuideItemService;
+use Monarc\Core\Validator\InputValidator\Guide\GuideItemDataInputValidator;
 
-/**
- * TODO: extend AbstractRestfulController and remove AbstractController.
- */
-class ApiGuidesItemsController extends AbstractController
+class ApiGuidesItemsController extends AbstractRestfulControllerRequestHandler
 {
     use ControllerRequestResponseHandlerTrait;
 
-    protected $dependencies = ['guide'];
-    protected $name = 'items';
-
-    public function __construct(GuideItemService $guideItemService)
-    {
-        parent::__construct($guideItemService);
+    public function __construct(
+        private GetGuideItemsInputFormatter $getGuideItemsInputFormatter,
+        private GuideItemDataInputValidator $guideItemDataInputValidator,
+        private GuideItemService $guideItemService
+    ) {
     }
 
     public function getList()
     {
-        $page = $this->params()->fromQuery('page');
-        $limit = $this->params()->fromQuery('limit');
-        $order = $this->params()->fromQuery('order');
-        $filter = $this->params()->fromQuery('filter');
-        $guide = $this->params()->fromQuery('guide');
-        if (!is_null($guide)) {
-            $filterAnd = ['guide' => (int) $guide];
-        } else {
-            $filterAnd = [];
-        }
-
-        $service = $this->getService();
-
-        $entities = $service->getList($page, $limit, $order, $filter, $filterAnd);
-        if (count($this->dependencies)) {
-            foreach ($entities as $key => $entity) {
-                $this->formatDependencies($entities[$key], $this->dependencies);
-            }
-        }
+        $formattedParams = $this->getFormattedInputParams($this->getGuideItemsInputFormatter);
 
         return $this->getPreparedJsonResponse([
-            'count' => $service->getFilteredCount($filter),
-            $this->name => $entities
+            'count' => $this->guideItemService->getCount($formattedParams),
+            'items' => $this->guideItemService->getList($formattedParams),
         ]);
+    }
+
+    public function get($id)
+    {
+        return $this->getPreparedJsonResponse($this->guideItemService->getGuideItemData((int)$id));
+    }
+
+    public function create($data)
+    {
+        $this->validatePostParams($this->guideItemDataInputValidator, $data);
+        $validData = $this->guideItemDataInputValidator->getValidData();
+
+        return $this->getSuccessfulJsonResponse([
+            'id' => $this->guideItemService->create($validData)->getId(),
+        ]);
+    }
+
+    public function update($id, $data)
+    {
+        $this->validatePostParams($this->guideItemDataInputValidator, $data);
+        $this->guideItemService->update((int)$id, $this->guideItemDataInputValidator->getValidData());
+
+        return $this->getSuccessfulJsonResponse();
+    }
+
+    public function patch($id, $data)
+    {
+        $this->validatePostParams($this->guideItemDataInputValidator, $data, partial: true);
+        $this->guideItemService->update((int)$id, $this->guideItemDataInputValidator->getValidData());
+
+        return $this->getSuccessfulJsonResponse();
+    }
+
+    public function delete($id)
+    {
+        $this->guideItemService->delete((int)$id);
+
+        return $this->getSuccessfulJsonResponse();
+    }
+
+    public function deleteList($data)
+    {
+        $this->guideItemService->deleteList($data);
+
+        return $this->getSuccessfulJsonResponse();
     }
 }

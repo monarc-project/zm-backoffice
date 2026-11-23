@@ -1,38 +1,28 @@
 <?php declare(strict_types=1);
 /**
  * @link      https://github.com/monarc-project for the canonical source repository
- * @copyright Copyright (c) 2016-2023 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
+ * @copyright Copyright (c) 2016-2026 Luxembourg House of Cybersecurity LHC.lu - Licensed under GNU Affero GPL v3
  * @license   MONARC is licensed under GNU Affero General Public License version 3
  */
 
 namespace Monarc\BackOffice\Controller;
 
 use Monarc\Core\Service\GuideService;
-use Laminas\Mvc\Controller\AbstractRestfulController;
-use Laminas\View\Model\JsonModel;
+use Monarc\Core\Controller\Handler\AbstractRestfulControllerRequestHandler;
+use Monarc\Core\Controller\Handler\ControllerRequestResponseHandlerTrait;
 
-class ApiGuidesTypesController extends AbstractRestfulController
+class ApiGuidesTypesController extends AbstractRestfulControllerRequestHandler
 {
-    private GuideService $guideService;
+    use ControllerRequestResponseHandlerTrait;
 
-    public function __construct(GuideService $guideService)
+    public function __construct(private GuideService $guideService)
     {
-        $this->guideService = $guideService;
     }
 
     public function getList()
     {
-        return new JsonModel([
+        return $this->getPreparedJsonResponse([
             'type' => $this->guideService->getTypes(),
         ]);
-    }
-
-    public function deleteList($data)
-    {
-        if ($this->guideService->deleteList($data)) {
-            return new JsonModel(['status' => 'ok']);
-        }
-
-        return new JsonModel(['status' => 'ko']);
     }
 }
